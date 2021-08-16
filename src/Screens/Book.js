@@ -40,16 +40,13 @@ export default function Book() {
   };
 
   return (
-    <>
-      <Button
-        variant="outlined"
-        color="primary"
-        style={{
-          marginLeft: "90%",
-        }}
-        onC
-        onClick={handleClickOpen}
-      >
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "flex-end",
+      }}
+    >
+      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
         + Add Book
       </Button>
       <Dialog
@@ -145,6 +142,6 @@ export default function Book() {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 }

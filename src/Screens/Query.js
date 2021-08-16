@@ -41,15 +41,13 @@ export default function Query() {
   };
 
   return (
-    <>
-      <Button
-        variant="outlined"
-        color="primary"
-        style={{
-          marginLeft: "90%",
-        }}
-        onClick={handleClickOpen}
-      >
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "flex-end",
+      }}
+    >
+      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
         + Add Query
       </Button>
       <Dialog
@@ -112,6 +110,6 @@ export default function Query() {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 }

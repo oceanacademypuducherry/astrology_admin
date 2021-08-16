@@ -41,15 +41,13 @@ export default function Article() {
 
   return (
     <>
-      <div>
-        <Button
-          variant="outlined"
-          color="primary"
-          style={{
-            marginLeft: "90%",
-          }}
-          onClick={handleClickOpen}
-        >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Button variant="outlined" color="primary" onClick={handleClickOpen}>
           + Add Article
         </Button>
         <Dialog

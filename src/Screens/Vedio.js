@@ -40,16 +40,13 @@ export default function Video() {
   };
 
   return (
-    <>
-      <Button
-        variant="outlined"
-        color="primary"
-        style={{
-          marginLeft: "90%",
-        }}
-        onC
-        onClick={handleClickOpen}
-      >
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "flex-end",
+      }}
+    >
+      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
         + Add Video
       </Button>
       <Dialog
@@ -187,6 +184,6 @@ export default function Video() {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 }
