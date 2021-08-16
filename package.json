@@ -8,10 +8,21 @@
     "@material-ui/core": "latest",
     "@material-ui/icons": "latest",
     "clsx": "latest",
+    "firebase": "^8.9.1",
     "react": "latest",
     "react-dom": "latest",
+<<<<<<< HEAD
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0"
+=======
+    "react-firestore": "^1.0.1",
+    "react-redux": "^7.2.4",
+    "react-redux-firestore": "0.0.1",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.1.1",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.3.0"
+>>>>>>> 945597e4c57adc2ee0af6f06f8a56c6ebfe4cee2
   },
   "keywords": [],
   "name": "sidebar",
