@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
+      background: "#F4F4F4",
     },
   },
   menuButton: {
@@ -90,43 +91,51 @@ function ResponsiveDrawer(props) {
   };
 
   const drawer = (
-    <Route>
+    <>
       <div className={classes.toolbar} />
       <List>
-        <Link to="/" className={classes.link}>
-          <ListItem button onClick={routerPath1}>
-            <ListItemIcon>
-              <Assignment />
-            </ListItemIcon>
-            <ListItemText primary={"Article"} />
-          </ListItem>
-        </Link>
-        <Link to="/query" className={classes.link}>
-          <ListItem button onClick={routerPath2}>
-            <ListItemIcon>
-              <AlternateEmailSharp />
-            </ListItemIcon>
-            <ListItemText primary={"Queries"} />
-          </ListItem>
-        </Link>
-        <Link to="/vedio" className={classes.link}>
-          <ListItem button onClick={routerPath3}>
-            <ListItemIcon>
-              <SlowMotionVideoSharp />
-            </ListItemIcon>
-            <ListItemText primary={"Videos"} />
-          </ListItem>
-        </Link>
-        <Link to="/book" className={classes.link}>
-          <ListItem button onClick={routerPath4}>
-            <ListItemIcon>
-              <MenuBook />
-            </ListItemIcon>
-            <ListItemText primary={"Book"} />
-          </ListItem>
-        </Link>
+        <Route>
+          <Link to="/" exact className={classes.link}>
+            <ListItem button onClick={routerPath1}>
+              <ListItemIcon>
+                <Assignment />
+              </ListItemIcon>
+              <ListItemText primary={"Article"} />
+            </ListItem>
+          </Link>
+        </Route>
+        <Route>
+          <Link to="/query" className={classes.link}>
+            <ListItem button onClick={routerPath2}>
+              <ListItemIcon>
+                <AlternateEmailSharp />
+              </ListItemIcon>
+              <ListItemText primary={"Queries"} />
+            </ListItem>
+          </Link>
+        </Route>
+        <Route>
+          <Link to="/vedio" className={classes.link}>
+            <ListItem button onClick={routerPath3}>
+              <ListItemIcon>
+                <SlowMotionVideoSharp />
+              </ListItemIcon>
+              <ListItemText primary={"Videos"} />
+            </ListItem>
+          </Link>
+        </Route>
+        <Route>
+          <Link to="/book" className={classes.link}>
+            <ListItem button onClick={routerPath4}>
+              <ListItemIcon>
+                <MenuBook />
+              </ListItemIcon>
+              <ListItemText primary={"Book"} />
+            </ListItem>
+          </Link>
+        </Route>
       </List>
-    </Route>
+    </>
   );
 
   const container =
@@ -151,8 +160,8 @@ function ResponsiveDrawer(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            Responsive drawer
+          <Typography variant="h5" noWrap>
+            Astro Admin
           </Typography>
         </Toolbar>
       </AppBar>

@@ -14,13 +14,10 @@ import ResponsiveDrawer from "./demo";
 export default function App() {
   return (
     <div>
-      <ResponsiveDrawer />
       <Router>
-        <Route path="/" exact component={Article} />
-        <Route path="/query" exact component={Query} />
-        <Route path="/video" exact component={Video} />
-        <Route path="/video" exact component={Video} />
-        <Route path="/book" exact component={Book} />
+        <Switch>
+          <ResponsiveDrawer />
+        </Switch>
       </Router>
     </div>
   );
