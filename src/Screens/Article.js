@@ -58,7 +58,7 @@ export default function Article() {
   const articleList = useSelector(state => state.articleList)
   const { loading, error, articles} = articleList
 
-  /// article crrate
+/// article create
 
   const createArticle = useSelector(state => state.createArticle)
   const { article,success,errorFailure} = createArticle
