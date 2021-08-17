@@ -15,16 +15,17 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Article from "./Screens/Article";
 import Query from "./Screens/Query";
-import Video from "./Screens/Vedio";
 import Book from "./Screens/Book";
+import { useParams } from "react-router-dom";
 import {
   Assignment,
   AlternateEmailSharp,
   SlowMotionVideoSharp,
   MenuBook,
 } from "@material-ui/icons";
-import { Link, BrowserRouter as Route, Switch, Router } from "react-router-dom";
+import { Link, BrowserRouter as Route } from "react-router-dom";
 import Vedio from "./Screens/Vedio";
+import { Box, Button, colors } from "@material-ui/core";
 
 const drawerWidth = 240;
 
@@ -69,6 +70,12 @@ function ResponsiveDrawer(props) {
   const theme = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [route, setRoute] = useState(1);
+  const [r, setR] = useState({
+    article: true,
+    book: false,
+    query: false,
+    video: false,
+  });
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -76,18 +83,42 @@ function ResponsiveDrawer(props) {
 
   const routerPath1 = () => {
     setRoute(1);
+    setR({
+      article: true,
+      book: false,
+      query: false,
+      video: false,
+    });
   };
 
   const routerPath2 = () => {
     setRoute(2);
+    setR({
+      article: false,
+      book: false,
+      query: true,
+      video: false,
+    });
   };
 
   const routerPath3 = () => {
     setRoute(3);
+    setR({
+      article: false,
+      book: false,
+      query: false,
+      video: true,
+    });
   };
 
   const routerPath4 = () => {
     setRoute(4);
+    setR({
+      article: false,
+      book: true,
+      query: false,
+      video: false,
+    });
   };
 
   const drawer = (
@@ -147,10 +178,12 @@ function ResponsiveDrawer(props) {
       <AppBar
         position="fixed"
         color="transparent"
-        style={{ boxShadow: "0px 0px 0px 0px" }}
+        style={{
+          boxShadow: "0px 0px 0px 0px",
+        }}
         className={classes.appBar}
       >
-        <Toolbar>
+        <Toolbar style={{ justifyContent: "space-between" }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -163,6 +196,16 @@ function ResponsiveDrawer(props) {
           <Typography variant="h5" noWrap>
             Astro Admin
           </Typography>
+          <Box>
+            <Button
+              style={{
+                background: "#1F6DE2",
+                color: "white",
+              }}
+            >
+              sign up
+            </Button>
+          </Box>
         </Toolbar>
       </AppBar>
       <nav className={classes.drawer} aria-label="mailbox folders">
@@ -198,15 +241,13 @@ function ResponsiveDrawer(props) {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        {route == 1 ? (
-          <Article />
-        ) : route == 2 ? (
-          <Query />
-        ) : route == 3 ? (
-          <Vedio />
-        ) : route == 4 ? (
-          <Book />
-        ) : null}
+        {r.article == true && <Article />}
+
+        {r.query == true && <Query />}
+
+        {r.video == true && <Vedio />}
+
+        {r.book == true && <Book />}
       </main>
     </div>
   );

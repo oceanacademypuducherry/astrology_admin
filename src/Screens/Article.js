@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { listArticles,createArticles} from '../actions/ArticleActions'
 import {
   Button,
+  ButtonBase,
   Dialog,
   DialogActions,
   DialogContent,
@@ -13,7 +14,10 @@ import {
   DialogTitle,
   Slide,
   TextField,
+  Typography,
 } from "@material-ui/core";
+import img from "../Img/2.jpg";
+import { Delete, Edit } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,6 +27,23 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: "center",
     color: theme.palette.text.secondary,
+  },
+  inputRoot: {
+    flexGrow: 1,
+  },
+  inputPaper: {
+    padding: theme.spacing(2),
+    maxWidth: 500,
+  },
+  image: {
+    width: 200,
+    height: 200,
+  },
+  img: {
+    margin: "auto",
+    display: "block",
+    maxWidth: "100%",
+    maxHeight: "100%",
   },
 }));
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -77,13 +98,15 @@ export default function Article() {
 
   return (
     <>
-      <div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
         <Button
           variant="outlined"
-          color="primary"
-          style={{
-            marginLeft: "90%",
-          }}
+          style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }}
           onClick={handleClickOpen}
         >
           + Add Article
@@ -131,6 +154,7 @@ export default function Article() {
                           width: "13%",
                           height: "55px",
                           marginTop: "1%",
+                          color: "white",
                         }}
                       >
                         Choose
@@ -167,6 +191,41 @@ export default function Article() {
             </Button>
           </DialogActions>
         </Dialog>
+      </div>
+      <div className={classes.inputRoot}>
+        <Paper className={classes.inputPaper}>
+          <Grid container spacing={2}>
+            <Grid item>
+              <ButtonBase className={classes.image}>
+                <img className={classes.img} alt="complex" src={img} />
+              </ButtonBase>
+            </Grid>
+            <Grid item xs={12} sm container style={{ marginTop: "8%" }}>
+              <Grid item xs container direction="column" spacing={2}>
+                <Grid item xs>
+                  <Typography gutterBottom variant="subtitle1">
+                    Title
+                  </Typography>
+                  <Typography variant="body2" gutterBottom>
+                    Description
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+          <div
+            style={{
+              textAlign: "end",
+            }}
+          >
+            <Button>
+              <Delete style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }} />
+            </Button>
+            <Button>
+              <Edit style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }} />
+            </Button>
+          </div>
+        </Paper>
       </div>
     </>
   );

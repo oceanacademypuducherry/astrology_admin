@@ -1,7 +1,7 @@
 {
   "title": "Material demo",
   "devDependencies": {
-    "react-scripts": "latest"
+    "react-scripts": "^4.0.3"
   },
   "description": "https://github.com/mui-org/material-ui/blob/master/docs/src/pages/components/drawers/MiniDrawer.js",
   "dependencies": {
@@ -11,6 +11,10 @@
     "firebase": "^8.9.1",
     "react": "latest",
     "react-dom": "latest",
+<<<<<<< HEAD
+    "react-redux": "^7.2.4",
+    "react-router-dom": "^5.2.0"
+=======
     "react-firestore": "^1.0.1",
     "react-redux": "^7.2.4",
     "react-redux-firebase": "^3.10.0",
@@ -20,6 +24,7 @@
     "redux-devtools-extension": "^2.13.9",
     "redux-firestore": "^0.15.0",
     "redux-thunk": "^2.3.0"
+>>>>>>> 945597e4c57adc2ee0af6f06f8a56c6ebfe4cee2
   },
   "keywords": [],
   "name": "sidebar",
