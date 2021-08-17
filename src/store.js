@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import {  articleListReducer,articleCreateReducer} from './reducers/ArticleReducer'
+import {  articleListReducer,articleCreateReducer,articleDeleteReducer} from './reducers/ArticleReducer'
 
 
 
@@ -9,6 +9,7 @@ import {  articleListReducer,articleCreateReducer} from './reducers/ArticleReduc
 const reducer = combineReducers({
     articleList : articleListReducer,
     createArticle : articleCreateReducer,
+    articleDelete : articleDeleteReducer,
 });
  const initialState = {}
 

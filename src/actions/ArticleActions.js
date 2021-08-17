@@ -4,7 +4,9 @@ import { ARTICLE_LIST_REQUEST,
     ARTICLE_CREATE_REQUEST,
     ARTICLE_CREATE_SUCCESS,
      ARTICLE_CREATE_FAIL,
-     ARTICLE_CREATE_RESET
+     ARTICLE_CREATE_RESET,
+     ARTICLE_DELETE_REQUEST,
+     ARTICLE_DELETE_SUCCESS,ARTICLE_DELETE_FAIL
    } from '../Constants/ArticleConstant';
 
 import firebase from '../firebaseConfig/fbConfig';
@@ -41,8 +43,7 @@ firestore
     }
   }
 
-
-  export const createArticles = (singleArticle) => async (dispatch, getState) => {
+  export const createArticles = (singleArticle) => async (dispatch) => {
   
     try {
         dispatch({
@@ -70,3 +71,25 @@ firestore
         })
     }
   }
+
+  export const deleteArticle = (id) => async (dispatch) => {
+    try {
+        const firestore = firebase.firestore();
+        dispatch({
+            type: ARTICLE_DELETE_REQUEST
+        })
+        console.log(id,"id foundeddd")
+      firestore.collection('articles').doc(id).delete().then(()=>{  dispatch({
+            type: ARTICLE_DELETE_SUCCESS,
+        })
+        console.log("delete success")
+    }) 
+    } catch (error) {
+        dispatch({
+            type: ARTICLE_DELETE_FAIL,
+            payload:error.message,
+        })
+    }
+  }
+
+
