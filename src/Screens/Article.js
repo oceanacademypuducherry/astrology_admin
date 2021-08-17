@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
+import { useDispatch, useSelector } from 'react-redux'
+import { listArticles,createArticles} from '../actions/ArticleActions'
 import {
   Button,
   Dialog,
@@ -28,15 +30,49 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function Article() {
+
+  const dispatch = useDispatch()
+
+///article view
+  const articleList = useSelector(state => state.articleList)
+  const { loading, error, articles} = articleList
+
+  /// article crrate
+
+  const createArticle = useSelector(state => state.createArticle)
+  const { article,success,errorFailure} = createArticle
+
+
+    useEffect(() => {
+      
+      console.log('SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS');
+          dispatch(listArticles())
+
+          console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
+  console.log(articles);  
+}, [dispatch])
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [articleTitle, setArticleTitle] = useState("");
+  const [articleImage, setArticleImage] = useState("");
+  const [articleDescription, setArticleDescription] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
+
+
   };
 
   const handleClose = () => {
     setOpen(false);
+    dispatch(
+      createArticles({
+        'articleTitle': articleTitle,
+        'articleImage': articleImage,  
+        'content': articleDescription,
+      }))
+      console.log('succesfully')
   };
 
   return (
@@ -52,6 +88,11 @@ export default function Article() {
         >
           + Add Article
         </Button>
+        {loading ? <h1>loading</h1> : error ? <h1>error</h1> :articles.map(article =>(
+          <h1>{article.articleName}</h1>
+        ))}
+        
+        
         <Dialog
           open={open}
           TransitionComponent={Transition}
@@ -70,6 +111,8 @@ export default function Article() {
                         label="Title"
                         variant="outlined"
                         style={{ width: "100%" }}
+                        onChange={(e) => setArticleTitle(e.target.value)}
+                      
                       />
                     </Paper>
                   </Grid>
@@ -101,6 +144,7 @@ export default function Article() {
                         label="Description"
                         variant="outlined"
                         style={{ width: "100%" }}
+                        onChange={(e) => setArticleDescription(e.target.value)}
                       />
                     </Paper>
                   </Grid>
