@@ -1,13 +1,17 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
-import {  articleListReducer} from './reducers/ArticleReducer'
+import {  articleListReducer,articleCreateReducer,articleDeleteReducer} from './reducers/ArticleReducer'
+
+
+
 
 const reducer = combineReducers({
-    articleList : articleListReducer
+    articleList : articleListReducer,
+    createArticle : articleCreateReducer,
+    articleDelete : articleDeleteReducer,
 });
-
-const initialState = {}
+ const initialState = {}
 
 const middleware = [thunk]
 

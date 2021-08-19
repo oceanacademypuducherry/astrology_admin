@@ -62,19 +62,26 @@ export default function Book() {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-        }}
-      >
-        <Button
-          variant="outlined"
-          style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }}
-          onClick={handleClickOpen}
+      <div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+          }}
         >
-          + Add Book
-        </Button>
+          <Button
+            variant="outlined"
+            style={{
+              borderColor: "#1F6DE2",
+              color: "#1F6DE2",
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+            onClick={handleClickOpen}
+          >
+            + Add Book
+          </Button>
+        </div>
         <Dialog
           open={open}
           TransitionComponent={Transition}
