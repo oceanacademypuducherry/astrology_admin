@@ -21,13 +21,35 @@ import {
   Slide,
   TextField,
   Typography,
+  Card,
+  CardContent,
+  CardActionArea,
+  CardMedia,
+  CardActions,
+  Input
 } from "@material-ui/core";
 import img from "../Img/2.jpg";
 import { CloudDownloadTwoTone, Delete, Edit } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
+  card: {
+    width: 300,
+    height: 420,
+  },
+  media: {
+    height: 240,
+    maxWidth: 300,
+  },
+
+  cardDescription: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    height: "60px",
+  },
+  addArticle: {
+    marginBottom: "20px",
+    display: "flex",
+    justifyContent: "flex-end",
   },
   paper: {
     padding: theme.spacing(2),
@@ -35,11 +57,12 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
   },
   inputRoot: {
+    // backgroundColor: "grey",
     display: "flex",
     flexDirection: "row",
   },
   inputPaper: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(5),
     maxWidth: 500,
   },
   image: {
@@ -62,10 +85,10 @@ export default function Article() {
   const [open, setOpen] = React.useState(false);
   const [alert, setAlert] = React.useState(false);
   const [articleTitle, setArticleTitle] = useState("");
-  const [articleImage, setArticleImage] = useState("");
   const [articleDescription, setArticleDescription] = useState("");
-  const [userDetails, setUserDetails] = useState("");
+  const [articleId, setArticleId] = useState("");
   const [fileUpload, setFileUpload] = useState("");
+  const [url, setUrl] =useState("");
 
   const dispatch = useDispatch();
 
@@ -97,18 +120,32 @@ export default function Article() {
       .get()
       .then((snapshot) => {
         snapshot.docs.forEach((doc) => {
-          setUserDetails(doc.id);
+          setArticleId(doc.id);
         });
       });
   }
 
-  const handleUploadClick = (event) => {
-    var file = event.target.files[0];
-    const reader = new FileReader();
-    var url = reader.readAsDataURL(file);
-      setFileUpload( event.target.files[0]);
-     console.log(event.target.files[0], "url///////////////////////////");
-  }
+  const handleUploadClick = (e) => { 
+    setFileUpload(e.target.files[0]);
+    // console.log(e.target.files[0], "file picked /////////////////////////////////////////");
+    var upload = storage
+    .ref(`articles/${e.target.files[0].name}`)
+    .put(e.target.files[0]);
+  upload.on(
+    "state_changed",
+    (snapshot) => {console.log(snapshot,'///////////////////////////////snapshots');},
+    (error) => {
+      console.log(error);
+    },
+    () => {
+      storage
+        .ref("articles")
+        .child(e.target.files[0].name)
+        .getDownloadURL()
+        .then((url) =>setUrl(url));
+    }
+  );
+  };
 
   useEffect(() => {
     dispatch(listArticles());
@@ -121,18 +158,23 @@ export default function Article() {
     setOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose =  () => {
     setOpen(false);
-    dispatch(
+     dispatch(
       createArticles({
-        articleTitle: articleTitle,
-        articleImage: articleImage,
+        articleName: articleTitle,
+        articleImage: url,
         content: articleDescription,
       }),
-      [dispatch]
+      // [dispatch]
     );
+
     console.log("succesfully");
+
+    console.log(url, "//////////////////////////////////////////////url");
+
   };
+
 
   const alertOpen = (image) => {
     setAlert(true);
@@ -142,22 +184,13 @@ export default function Article() {
 
   const alertClose = () => {
     setAlert(false);
-
-    console.log(articleSelectedid);
-
     console.log("before delete calla");
-
-    dispatch(deleteArticle(userDetails));
+    dispatch(deleteArticle(articleId));
   };
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-        }}
-      >
+      <div className={classes.addArticle}>
         <Button
           variant="outlined"
           style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }}
@@ -165,177 +198,170 @@ export default function Article() {
         >
           + Add Article
         </Button>
-        {/* {loading ? <h1>loading</h1> : error ? <h1>error</h1> :articles.map(article =>(
-          <h1>{article.articleName}</h1>
-        ))} */}
-
-        <Dialog
-          open={alert}
-          TransitionComponent={Transition}
-          keepMounted
-          onClose={alertClose}
-        >
-          <DialogTitle>{"Are you sure want to delete"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              <div className={classes.root}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <Button
-                      onClick={alertClose}
-                      variant="contained"
-                      style={{
-                        background: "#1F6DE2",
-                        width: "13%",
-                        height: "55px",
-                        color: "white",
-                      }}
-                    >
-                      NO
-                    </Button>
-
-                    <Button
-                      onClick={alertClose}
-                      variant="contained"
-                      style={{
-                        background: "#1F6DE2",
-                        marginLeft: "47%",
-                        width: "13%",
-                        height: "55px",
-                        color: "white",
-                      }}
-                    >
-                      Yes
-                    </Button>
-                  </Grid>
-                </Grid>
-              </div>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions></DialogActions>
-        </Dialog>
-
-        <Dialog
-          open={open}
-          TransitionComponent={Transition}
-          keepMounted
-          onClose={handleClose}
-        >
-          <DialogTitle>{"Article"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              <div className={classes.root}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                      <TextField
-                        id="outlined-basic"
-                        label="Title"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        onChange={(e) => setArticleTitle(e.target.value)}
-                      />
-                    </Paper>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                      <TextField
-                        id="outlined-basic"
-                        label="Image"
-                        variant="outlined"
-                        style={{ width: "85%", margin: "1%" }}
-                      />
-                      <input
-                        accept="image/*"
-                        id="contained-button-file"
-                        multiple
-                        type="file"
-                        onChange={handleUploadClick}
-                      />
-                    </Paper>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                      <TextField
-                        id="outlined-basic"
-                        label="Description"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        onChange={(e) => setArticleDescription(e.target.value)}
-                      />
-                    </Paper>
-                  </Grid>
-                </Grid>
-              </div>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={handleClose}
-              variant="contained"
-              style={{
-                background: "#1F6DE2",
-                width: "100%",
-                height: "55px",
-                color: "white",
-              }}
-            >
-              Submit
-            </Button>
-          </DialogActions>
-        </Dialog>
       </div>
+      {/* alert delete */}
+      <Dialog
+        open={alert}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={alertClose}
+      >
+        <DialogTitle>{"Are you sure want to delete"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <div className={classes.root}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Button
+                    onClick={alertClose}
+                    variant="contained"
+                    style={{
+                      background: "#1F6DE2",
+                      width: "13%",
+                      height: "55px",
+                      color: "white",
+                    }}
+                  >
+                    NO
+                  </Button>
 
-      {loading ? (
-        <h1>loading</h1>
-      ) : error ? (
-        <h1>error</h1>
-      ) : (
-        articles.map((article) => (
-          <div className={classes.inputRoot}>
-            <Paper className={classes.inputPaper}>
-              <Grid container spacing={2}>
-                <Grid item>
-                  <ButtonBase className={classes.image}>
-                    <img
-                      className={classes.img}
-                      alt="complex"
-                      src={article.articleImage}
-                    />
-                  </ButtonBase>
-                </Grid>
-                <Grid item xs={12} sm container style={{ marginTop: "8%" }}>
-                  <Grid item xs container direction="column" spacing={2}>
-                    <Grid item xs>
-                      <Typography gutterBottom variant="subtitle1">
-                        {article.articleName}
-                      </Typography>
-                      <Typography variant="body2" gutterBottom>
-                        Description
-                      </Typography>
-                    </Grid>
-                  </Grid>
+                  <Button
+                    onClick={alertClose}
+                    variant="contained"
+                    style={{
+                      background: "#1F6DE2",
+                      marginLeft: "47%",
+                      width: "13%",
+                      height: "55px",
+                      color: "white",
+                    }}
+                  >
+                    Yes
+                  </Button>
                 </Grid>
               </Grid>
-              <div
-                style={{
-                  textAlign: "end",
-                }}
-              >
-                <Button>
-                  <Delete
-                    style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }}
-                    onClick={alertOpen.bind(this, article.articleImage)}
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions></DialogActions>
+      </Dialog>
+
+      {/* add article */}
+
+     
+
+      <Dialog
+        open={open}
+        TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+      >
+        <DialogTitle>Article</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <div className={classes.root}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      id="outlined-basic"
+                      label="Title"
+                      variant="outlined"
+                      style={{ width: "100%" }}
+                      onChange={(e) => setArticleTitle(e.target.value)}
+                    />
+                  </Paper>
+                </Grid>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      id="outlined-basic"
+                      label="Image"
+                      variant="outlined"
+                      style={{ width: "85%", margin: "1%" }}
+                    />
+                    <input       
+                      type="file"
+                      id = "imageInput"
+                      onChange={handleUploadClick}
+                    />
+                  </Paper>
+                </Grid>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      id="outlined-basic"
+                      label="Description"
+                      variant="outlined"
+                      style={{ width: "100%" }}
+                      onChange={(e) => setArticleDescription(e.target.value)}
+                    />
+                  </Paper>
+                </Grid>
+              </Grid>
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleClose}
+            variant="contained"
+            style={{
+              background: "#1F6DE2",
+              width: "100%",
+              height: "55px",
+              color: "white",
+            }}
+          >
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* {url} */}
+      {/* article Design start */}
+      <Grid container direction="row" justifyContent="flex-start" spacing={5}>
+        {loading ? (
+          <h1>loading...</h1>
+        ) : error ? (
+          <h1>Error</h1>
+        ) : (
+          articles.map((article) => (
+            <Grid item key={article.articleName}>
+              <Card className={classes.card}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.media}
+                    image={article.articleImage}
+                    title={article.articleName}
                   />
-                </Button>
-                <Button>
-                  <Edit style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }} />
-                </Button>
-              </div>
-            </Paper>
-          </div>
-        ))
-      )}
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="h2">
+                      {article.articleName}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      component="p"
+                      className={classes.cardDescription}
+                    >
+                      {article.content}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+                <CardActions>
+                  <Button size="small" color="primary" onClick={alertOpen.bind(this, article.articleImage)}>
+                    DELETE
+                  </Button>
+                  <Button size="small" color="primary">
+                    EDIT
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))
+        )}
+      </Grid>
     </>
   );
 }

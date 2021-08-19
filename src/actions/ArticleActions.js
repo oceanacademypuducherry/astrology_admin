@@ -51,12 +51,9 @@ firestore
         })
 
         const firestore = firebase.firestore();
-   getState()
   
-        firestore
-    .collection('demo2').add(singleArticle)
+        firestore.collection('articles').add(singleArticle)
   
-
         dispatch({
             type: ARTICLE_CREATE_SUCCESS,
             success:true,

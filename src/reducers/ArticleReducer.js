@@ -31,6 +31,7 @@ import { ARTICLE_LIST_REQUEST,
                 return state
         }
     }
+    
     export const articleCreateReducer = (state ={},action) =>{
         switch(action.type){
             case ARTICLE_CREATE_REQUEST:
