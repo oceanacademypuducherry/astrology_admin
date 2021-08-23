@@ -1,0 +1,27 @@
+.toggle {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+.free,
+.paid {
+  margin: 5px;
+  padding: 10px 30px;
+  background-color: rgb(221, 221, 221);
+  color: rgb(73, 73, 73);
+  font-size: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.free:hover,
+.paid:hover {
+  background-color: rgb(131, 131, 131);
+  color: white;
+  transform: scale(1.1);
+}
+
+.all-video {
+  display: flex;
+  flex-wrap: wrap;
+}
