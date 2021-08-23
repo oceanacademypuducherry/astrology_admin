@@ -31,6 +31,15 @@ const useStyles = makeStyles((theme) => ({
   media: {
     height: 240,
     maxWidth: 300,
+    boxShadow: "5px 5px #F5F5F5",
+    backgroundColor: "#e6e6e6",
+  },
+
+  cardTitle : {
+    fontSize: "20px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    height: "30px",
   },
 
   cardDescription: {
@@ -86,7 +95,6 @@ export default function Article() {
     description: "",
     image: "",
   });
-  const [articleId, setArticleId] = useState("");
   const [data, setData] = useState([]);
   const [updateData, setUpdateData] = useState({
     name: "",
@@ -141,7 +149,7 @@ export default function Article() {
 
   useEffect(() => {
     const db = firebase.firestore();
-    return db.collection("test").onSnapshot((snapshot) => {
+    return db.collection("test").orderBy("createdAt").onSnapshot((snapshot) => {
       const getData = [];
       snapshot.forEach((doc) => getData.push({ ...doc.data(), id: doc.id }));
       console.log(getData, "//////////////////////");
@@ -176,7 +184,7 @@ export default function Article() {
     const db = firebase.firestore();
     db.collection("test")
       .doc(currentID)
-      .set({
+      .update({
         name: updateData.name,
         image: updateData.image,
         description: updateData.description,
@@ -197,7 +205,7 @@ export default function Article() {
     setUpdateData({ ...updateData, [e.target.name]: e.target.value });
   };
 
-  const articleHandleClickOpen = () => {
+  const addArticleClickOpen = () => {
     setOpen(true);
   };
 
@@ -206,14 +214,16 @@ export default function Article() {
     setArticle({ ...article, [e.target.name]: e.target.value });
   };
 
-  const articleHandleClose = () => {
+  const addArticle = () => {
     ///add article
     firebase.firestore().collection("test").add({
       name: article.name,
       image: article.image,
       description: article.description,
+      createdAt : Date(),
     });
     setOpen(false);
+    console.log(Date());
   };
 
   const alertOpen = (image) => {
@@ -224,19 +234,8 @@ export default function Article() {
 
   const alertClose = () => {
     setAlert(false);
-    console.log("before delete calla");
-    dispatch(deleteArticle(articleId));
   };
 
-  const articleEditAlertOpen = (image) => {
-    setOpen(true);
-    getArticleData(image);
-    console.log(
-      image,
-      "///////////////////get edit image id //////////////////"
-    );
-    dispatch(editArticle(articleId));
-  };
 
   return (
     <>
@@ -244,7 +243,7 @@ export default function Article() {
         <Button
           variant="outlined"
           style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }}
-          onClick={articleHandleClickOpen}
+          onClick={addArticleClickOpen}
         >
           + Add Article
         </Button>
@@ -351,7 +350,7 @@ export default function Article() {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={articleHandleClose}
+            onClick={addArticle}
             variant="contained"
             style={{
               background: "#1F6DE2",
@@ -441,11 +440,11 @@ export default function Article() {
 
         {data.map((item) => (
           <Grid item>
-            <Card gutterBottom className={classes.card}>
+            <Card  className={classes.card}>
               <CardActionArea>
                 <CardMedia className={classes.media} image={item.image} />
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="h2">
+                  <Typography gutterBottom variant="h5" component="h2" className={classes.cardTitle} >
                     {item.name}
                   </Typography>
                   <Typography
@@ -469,8 +468,7 @@ export default function Article() {
                 <Button
                   size="small"
                   color="primary"
-                  onClick={update.bind(this, item.id)}
-                >
+                  onClick={update.bind(this, item.id)}>
                   EDIT
                 </Button>
               </CardActions>
@@ -478,13 +476,14 @@ export default function Article() {
           </Grid>
         ))}
         
-        <Snackbar
+        {/* <Snackbar
         // anchorOrigin={{ vertical, horizontal }}
-        open={false}
+        open= {updateData.image === ""  &&  true}
+        onClose = {updateData.image != "" &&  false}
         // onClose={handleClose}
         message="Image uploaded"
         // key={vertical + horizontal}
-      />
+      /> */}
       </Grid>
     </>
   );
