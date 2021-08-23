@@ -19,6 +19,7 @@ import {
   Paper,
   Grid,
   Avatar,
+  Snackbar,
 } from "@material-ui/core";
 // import { CloudDownloadTwoTone, Delete, Edit } from "@material-ui/icons";
 
@@ -30,6 +31,15 @@ const useStyles = makeStyles((theme) => ({
   media: {
     height: 240,
     maxWidth: 300,
+    boxShadow: "5px 5px #F5F5F5",
+    backgroundColor: "#e6e6e6",
+  },
+
+  cardTitle: {
+    fontSize: "20px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    height: "30px",
   },
 
   cardDescription: {
@@ -73,59 +83,17 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const articleReducer = (state, action) => {
-  const firestore = firebase.firestore();
-  switch (action.type) {
-    case "ADD":
-      return firestore.collection("test").add({
-        name: action.name,
-        image: action.image,
-        description: action.description,
-      });
-
-    default:
-      return state;
-      console.log(state);
-  }
-};
-
-const articleEditReducer = (articleEditState, action) => {
-  const firestore = firebase.firestore();
-  switch (action.type) {
-    case "EDIT":
-      console.log(action.name, "/////action");
-      firestore
-        .collection("test")
-        .where("name", "==", action.name)
-        .get()
-        .then((snapshot) => {
-          snapshot.docs.forEach((doc) => {
-            console.log(doc.id);
-            console.log(doc.data());
-          });
-        });
-      console.log(articleEditState, "/////////////////////state");
-
-      return articleEditState;
-
-    default:
-      return state;
-  }
-};
-
 export default function Article() {
-  const firestore = firebase.firestore();
   const storage = firebase.storage();
   const classes = useStyles();
-
   const [open, setOpen] = useState(false);
   const [updateAlert, setUpdateAlert] = useState(false);
   const [alert, setAlert] = useState(false);
-  const [articleTitle, setArticleTitle] = useState("");
-  const [articleDescription, setArticleDescription] = useState("");
-  const [articleId, setArticleId] = useState("");
-  const [fileUpload, setFileUpload] = useState("");
-  const [url, setUrl] = useState("");
+  const [article, setArticle] = useState({
+    name: "",
+    description: "",
+    image: "",
+  });
   const [data, setData] = useState([]);
   const [updateData, setUpdateData] = useState({
     name: "",
@@ -133,29 +101,8 @@ export default function Article() {
     description: "",
   });
   const [currentID, setCurrentID] = useState();
-  const [state, dispatch] = useReducer(articleReducer, [data]);
-  const [articleEditState, articleEditDispatch] = useReducer(
-    articleEditReducer,
-    []
-  );
 
-  /// this is used to take the documnet id
-  function getArticleData(imageData) {
-    console.log("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
-    firestore
-      .collection("articles")
-      .where("articleImage", "==", imageData)
-      .get()
-      .then((snapshot) => {
-        snapshot.docs.forEach((doc) => {
-          setArticleId(doc.id);
-        });
-      });
-  }
-
-  const handleUploadClick = (e) => {
-    setFileUpload(e.target.files[0]);
-    // console.log(e.target.files[0], "file picked /////////////////////////////////////////");
+  const addUploadClick = (e) => {
     var upload = storage
       .ref(`articles/${e.target.files[0].name}`)
       .put(e.target.files[0]);
@@ -172,19 +119,44 @@ export default function Article() {
           .ref("articles")
           .child(e.target.files[0].name)
           .getDownloadURL()
-          .then((url) => setUrl(url));
+          .then((url) => setArticle({ ...article, image: url }));
+      }
+    );
+  };
+
+  const updateUploadClick = (e) => {
+    var upload = storage
+      .ref(`articles/${e.target.files[0].name}`)
+      .put(e.target.files[0]);
+    upload.on(
+      "state_changed",
+      (snapshot) => {
+        console.log(snapshot, "///////////////////////////////snapshots");
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        storage
+          .ref("articles")
+          .child(e.target.files[0].name)
+          .getDownloadURL()
+          .then((url) => setUpdateData({ ...updateData, image: url }));
       }
     );
   };
 
   useEffect(() => {
     const db = firebase.firestore();
-    return db.collection("test").onSnapshot((snapshot) => {
-      const getData = [];
-      snapshot.forEach((doc) => getData.push({ ...doc.data(), id: doc.id }));
-      console.log(getData, "//////////////////////");
-      setData(getData);
-    });
+    return db
+      .collection("test")
+      .orderBy("createdAt")
+      .onSnapshot((snapshot) => {
+        const getData = [];
+        snapshot.forEach((doc) => getData.push({ ...doc.data(), id: doc.id }));
+        console.log(getData, "//////////////////////");
+        setData(getData);
+      });
   }, []);
 
   const update = (id) => {
@@ -212,13 +184,11 @@ export default function Article() {
   const articleUpdate = () => {
     ///add update
     const db = firebase.firestore();
-    db.collection("test")
-      .doc(currentID)
-      .set({
-        name: updateData.name,
-        image: updateData.image,
-        description: updateData.description,
-      });
+    db.collection("test").doc(currentID).update({
+      name: updateData.name,
+      image: updateData.image,
+      description: updateData.description,
+    });
 
     ///update alert close
     setUpdateAlert(false);
@@ -235,19 +205,25 @@ export default function Article() {
     setUpdateData({ ...updateData, [e.target.name]: e.target.value });
   };
 
-  const articleHandleClickOpen = () => {
+  const addArticleClickOpen = () => {
     setOpen(true);
   };
 
-  const articleHandleClose = () => {
-    setOpen(false);
+  const onChangeArticle = (e) => {
+    console.log(e.target.value);
+    setArticle({ ...article, [e.target.name]: e.target.value });
+  };
+
+  const addArticle = () => {
     ///add article
-    dispatch({
-      type: "ADD",
-      name: articleTitle,
-      image: url,
-      description: articleDescription,
+    firebase.firestore().collection("test").add({
+      name: article.name,
+      image: article.image,
+      description: article.description,
+      createdAt: Date(),
     });
+    setOpen(false);
+    console.log(Date());
   };
 
   const alertOpen = (image) => {
@@ -258,18 +234,6 @@ export default function Article() {
 
   const alertClose = () => {
     setAlert(false);
-    console.log("before delete calla");
-    dispatch(deleteArticle(articleId));
-  };
-
-  const articleEditAlertOpen = (image) => {
-    setOpen(true);
-    getArticleData(image);
-    console.log(
-      image,
-      "///////////////////get edit image id //////////////////"
-    );
-    dispatch(editArticle(articleId));
   };
 
   return (
@@ -278,7 +242,7 @@ export default function Article() {
         <Button
           variant="outlined"
           style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }}
-          onClick={articleHandleClickOpen}
+          onClick={addArticleClickOpen}
         >
           + Add Article
         </Button>
@@ -346,38 +310,36 @@ export default function Article() {
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
+                      name="name"
                       id="outlined-basic"
                       label="Title"
                       variant="outlined"
                       style={{ width: "100%" }}
-                      value={articleEditState.name}
-                      onChange={(e) => setArticleTitle(e.target.value)}
+                      value={article.name}
+                      onChange={onChangeArticle}
                     />
                   </Paper>
                 </Grid>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
-                    <TextField
-                      id="outlined-basic"
-                      label="Image"
-                      variant="outlined"
-                      style={{ width: "85%", margin: "1%" }}
-                    />
+                    <Avatar alt="Remy Sharp" src={article.image} />
                     <input
                       type="file"
                       id="imageInput"
-                      onChange={handleUploadClick}
+                      onChange={addUploadClick}
                     />
                   </Paper>
                 </Grid>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
+                      name="description"
                       id="outlined-basic"
                       label="Description"
                       variant="outlined"
                       style={{ width: "100%" }}
-                      onChange={(e) => setArticleDescription(e.target.value)}
+                      value={article.description}
+                      onChange={onChangeArticle}
                     />
                   </Paper>
                 </Grid>
@@ -387,7 +349,7 @@ export default function Article() {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={articleHandleClose}
+            onClick={addArticle}
             variant="contained"
             style={{
               background: "#1F6DE2",
@@ -433,7 +395,7 @@ export default function Article() {
                       name="image"
                       type="file"
                       id="imageInput"
-                      onChange={handleUploadClick}
+                      onChange={updateUploadClick}
                     />
                   </Paper>
                 </Grid>
@@ -477,11 +439,16 @@ export default function Article() {
 
         {data.map((item) => (
           <Grid item>
-            <Card gutterBottom className={classes.card}>
+            <Card className={classes.card}>
               <CardActionArea>
                 <CardMedia className={classes.media} image={item.image} />
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="h2">
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="h2"
+                    className={classes.cardTitle}
+                  >
                     {item.name}
                   </Typography>
                   <Typography
@@ -513,6 +480,15 @@ export default function Article() {
             </Card>
           </Grid>
         ))}
+
+        {/* <Snackbar
+        // anchorOrigin={{ vertical, horizontal }}
+        open= {updateData.image === ""  &&  true}
+        onClose = {updateData.image != "" &&  false}
+        // onClose={handleClose}
+        message="Image uploaded"
+        // key={vertical + horizontal}
+      /> */}
       </Grid>
     </>
   );
