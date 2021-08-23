@@ -1,12 +1,16 @@
-import { ARTICLE_LIST_REQUEST,
+import { 
+    ARTICLE_LIST_REQUEST,
     ARTICLE_LIST_SUCCESS,
     ARTICLE_LIST_FAIL,
     ARTICLE_CREATE_REQUEST,
     ARTICLE_CREATE_SUCCESS,
-     ARTICLE_CREATE_FAIL,
-     ARTICLE_CREATE_RESET,
-     ARTICLE_DELETE_REQUEST,
-     ARTICLE_DELETE_SUCCESS,ARTICLE_DELETE_FAIL
+    ARTICLE_CREATE_FAIL,
+    ARTICLE_DELETE_REQUEST,
+    ARTICLE_DELETE_SUCCESS,
+    ARTICLE_DELETE_FAIL,
+    ARTICLE_EDIT_REQUEST,
+    ARTICLE_EDIT_SUCCESS,
+    ARTICLE_EDIT_FAIL
    } from '../Constants/ArticleConstant';
 
 import firebase from '../firebaseConfig/fbConfig';
@@ -84,6 +88,32 @@ firestore
     } catch (error) {
         dispatch({
             type: ARTICLE_DELETE_FAIL,
+            payload:error.message,
+        })
+    }
+  }
+
+  export const editArticle = (id) => async (dispatch) => {
+    try {
+        dispatch({
+            type: ARTICLE_EDIT_REQUEST
+        })
+        const firestore = firebase.firestore();
+
+        console.log(id,"id foundeddd")
+
+        var get =  firestore.collection('articles').doc(id).get();
+
+        console.log("get firebase/////////////////////////////////// ", get)
+        console.log(id,"id foundeddd")
+
+         dispatch({
+            type: ARTICLE_EDIT_SUCCESS,
+        })    
+   
+    } catch (error) {
+        dispatch({
+            type: ARTICLE_EDIT_FAIL,
             payload:error.message,
         })
     }

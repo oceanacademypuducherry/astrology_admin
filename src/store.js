@@ -9,9 +9,11 @@ import {  articleListReducer,articleCreateReducer,articleDeleteReducer} from './
 const reducer = combineReducers({
     articleList : articleListReducer,
     createArticle : articleCreateReducer,
-    articleDelete : articleDeleteReducer,
+    // articleDelete : articleDeleteReducer,
 });
- const initialState = {}
+ const initialState = {
+    article : articleListReducer,
+ }
 
 const middleware = [thunk]
 
