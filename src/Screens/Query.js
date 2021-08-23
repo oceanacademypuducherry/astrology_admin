@@ -66,11 +66,7 @@ export default function Query() {
           justifyContent: "flex-end",
         }}
       >
-        <Button
-          variant="outlined"
-          style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }}
-          onClick={handleClickOpen}
-        >
+        <Button variant="outlined" style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }} onClick={handleClickOpen}>
           + Add Query
         </Button>
         <Dialog

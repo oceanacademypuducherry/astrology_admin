@@ -1,4 +1,5 @@
-import { ARTICLE_LIST_REQUEST,
+import { 
+    ARTICLE_LIST_REQUEST,
     ARTICLE_LIST_SUCCESS,
     ARTICLE_LIST_FAIL,
     ARTICLE_CREATE_REQUEST,
@@ -59,3 +60,4 @@ import { ARTICLE_LIST_REQUEST,
                 return state
         }
     }
+
