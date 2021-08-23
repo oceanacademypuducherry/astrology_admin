@@ -3,20 +3,36 @@ import firebase from "../../firebaseConfig/fbConfig";
 import MediaCard from "./Video";
 import "./video.css";
 
+import Fab from "@material-ui/core/Fab";
+import SlowMotionVideoIcon from "@material-ui/icons/SlowMotionVideo";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
+  togleBtn: {
+    margin: 8,
+  },
+
+  fabStyle: {
+    position: "fixed",
+    right: "1.5%",
+    bottom: "2%",
+    background: "#1F6DE2",
+    color: "white",
+    "&:hover": {
+      background: "#054cb5",
     },
+  },
+
+  extendedButton: {
+    marginRight: theme.spacing(1),
   },
 }));
 
 export default function AddVideos() {
   const classes = useStyles();
-  let dbVideo = [];
+
   const [allVideos, setAllVideos] = useState([]);
   const [videoType, setVideoType] = useState(true);
   const firestore = firebase.firestore();
@@ -65,8 +81,9 @@ export default function AddVideos() {
   return (
     <div className="add-video">
       <div className="toggle">
-        <div className={classes.root}>
+        <div>
           <Button
+            className={classes.togleBtn}
             variant="outlined"
             color="primary"
             onClick={() => {
@@ -77,6 +94,7 @@ export default function AddVideos() {
           </Button>
 
           <Button
+            className={classes.togleBtn}
             variant="outlined"
             color="primary"
             onClick={() => {
@@ -97,6 +115,9 @@ export default function AddVideos() {
           />
         ))}
       </div>
+      <Fab variant="extended" aria-label="add" className={classes.fabStyle}>
+        <SlowMotionVideoIcon className={classes.extendedButton} /> Add Video
+      </Fab>
     </div>
   );
 }
