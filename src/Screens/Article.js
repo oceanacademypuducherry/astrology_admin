@@ -134,7 +134,7 @@ export default function Article() {
           .ref("articles")
           .child(e.target.files[0].name)
           .getDownloadURL()
-          .then((url) => setUpdateData(...updateData, {image: url}));
+          .then((url) => setUpdateData({...updateData, image: url}));
       }
     );
   };
