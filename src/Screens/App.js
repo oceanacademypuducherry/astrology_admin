@@ -8,6 +8,8 @@ import Book from "../Screens/Book";
 import AddVideos from "../Screens/video/AddVideos";
 import Appbar from "../component/AppBar";
 import HiddenDrawer from "../component/Drawer";
+import SimpleModal from "./video/VideoPost";
+import TransitionsModal from "./video/VideoPost";
 
 const drawerWidth = 240;
 
@@ -56,6 +58,11 @@ function App() {
             <Route exact path="/video">
               <Container>
                 <AddVideos />
+              </Container>
+            </Route>
+            <Route exact path="/postVideo">
+              <Container>
+                <TransitionsModal />
               </Container>
             </Route>
             <Route exact path="/query">
