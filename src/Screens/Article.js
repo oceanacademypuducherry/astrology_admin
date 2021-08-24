@@ -19,7 +19,7 @@ import {
   Paper,
   Grid,
   Avatar,
-  Snackbar
+  Snackbar,
 } from "@material-ui/core";
 // import { CloudDownloadTwoTone, Delete, Edit } from "@material-ui/icons";
 
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#e6e6e6",
   },
 
-  cardTitle : {
+  cardTitle: {
     fontSize: "20px",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -83,11 +83,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
 export default function Article() {
   const storage = firebase.storage();
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
+  const [addAlert, setOpen] = useState(false);
   const [updateAlert, setUpdateAlert] = useState(false);
   const [alert, setAlert] = useState(false);
   const [article, setArticle] = useState({
@@ -142,19 +141,22 @@ export default function Article() {
           .ref("articles")
           .child(e.target.files[0].name)
           .getDownloadURL()
-          .then((url) => setUpdateData({...updateData, image: url}));
+          .then((url) => setUpdateData({ ...updateData, image: url }));
       }
     );
   };
 
   useEffect(() => {
     const db = firebase.firestore();
-    return db.collection("test").orderBy("createdAt").onSnapshot((snapshot) => {
-      const getData = [];
-      snapshot.forEach((doc) => getData.push({ ...doc.data(), id: doc.id }));
-      console.log(getData, "//////////////////////");
-      setData(getData);
-    });
+    return db
+      .collection("test")
+      .orderBy("createdAt")
+      .onSnapshot((snapshot) => {
+        const getData = [];
+        snapshot.forEach((doc) => getData.push({ ...doc.data(), id: doc.id }));
+        console.log(getData, "//////////////////////");
+        setData(getData);
+      });
   }, []);
 
   const update = (id) => {
@@ -182,13 +184,11 @@ export default function Article() {
   const articleUpdate = () => {
     ///add update
     const db = firebase.firestore();
-    db.collection("test")
-      .doc(currentID)
-      .update({
-        name: updateData.name,
-        image: updateData.image,
-        description: updateData.description,
-      });
+    db.collection("test").doc(currentID).update({
+      name: updateData.name,
+      image: updateData.image,
+      description: updateData.description,
+    });
 
     ///update alert close
     setUpdateAlert(false);
@@ -220,22 +220,20 @@ export default function Article() {
       name: article.name,
       image: article.image,
       description: article.description,
-      createdAt : Date(),
+      createdAt: Date(),
     });
     setOpen(false);
     console.log(Date());
   };
 
-  const alertOpen = (image) => {
-    setAlert(true);
-    getArticleData(image);
-    console.log(image);
-  };
 
   const alertClose = () => {
-    setAlert(false);
+    setUpdateAlert(false);
   };
 
+  const addHandleClose = () => {
+    setOpen(false);
+  };
 
   return (
     <>
@@ -298,10 +296,10 @@ export default function Article() {
 
       {/* add article */}
       <Dialog
-        open={open}
+        open={addAlert}
+        onClose={addHandleClose}
         TransitionComponent={Transition}
         keepMounted
-        onClose={open}
       >
         <DialogTitle>Article</DialogTitle>
         <DialogContent>
@@ -311,7 +309,7 @@ export default function Article() {
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
-                      name = "name"
+                      name="name"
                       id="outlined-basic"
                       label="Title"
                       variant="outlined"
@@ -323,7 +321,7 @@ export default function Article() {
                 </Grid>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
-                  <Avatar alt="Remy Sharp" src={article.image} />
+                    <Avatar alt="Remy Sharp" src={article.image} />
                     <input
                       type="file"
                       id="imageInput"
@@ -334,7 +332,7 @@ export default function Article() {
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
-                      name = "description"
+                      name="description"
                       id="outlined-basic"
                       label="Description"
                       variant="outlined"
@@ -367,9 +365,10 @@ export default function Article() {
       {/* Update article */}
       <Dialog
         open={updateAlert}
+        onClose={alertClose}
         TransitionComponent={Transition}
         keepMounted
-        onClose={updateAlert}
+        
       >
         <DialogTitle>Article</DialogTitle>
         <DialogContent>
@@ -440,11 +439,16 @@ export default function Article() {
 
         {data.map((item) => (
           <Grid item>
-            <Card  className={classes.card}>
+            <Card className={classes.card}>
               <CardActionArea>
                 <CardMedia className={classes.media} image={item.image} />
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="h2" className={classes.cardTitle} >
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="h2"
+                    className={classes.cardTitle}
+                  >
                     {item.name}
                   </Typography>
                   <Typography
@@ -468,14 +472,15 @@ export default function Article() {
                 <Button
                   size="small"
                   color="primary"
-                  onClick={update.bind(this, item.id)}>
+                  onClick={update.bind(this, item.id)}
+                >
                   EDIT
                 </Button>
               </CardActions>
             </Card>
           </Grid>
         ))}
-        
+
         {/* <Snackbar
         // anchorOrigin={{ vertical, horizontal }}
         open= {updateData.image === ""  &&  true}
