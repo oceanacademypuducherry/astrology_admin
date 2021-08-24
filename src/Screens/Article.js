@@ -89,7 +89,6 @@ export default function Article() {
   const [addAlert, setAddAlertOpen] = useState(false);
   const [updateAlert, setUpdateAlert] = useState(false);
   const [deleteAlert, setDeleteAlert] = useState(false);
-  const [agreeDeleteAlert, setAgreeDeleteAlert] = useState(false);
   const [article, setArticle] = useState({
     name: "",
     description: "",
