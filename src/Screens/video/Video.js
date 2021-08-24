@@ -1,0 +1,101 @@
+import React, { useEffect, useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import firebase from "../../firebaseConfig/fbConfig";
+
+const useStyles = makeStyles({
+  root: {
+    maxWidth: 345,
+    margin: 10,
+  },
+  media: {
+    height: 190,
+  },
+  conten: {
+    height: 170,
+  },
+});
+
+export default function MediaCard({ imageUrl, title, description }) {
+  const [allVideos, setAllVideos] = useState([]);
+  const firestore = firebase.firestore();
+  const storage = firebase.storage();
+  //   function getVideoData() {
+  //     let dbVideos = [];
+  // firestore
+  //   .collection("PaidVedios")
+  //   .get()
+  //   .then((response) => {
+  //     response.docs.forEach((videoData) => {
+  //       let dbField = videoData.data();
+  //       dbField["docId"] = videoData.id;
+  //       dbVideos.push(dbField);
+  //     });
+  //     setAllVideos([...allVideos, dbVideos]);
+  //   })
+  //   .catch((e) => {
+  //     alert(e.message);
+  //   });
+  //     firestore
+  //       .collection("youtubeVedios")
+  //       .get()
+  //       .then((response) => {
+  //           let dbVideo = []
+  //         response.docs.forEach((videoData) => {
+  //           let dbField = videoData.data();
+  //           dbField["docId"] = videoData.id;
+  //           dbVideos.push(dbField);
+  //         });
+  //         setAllVideos([...allVideos, dbVideos]);
+  //       })
+  //       .catch((e) => {
+  //         alert(e.message);
+  //       });
+  //   }
+
+  //   useEffect(() => {
+  //     getVideoData();
+  //   }, []);
+  const classes = useStyles();
+  return (
+    <Card className={classes.root}>
+      <CardActionArea>
+        <CardMedia
+          className={classes.media}
+          image={imageUrl}
+          title="Contemplative Reptile"
+        />
+        <CardContent className={classes.conten}>
+          <Typography gutterBottom variant="h5" component="h2">
+            {title.length < 55 ? title : `${title.slice(0, 55)}...`}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            {description.length < 150
+              ? description
+              : `${description.slice(0, 170)}...`}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
+      <CardActions>
+        <Button
+          size="small"
+          color="primary"
+          onClick={() => {
+            console.log(allVideos);
+          }}
+        >
+          Edit
+        </Button>
+        <Button size="small" color="primary">
+          Delete
+        </Button>
+      </CardActions>
+    </Card>
+  );
+}

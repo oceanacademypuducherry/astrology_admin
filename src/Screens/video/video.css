@@ -1,0 +1,11 @@
+.toggle {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.all-video {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}

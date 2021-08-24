@@ -5,7 +5,7 @@ import { Container, CssBaseline } from "@material-ui/core";
 import Article from "../Screens/Article";
 import Query from "../Screens/Query";
 import Book from "../Screens/Book";
-import Video from "../Screens/Vedio";
+import AddVideos from "../Screens/video/AddVideos";
 import Appbar from "../component/AppBar";
 import HiddenDrawer from "../component/Drawer";
 
@@ -55,7 +55,7 @@ function App() {
             </Route>
             <Route exact path="/video">
               <Container>
-                <Video />
+                <AddVideos />
               </Container>
             </Route>
             <Route exact path="/query">

@@ -231,6 +231,18 @@ export default function Article() {
     console.log(Date());
   };
 
+<<<<<<< HEAD
+=======
+  const alertOpen = (image) => {
+    setAlert(true);
+    getArticleData(image);
+    console.log(image);
+  };
+
+  const alertClose = () => {
+    setAlert(false);
+  };
+>>>>>>> f5a6bc151276cc32beb13e9e13a5fcaf0f9de00f
 
   return (
     <>
