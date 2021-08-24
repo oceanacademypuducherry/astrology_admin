@@ -32,6 +32,12 @@ const useStyles = makeStyles((theme) => ({
     height: 240,
     maxWidth: 300,
   },
+  cardTitle: {
+    fontSize: "20px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    height: "30px",
+  },
 
   cardPdf: {
     overflow: "hidden",
@@ -46,8 +52,10 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: "center",
     color: theme.palette.text.secondary,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   inputRoot: {
     // backgroundColor: "grey",
@@ -86,9 +94,6 @@ export default function Query() {
     pdf: "",
     image: "",
   });
-  const [queryId, setQueryId] = useState("");
-  const [fileUpload, setFileUpload] = useState("");
-  const [url, setUrl] = useState("");
   const [data, setData] = useState([]);
   const [updateData, setUpdateData] = useState({
     question: "",
@@ -97,7 +102,7 @@ export default function Query() {
   });
   const [currentID, setCurrentID] = useState();
 
-  const handleUploadClick = (e) => {
+  const addUploadClick = (e) => {
     var upload = storage
       .ref(`querys/${e.target.files[0].name}`)
       .put(e.target.files[0]);
@@ -118,7 +123,7 @@ export default function Query() {
       }
     );
   };
-  const handlePdfClick = (e) => {
+  const addPdfClick = (e) => {
     var upload = storage
       .ref(`querys/${e.target.files[0].name}`)
       .put(e.target.files[0]);
@@ -139,15 +144,61 @@ export default function Query() {
       }
     );
   };
+  const updateUploadClick = (e) => {
+    var upload = storage
+      .ref(`querys/${e.target.files[0].name}`)
+      .put(e.target.files[0]);
+    upload.on(
+      "state_changed",
+      (snapshot) => {
+        console.log(snapshot, "///////////////////////////////snapshots");
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        storage
+          .ref("querys")
+          .child(e.target.files[0].name)
+          .getDownloadURL()
+          .then((url) => setUpdateData({ ...updateData, image: url }));
+      }
+    );
+  };
+
+  const updatepdfClick = (e) => {
+    var upload = storage
+      .ref(`querys/${e.target.files[0].name}`)
+      .put(e.target.files[0]);
+    upload.on(
+      "state_changed",
+      (snapshot) => {
+        console.log(snapshot, "///////////////////////////////snapshots");
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        storage
+          .ref("querys")
+          .child(e.target.files[0].name)
+          .getDownloadURL()
+          .then((url) => setUpdateData({ ...updateData, pdf: url }));
+      }
+    );
+  };
 
   useEffect(() => {
     const db = firebase.firestore();
-    return db.collection("test2").onSnapshot((snapshot) => {
-      const getData = [];
-      snapshot.forEach((doc) => getData.push({ ...doc.data(), id: doc.id }));
-      console.log(getData, "//////////////////////");
-      setData(getData);
-    });
+    return db
+      .collection("test2")
+      .orderBy("createdAt")
+      .onSnapshot((snapshot) => {
+        const getData = [];
+        snapshot.forEach((doc) => getData.push({ ...doc.data(), id: doc.id }));
+        console.log(getData, "//////////////////////");
+        setData(getData);
+      });
   }, []);
 
   const update = (id) => {
@@ -175,7 +226,7 @@ export default function Query() {
   const queryUpdate = () => {
     ///add update
     const db = firebase.firestore();
-    db.collection("test2").doc(currentID).set({
+    db.collection("test2").doc(currentID).update({
       question: updateData.question,
       image: updateData.image,
       pdf: updateData.pdf,
@@ -196,8 +247,11 @@ export default function Query() {
     setUpdateData({ ...updateData, [e.target.name]: e.target.value });
   };
 
-  const queryHandleClickOpen = () => {
+  const addQueryClickOpen = () => {
     setOpen(true);
+  };
+  const addQueryClickClose = () => {
+    setOpen(false);
   };
 
   const onChangeQuery = (e) => {
@@ -205,14 +259,16 @@ export default function Query() {
     setQuery({ ...query, [e.target.name]: e.target.value });
   };
 
-  const queryHandleClose = () => {
+  const addQuery = () => {
     ///add article
     firebase.firestore().collection("test2").add({
       question: query.question,
       image: query.image,
       pdf: query.pdf,
+      createdAt: Date(),
     });
     setOpen(false);
+    console.log(Date());
   };
 
   const alertOpen = (image) => {
@@ -223,18 +279,6 @@ export default function Query() {
 
   const alertClose = () => {
     setAlert(false);
-    console.log("before delete calla");
-    dispatch(deleteQuery(queryId));
-  };
-
-  const queryEditAlertOpen = (image) => {
-    setOpen(true);
-    getQueryData(image);
-    console.log(
-      image,
-      "///////////////////get edit image id //////////////////"
-    );
-    dispatch(editQuery(queryId));
   };
 
   return (
@@ -243,7 +287,7 @@ export default function Query() {
         <Button
           variant="outlined"
           style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }}
-          onClick={queryHandleClickOpen}
+          onClick={addQueryClickOpen}
         >
           + Add Query
         </Button>
@@ -254,7 +298,7 @@ export default function Query() {
         open={alert}
         TransitionComponent={Transition}
         keepMounted
-        onClose={alertClose}
+        onClose={addQueryClickClose}
       >
         <DialogTitle>{"Are you sure want to delete"}</DialogTitle>
         <DialogContent>
@@ -301,7 +345,7 @@ export default function Query() {
         open={open}
         TransitionComponent={Transition}
         keepMounted
-        onClose={open}
+        onClose={addQueryClickClose}
       >
         <DialogTitle>Query</DialogTitle>
         <DialogContent>
@@ -323,27 +367,45 @@ export default function Query() {
                 </Grid>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
-                    <Avatar alt="Remy Sharp" src={query.image} />
-                    <input
+                    <TextField
+                      className={classes.file}
+                      name="question"
                       type="file"
-                      id="imageInput"
-                      onChange={handleUploadClick}
+                      variant="outlined"
+                      style={{ width: "85%" }}
+                      onChange={addUploadClick}
                     />
+                    <Avatar
+                      alt="Remy Sharp"
+                      src={query.image}
+                      style={{
+                        width: "10%",
+                        height: "10%",
+                      }}
+                    />
+
+                    {/* <input type="file" onChange={addUploadClick} /> */}
                   </Paper>
                 </Grid>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
-                    <input type="file" onChange={handlePdfClick} />
+                    <TextField
+                      name="question"
+                      type="file"
+                      variant="outlined"
+                      style={{ width: "100%" }}
+                      onChange={addPdfClick}
+                    />
+                    {/* <input type="file" onChange={addPdfClick} /> */}
                   </Paper>
                 </Grid>
-                z
               </Grid>
             </div>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={queryHandleClose}
+            onClick={addQuery}
             variant="contained"
             style={{
               background: "#1F6DE2",
@@ -389,16 +451,19 @@ export default function Query() {
                       name="image"
                       type="file"
                       id="imageInput"
-                      onChange={handleUploadClick}
+                      onChange={updateUploadClick}
                     />
                   </Paper>
                 </Grid>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
-                    <input name="image" type="file" onChange={handlePdfClick} />
+                    <input
+                      name="Answer Pdf"
+                      type="file"
+                      onChange={updatepdfClick}
+                    />
                   </Paper>
                 </Grid>
-                z
               </Grid>
             </div>
           </DialogContentText>
@@ -422,24 +487,20 @@ export default function Query() {
       {/* article Design start */}
       <Grid container direction="row" justifyContent="flex-start" spacing={10}>
         {/* {JSON.stringify(updateData)} */}
-
         {data.map((item) => (
           <Grid item>
             <Card gutterBottom className={classes.card}>
               <CardActionArea>
                 <CardMedia className={classes.media} image={item.image} />
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="h2">
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="h2"
+                    className={classes.cardTitle}
+                  >
                     {item.question}
                   </Typography>
-                  {/* <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p"
-                    className={classes.cardPdf}
-                  >
-                    {item.pdf}
-                  </Typography> */}
                 </CardContent>
               </CardActionArea>
               <CardActions>
@@ -461,14 +522,13 @@ export default function Query() {
             </Card>
           </Grid>
         ))}
-
-        <Snackbar
+        {/* <Snackbar
           // anchorOrigin={{ vertical, horizontal }}
           open={false}
           // onClose={handleClose}
           message="Image uploaded"
-          // key={vertical + horizontal}
-        />
+          // key={vertical + horizontal} */}
+        {/* /> */}
       </Grid>
     </>
   );
