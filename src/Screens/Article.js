@@ -86,9 +86,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function Article() {
   const storage = firebase.storage();
   const classes = useStyles();
-  const [addAlert, setOpen] = useState(false);
+  const [addAlert, setAddAlertOpen] = useState(false);
   const [updateAlert, setUpdateAlert] = useState(false);
-  const [alert, setAlert] = useState(false);
+  const [deleteAlert, setDeleteAlert] = useState(false);
+  const [agreeDeleteAlert, setAgreeDeleteAlert] = useState(false);
   const [article, setArticle] = useState({
     name: "",
     description: "",
@@ -103,6 +104,7 @@ export default function Article() {
   const [currentID, setCurrentID] = useState();
 
   const addUploadClick = (e) => {
+    console.log(e.target.files[0].name);
     var upload = storage
       .ref(`articles/${e.target.files[0].name}`)
       .put(e.target.files[0]);
@@ -195,9 +197,16 @@ export default function Article() {
   };
 
   const articleDelete = (id) => {
-    const db = firebase.firestore();
-    db.collection("test").doc(id).delete();
+    setCurrentID(id);
+    setDeleteAlert(true)
   };
+
+  const articleDeleteAlert = () => {
+    const db = firebase.firestore();
+    db.collection("test").doc(currentID).delete();
+    setCurrentID();
+    setDeleteAlert(false);
+  }
 
   const alertUpdate = (e) => {
     console.log(e.target.name, "//////////////////////// event name");
@@ -205,9 +214,6 @@ export default function Article() {
     setUpdateData({ ...updateData, [e.target.name]: e.target.value });
   };
 
-  const addArticleClickOpen = () => {
-    setOpen(true);
-  };
 
   const onChangeArticle = (e) => {
     console.log(e.target.value);
@@ -222,18 +228,10 @@ export default function Article() {
       description: article.description,
       createdAt: Date(),
     });
-    setOpen(false);
+    setAddAlertOpen(false)
     console.log(Date());
   };
 
-
-  const alertClose = () => {
-    setUpdateAlert(false);
-  };
-
-  const addHandleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <>
@@ -241,7 +239,7 @@ export default function Article() {
         <Button
           variant="outlined"
           style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }}
-          onClick={addArticleClickOpen}
+          onClick={() => setAddAlertOpen(true)}
         >
           + Add Article
         </Button>
@@ -249,10 +247,11 @@ export default function Article() {
 
       {/* alert delete */}
       <Dialog
-        open={alert}
+        open={deleteAlert}
+        onClose={() => setDeleteAlert(false)}
         TransitionComponent={Transition}
         keepMounted
-        onClose={alertClose}
+        
       >
         <DialogTitle>{"Are you sure want to delete"}</DialogTitle>
         <DialogContent>
@@ -261,7 +260,7 @@ export default function Article() {
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <Button
-                    onClick={alertClose}
+                    onClick={() => setDeleteAlert(false)}
                     variant="contained"
                     style={{
                       background: "#1F6DE2",
@@ -274,7 +273,7 @@ export default function Article() {
                   </Button>
 
                   <Button
-                    onClick={alertClose}
+                    onClick={articleDeleteAlert}
                     variant="contained"
                     style={{
                       background: "#1F6DE2",
@@ -297,7 +296,7 @@ export default function Article() {
       {/* add article */}
       <Dialog
         open={addAlert}
-        onClose={addHandleClose}
+        onClose={() => setAddAlertOpen(false)}
         TransitionComponent={Transition}
         keepMounted
       >
@@ -365,7 +364,7 @@ export default function Article() {
       {/* Update article */}
       <Dialog
         open={updateAlert}
-        onClose={alertClose}
+        onClose={() =>  setUpdateAlert(false)}
         TransitionComponent={Transition}
         keepMounted
         
