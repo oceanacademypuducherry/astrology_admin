@@ -8,6 +8,7 @@ import Book from "../Screens/Book";
 import AddVideos from "../Screens/video/AddVideos";
 import Appbar from "../component/AppBar";
 import HiddenDrawer from "../component/Drawer";
+import ArticleDetails from "./ArticleDetails";
 
 const drawerWidth = 240;
 
@@ -44,6 +45,12 @@ function App() {
             <Container className={classes.content}>
               <div className={classes.toolbar} />
               <Article />
+            </Container>
+          </Route>
+          <Route exact path="/article/:id">
+            <Container className={classes.content}>
+              <div className={classes.toolbar} />
+              <ArticleDetails />
             </Container>
           </Route>
           <div className={classes.content}>

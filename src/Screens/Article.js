@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import firebase from "../firebaseConfig/fbConfig";
+import { Link } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -20,7 +21,9 @@ import {
   Grid,
   Avatar,
   Snackbar,
+ 
 } from "@material-ui/core";
+import ArticleDetails from "./ArticleDetails";
 // import { CloudDownloadTwoTone, Delete, Edit } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -36,10 +39,12 @@ const useStyles = makeStyles((theme) => ({
   },
 
   cardTitle: {
-    fontSize: "20px",
+    fontSize: "18px",
     overflow: "hidden",
     textOverflow: "ellipsis",
     height: "30px",
+    color: "grey",
+    fontWeight: "500",
   },
 
   cardDescription: {
@@ -197,7 +202,7 @@ export default function Article() {
 
   const articleDelete = (id) => {
     setCurrentID(id);
-    setDeleteAlert(true)
+    setDeleteAlert(true);
   };
 
   const articleDeleteAlert = () => {
@@ -231,18 +236,6 @@ export default function Article() {
     console.log(Date());
   };
 
-<<<<<<< HEAD
-=======
-  const alertOpen = (image) => {
-    setAlert(true);
-    getArticleData(image);
-    console.log(image);
-  };
-
-  const alertClose = () => {
-    setAlert(false);
-  };
->>>>>>> f5a6bc151276cc32beb13e9e13a5fcaf0f9de00f
 
   return (
     <>
@@ -272,12 +265,13 @@ export default function Article() {
                 <Grid item xs={12}>
                   <Button
                     onClick={() => setDeleteAlert(false)}
-                    variant="contained"
+                    variant="outlined"
                     style={{
                       background: "#1F6DE2",
                       width: "13%",
                       height: "55px",
                       color: "white",
+                      marginLeft: "25px",
                     }}
                   >
                     NO
@@ -287,8 +281,8 @@ export default function Article() {
                     onClick={articleDeleteAlert}
                     variant="contained"
                     style={{
-                      background: "#1F6DE2",
-                      marginLeft: "47%",
+                      backgroundColor: "rgba(255, 0, 0, 0.8)",
+                      marginLeft: "60px",
                       width: "13%",
                       height: "55px",
                       color: "white",
@@ -450,6 +444,7 @@ export default function Article() {
         {data.map((item) => (
           <Grid item>
             <Card className={classes.card}>
+             <Link to={`article/${item.id}`} style= {{textDecoration: "none", color: '#6996FF'}}>
               <CardActionArea>
                 <CardMedia className={classes.media} image={item.image} />
                 <CardContent>
@@ -471,6 +466,7 @@ export default function Article() {
                   </Typography>
                 </CardContent>
               </CardActionArea>
+              </Link>
               <CardActions>
                 <Button
                   size="small"
