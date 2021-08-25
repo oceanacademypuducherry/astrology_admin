@@ -2,12 +2,12 @@ import React, { useEffect, useState, useLayoutEffect } from "react";
 import firebase from "../../firebaseConfig/fbConfig";
 import MediaCard from "./Video";
 import "./video.css";
-
 import Fab from "@material-ui/core/Fab";
 import SlowMotionVideoIcon from "@material-ui/icons/SlowMotionVideo";
-
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
+import { useHistory } from "react-router";
+import TransitionsModal from "./VideoPost";
 
 const useStyles = makeStyles((theme) => ({
   togleBtn: {
@@ -32,11 +32,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AddVideos() {
   const classes = useStyles();
-
   const [allVideos, setAllVideos] = useState([]);
   const [videoType, setVideoType] = useState(true);
+
+  // firebase functions
   const firestore = firebase.firestore();
   const storage = firebase.storage();
+
+  // get paid video
   function getVideoData() {
     let videoResponse = [];
     firestore
@@ -51,10 +54,10 @@ export default function AddVideos() {
         setAllVideos(videoResponse);
       })
       .catch((e) => {
-        console.log("444444444444444444");
         console.log(e.message);
       });
   }
+  // get free video
   function getYoutubeVideoData() {
     let videoResponse = [];
     firestore
@@ -70,14 +73,21 @@ export default function AddVideos() {
         setAllVideos(videoResponse);
       })
       .catch((e) => {
-        console.log("444444444444444444");
         console.log(e.message);
       });
   }
 
+  // use effect
   useEffect(() => {
     !videoType ? getVideoData() : getYoutubeVideoData();
   }, [videoType]);
+
+  // navigation
+  let history = useHistory();
+  function handleClick() {
+    history.push("/postVideo");
+  }
+
   return (
     <div className="add-video">
       <div className="toggle">
@@ -115,9 +125,7 @@ export default function AddVideos() {
           />
         ))}
       </div>
-      <Fab variant="extended" aria-label="add" className={classes.fabStyle}>
-        <SlowMotionVideoIcon className={classes.extendedButton} /> Add Video
-      </Fab>
+      <TransitionsModal isOpen={open} />
     </div>
   );
 }

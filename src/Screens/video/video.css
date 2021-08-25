@@ -9,3 +9,9 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+
+.upload-file {
+  display: flex;
+
+  align-items: center;
+}
