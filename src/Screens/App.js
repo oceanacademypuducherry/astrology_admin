@@ -62,7 +62,7 @@ function App() {
                 <Book />
               </Container>
             </Route>
-            <Route exact path="/video">
+            <Route exact path="/video/:id">
               <Container>
                 <AddVideos />
               </Container>

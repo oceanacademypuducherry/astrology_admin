@@ -9,6 +9,9 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+.to-link {
+  text-decoration: none;
+}
 
 .upload-file {
   display: flex;

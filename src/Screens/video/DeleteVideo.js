@@ -19,12 +19,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function DeleteVideo() {
+export default function DeleteVideo({ videoInfo }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = () => {
     setOpen(true);
+    console.log(videoInfo);
   };
 
   const handleClose = () => {
