@@ -8,12 +8,9 @@ import Book from "../Screens/Book";
 import AddVideos from "../Screens/video/AddVideos";
 import Appbar from "../component/AppBar";
 import HiddenDrawer from "../component/Drawer";
-<<<<<<< HEAD
-import ArticleDetails from "./ArticleDetails";
-=======
 import SimpleModal from "./video/VideoPost";
 import TransitionsModal from "./video/VideoPost";
->>>>>>> bc42ce86198ed4f4417909ffaced287494a95489
+import ArticleDetails from "./ArticleDetails";
 
 const drawerWidth = 240;
 
