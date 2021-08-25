@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useLayoutEffect } from "react";
+import React, { useEffect, useState } from "react";
 import firebase from "../../firebaseConfig/fbConfig";
 import MediaCard from "./Video";
 import "./video.css";
-import Fab from "@material-ui/core/Fab";
-import SlowMotionVideoIcon from "@material-ui/icons/SlowMotionVideo";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
-import { useHistory } from "react-router";
+
 import TransitionsModal from "./VideoPost";
 
 const useStyles = makeStyles((theme) => ({
@@ -82,12 +80,6 @@ export default function AddVideos() {
     !videoType ? getVideoData() : getYoutubeVideoData();
   }, [videoType]);
 
-  // navigation
-  let history = useHistory();
-  function handleClick() {
-    history.push("/postVideo");
-  }
-
   return (
     <div className="add-video">
       <div className="toggle">
@@ -122,10 +114,11 @@ export default function AddVideos() {
             title={video.title}
             description={video.description}
             imageUrl={video.videoImage}
+            docId={video.docId}
           />
         ))}
       </div>
-      <TransitionsModal isOpen={open} />
+      <TransitionsModal />
     </div>
   );
 }

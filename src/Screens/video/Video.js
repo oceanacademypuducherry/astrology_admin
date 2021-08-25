@@ -8,24 +8,37 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import firebase from "../../firebaseConfig/fbConfig";
+import EditVideo from "./EditVideo";
+import DeleteVideo from "./DeleteVideo";
 
 const useStyles = makeStyles({
   root: {
-    maxWidth: 345,
+    width: 345,
     margin: 10,
   },
   media: {
     height: 190,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   conten: {
     height: 170,
   },
 });
 
-export default function MediaCard({ imageUrl, title, description }) {
+export default function MediaCard({ imageUrl, title, description, docId }) {
   const [allVideos, setAllVideos] = useState([]);
   const firestore = firebase.firestore();
   const storage = firebase.storage();
+  const [edit, setEdit] = useState(false);
+  const [addVideo, setAddVideo] = useState({
+    title: "",
+    description: "",
+    videoImage: "",
+    videoUrl: "",
+    type: "free",
+  });
   //   function getVideoData() {
   //     let dbVideos = [];
   // firestore
@@ -69,7 +82,7 @@ export default function MediaCard({ imageUrl, title, description }) {
         <CardMedia
           className={classes.media}
           image={imageUrl}
-          title="Contemplative Reptile"
+          // title="Contemplative Reptile"
         />
         <CardContent className={classes.conten}>
           <Typography gutterBottom variant="h5" component="h2">
@@ -83,18 +96,8 @@ export default function MediaCard({ imageUrl, title, description }) {
         </CardContent>
       </CardActionArea>
       <CardActions>
-        <Button
-          size="small"
-          color="primary"
-          onClick={() => {
-            console.log(allVideos);
-          }}
-        >
-          Edit
-        </Button>
-        <Button size="small" color="primary">
-          Delete
-        </Button>
+        <EditVideo />
+        <DeleteVideo />
       </CardActions>
     </Card>
   );

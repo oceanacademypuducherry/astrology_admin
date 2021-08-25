@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { dialogStyle } from "./videoPostStyle";
 import firebase from "../../firebaseConfig/fbConfig";
 import {
@@ -19,24 +19,26 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 
 export default function TransitionsModal() {
   const storage = firebase.storage();
+  const firestore = firebase.firestore();
   const dialogCss = dialogStyle();
   const [videoUpload, setVideoUpload] = useState(true);
   const [imageUpload, setImageUpload] = useState(true);
+  const [submit, setSubmit] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const [localAssets, setLocalAssets] = useState({
-    image: null,
-    imageStatus: 0,
-
+  const [localAssetsVideo, setLocalAssetsVideo] = useState({
     video: null,
-
     videoStatus: 0,
   });
+  const [localAssetsImage, setLocalAssetsImage] = useState({
+    image: null,
+    imageStatus: 0,
+  });
   const [addVideo, setAddVideo] = useState({
-    videoTitle: "",
-    videoDescription: "",
+    title: "",
+    description: "",
     videoImage: "",
     videoUrl: "",
-    videoType: "free",
+    type: "free",
   });
   const handleOpen = () => {
     setOpen(true);
@@ -46,9 +48,9 @@ export default function TransitionsModal() {
   };
 
   //radio field
-  function videoTypeHandler(e) {
+  function typeHandler(e) {
     console.log(e.target.value);
-    setAddVideo({ ...addVideo, videoType: e.target.value });
+    setAddVideo({ ...addVideo, type: e.target.value });
   }
 
   //input field
@@ -57,78 +59,112 @@ export default function TransitionsModal() {
     setAddVideo({ ...addVideo, [name]: value });
   }
   //flie piker
-  const handleChange = (e) => {
+  const handleImageChange = (e) => {
     console.log(e.target.name);
     if (e.target.files[0]) {
-      setLocalAssets({ ...localAssets, [e.target.name]: e.target.files[0] });
-
-      if (e.target.name == "video") {
-        setVideoUpload(false);
-      } else if (e.target.name == "image") {
-        setImageUpload(false);
-      }
+      setLocalAssetsImage({
+        ...localAssetsImage,
+        image: e.target.files[0],
+      });
+      setImageUpload(false);
+    }
+  };
+  const handleVideoChange = (e) => {
+    console.log(e.target.name);
+    if (e.target.files[0]) {
+      setLocalAssetsVideo({
+        ...localAssetsVideo,
+        video: e.target.files[0],
+      });
+      setVideoUpload(false);
     }
   };
 
   function handleImageUpload() {
+    setSubmit(true);
     const uploadTask = storage
-      .ref(`allVideo/${addVideo.videoType}/${localAssets.image.name}`)
-      .put(localAssets.image);
+      .ref(`allVideo/${addVideo.type}/${localAssetsImage.image.name}`)
+      .put(localAssetsImage.image);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
         const progress = Math.round(
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         );
-        setLocalAssets({ ...localAssets, imageStatus: progress });
+        setLocalAssetsImage({ ...localAssetsImage, imageStatus: progress });
       },
       (error) => {
         console.log(error);
       },
       () => {
         storage
-          .ref(`allVideo/${addVideo.videoType}`)
-          .child(localAssets.image.name)
+          .ref(`allVideo/${addVideo.type}`)
+          .child(localAssetsImage.image.name)
           .getDownloadURL()
           .then((imageUrl) => {
             console.log(imageUrl);
             setAddVideo({ ...addVideo, videoImage: imageUrl });
+            setSubmit(false);
           });
       }
     );
-    console.log(addVideo);
-    console.log(localAssets.image.name);
-    console.log(localAssets.image);
   }
   function handleVideoUpload() {
+    setSubmit(true);
     const uploadTask = storage
-      .ref(`allVideo/${addVideo.videoType}/${localAssets.video.name}`)
-      .put(localAssets.video);
+      .ref(`allVideo/${addVideo.type}/${localAssetsVideo.video.name}`)
+      .put(localAssetsVideo.video);
     uploadTask.on(
       "state_changed",
       (snapshot) => {
         const progress = Math.round(
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100
         );
-        setLocalAssets({ ...localAssets, videoStatus: progress });
+        setLocalAssetsVideo({ ...localAssetsVideo, videoStatus: progress });
       },
       (error) => {
         console.log(error);
       },
       () => {
         storage
-          .ref(`allVideo/${addVideo.videoType}`)
-          .child(localAssets.video.name)
+          .ref(`allVideo/${addVideo.type}`)
+          .child(localAssetsVideo.video.name)
           .getDownloadURL()
           .then((imageUrl) => {
-            console.log(imageUrl);
             setAddVideo({ ...addVideo, videoUrl: imageUrl });
+            console.log(imageUrl);
+            setSubmit(false);
           });
       }
     );
-    console.log(addVideo);
-    console.log(localAssets.video.name);
-    console.log(localAssets.video);
+  }
+  // firebase add function
+
+  function addVideoDataToFirestore(addData) {
+    let setColection =
+      addVideo.type === "free" ? "youtubeVedios" : "PaidVedios";
+    firestore
+      .collection(setColection)
+      .add(addData)
+      .then((test) => console.log(test))
+      .catch((error) => console.log(error));
+  }
+
+  function onSubmitButton() {
+    var isNotValid = Object.keys(addVideo).some(function (i) {
+      if (addVideo[i] === "") {
+        alert(`${i} is empty`);
+      }
+
+      return addVideo[i] === "";
+    });
+    if (isNotValid) {
+      console.log("field is empty");
+    } else {
+      console.log(addVideo);
+      addVideoDataToFirestore(addVideo);
+      setOpen(false);
+    }
   }
 
   return (
@@ -158,8 +194,8 @@ export default function TransitionsModal() {
               type="text"
               label="Title"
               variant="outlined"
-              name="videoTitle"
-              value={addVideo.videoTitle}
+              name="title"
+              value={addVideo.title}
               onChange={onChangeHandler}
             />
             <TextField
@@ -167,14 +203,14 @@ export default function TransitionsModal() {
               type="text"
               label="Description"
               variant="outlined"
-              name="videoDescription"
-              value={addVideo.videoDescription}
+              name="description"
+              value={addVideo.description}
               onChange={onChangeHandler}
             />
             <RadioGroup
-              name="videoType"
-              value={addVideo.videoType}
-              onChange={videoTypeHandler}
+              name="type"
+              value={addVideo.type}
+              onChange={typeHandler}
             >
               <div className="upload-file">
                 <FormControlLabel
@@ -189,23 +225,25 @@ export default function TransitionsModal() {
                 />
               </div>
             </RadioGroup>
-            {addVideo.videoType === "paid" ? (
+            {addVideo.type === "paid" ? (
               <div className="upload-file">
                 <input
                   className={dialogCss.textFieldStyle}
                   type="file"
                   name="video"
-                  onChange={handleChange}
+                  onChange={handleVideoChange}
                   placeholder="select video"
                 />
-                {localAssets.videoStatus === 0 ? (
+                {localAssetsVideo.videoStatus === 0 ? (
                   <button disabled={videoUpload} onClick={handleVideoUpload}>
                     upload
                   </button>
-                ) : localAssets.videoStatus === 100 ? (
+                ) : localAssetsVideo.videoStatus === 100 ? (
                   <CheckCircleIcon className={dialogCss.completedIcon} />
                 ) : (
-                  <CircularProgressWithLabel value={localAssets.videoStatus} />
+                  <CircularProgressWithLabel
+                    value={localAssetsVideo.videoStatus}
+                  />
                 )}
               </div>
             ) : (
@@ -224,41 +262,27 @@ export default function TransitionsModal() {
                 name="image"
                 className={dialogCss.textFieldStyle}
                 type="file"
-                onChange={handleChange}
+                onChange={handleImageChange}
                 placeholder="select image"
               />
-              {localAssets.imageStatus === 0 ? (
+              {localAssetsImage.imageStatus === 0 ? (
                 <button disabled={imageUpload} onClick={handleImageUpload}>
                   upload
                 </button>
-              ) : localAssets.imageStatus === 100 ? (
+              ) : localAssetsImage.imageStatus === 100 ? (
                 <CheckCircleIcon className={dialogCss.completedIcon} />
               ) : (
-                <CircularProgressWithLabel value={localAssets.imageStatus} />
+                <CircularProgressWithLabel
+                  value={localAssetsImage.imageStatus}
+                />
               )}
             </div>
             <Button
               className={dialogCss.submitButtonStyle}
               variant="contained"
               color="primary"
-              onClick={() => {
-                // if (localAssets.image !== null) {
-                //   handleUpload();
-                // } else {
-                //   alert("select image");
-                // }
-                // if (addVideo.videoUrl.length === 0) {
-                //   handleUpload({
-                //     storagePath: `allVideo/${addVideo.videoType}`,
-                //     pickedFile: localAssets.video,
-                //     localState: localAssets,
-                //     localStateUploadStatus: "videoStatus",
-                //     mainStateProps: "videoUrl",
-                //   });
-                // } else {
-                //   alert("select video");
-                // }
-              }}
+              onClick={onSubmitButton}
+              disabled={submit}
             >
               Submit
             </Button>
