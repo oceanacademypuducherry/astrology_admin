@@ -80,7 +80,11 @@ export default function MediaCard({
   const classes = useStyles();
   return (
     <Card className={classes.root}>
-      <CardActionArea>
+      <CardActionArea
+        onClick={() => {
+          alert("card clicked");
+        }}
+      >
         <CardMedia className={classes.media} image={videoImage} title={title} />
         <CardContent className={classes.conten}>
           <Typography gutterBottom variant="h5" component="h2">

@@ -12,6 +12,7 @@
     "react": "latest",
     "react-dom": "latest",
     "react-firestore": "^1.0.1",
+    "react-google-docs-viewer": "^1.0.1",
     "react-player": "^2.9.0",
     "react-redux": "^7.2.4",
     "react-redux-firebase": "^3.10.0",

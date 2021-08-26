@@ -11,6 +11,7 @@ import HiddenDrawer from "../component/Drawer";
 import SimpleModal from "./video/VideoPost";
 import TransitionsModal from "./video/VideoPost";
 import ArticleDetails from "./ArticleDetails";
+import BookView from "./BookView";
 
 const drawerWidth = 240;
 
@@ -75,6 +76,11 @@ function App() {
             <Route exact path="/query">
               <Container>
                 <Query />
+              </Container>
+            </Route>
+            <Route exact path="/book/preview/:id">
+              <Container>
+                <BookView />
               </Container>
             </Route>
           </div>

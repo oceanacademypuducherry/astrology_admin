@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import DescriptionIcon from "@material-ui/icons/Description";
 
 import {
   Button,
@@ -24,11 +25,11 @@ import {
   FormControl,
   FormLabel,
   RadioGroup,
-  
   Snackbar,
 } from "@material-ui/core";
 import firebase from "../firebaseConfig/fbConfig";
-
+import { Link } from "react-router-dom";
+import { red } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#e6e6e6",
   },
 
-  cardTitle : {
+  cardTitle: {
     fontSize: "20px",
     overflow: "hidden",
     textOverflow: "ellipsis",
@@ -97,22 +98,22 @@ export default function MediaBook() {
   const [open, setOpen] = useState(false);
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [updateAlert, setUpdateAlert] = useState(false);
-  const [currentId,setCurrentId] = useState()
+  const [currentId, setCurrentId] = useState();
   const [addBook, setAddBook] = useState({
     authorName: "",
     bookName: "",
     description: "",
     pdfLink: "",
-    image:"",
+    image: "",
     createdAt: "",
-    bookType: 'free',
+    bookType: "free",
   });
   const [updateBook, setUpdateBook] = useState({
     authorName: "",
     bookName: "",
     description: "",
     pdfLink: "",
-    image:"",
+    image: "",
     bookType: "",
   });
 
@@ -120,15 +121,14 @@ export default function MediaBook() {
     setOpen(true);
   };
 
-  const deleteAlertOpen =(id) =>{
-    setCurrentId(id)
-    setDeleteAlert(true)
-  }
+  const deleteAlertOpen = (id) => {
+    setCurrentId(id);
+    setDeleteAlert(true);
+  };
 
   const handleClose = () => {
     addBooks();
     setOpen(false);
-    
   };
 
   const addUploadImage = (e) => {
@@ -175,7 +175,6 @@ export default function MediaBook() {
     );
   };
 
-
   const updateUploadImage = (e) => {
     var upload = storage
       .ref(`books/${e.target.files[0].name}`)
@@ -220,24 +219,18 @@ export default function MediaBook() {
     );
   };
 
-
-
-
-
   const handleChange = (event) => {
     // setValue(event.target.value);
-    let {name,value} = event.target
-    setAddBook({...addBook, [name]:value})
-    console.log(`${name}iiiiiiiiiiiiiiiiiiiiiiiiiiiiii ${value}`)
-  
+    let { name, value } = event.target;
+    setAddBook({ ...addBook, [name]: value });
+    console.log(`${name}iiiiiiiiiiiiiiiiiiiiiiiiiiiiii ${value}`);
   };
 
   const updateChange = (event) => {
     // setValue(event.target.value);
-    let {name,value} = event.target
-    setUpdateBook({...updateBook, [name]:value})
-    console.log(`${name}iiiiiiiiiiiiiiiiiiiiiiiiiiiiii ${value}`)
-  
+    let { name, value } = event.target;
+    setUpdateBook({ ...updateBook, [name]: value });
+    console.log(`${name}iiiiiiiiiiiiiiiiiiiiiiiiiiiiii ${value}`);
   };
 
   useEffect(() => {
@@ -253,19 +246,15 @@ export default function MediaBook() {
   const alertClose = () => {
     setOpen(false);
     setDeleteAlert(false);
-    setUpdateAlert(false)
+    setUpdateAlert(false);
   };
-
 
   // const addAlertClose = () =>{
 
   // }
 
-
-
   ///add book
-const addBooks = () => {
-
+  const addBooks = () => {
     firebase.firestore().collection("booktest").add({
       authorName: addBook.authorName,
       bookName: addBook.bookName,
@@ -273,13 +262,11 @@ const addBooks = () => {
       image: addBook.image,
       pdfLink: addBook.pdfLink,
       bookType: addBook.bookType,
-      createdAt : Date(),
+      createdAt: Date(),
     });
     setOpen(false);
     console.log(Date());
   };
-
-
 
   /// delete book
   const bookDelete = () => {
@@ -288,55 +275,50 @@ const addBooks = () => {
     setDeleteAlert(false);
   };
 
-/// edit book
+  /// edit book
 
-const update = (id) => {
-  ///current id for set data to firebase
-  setCurrentId(id);
-  const db = firebase.firestore();
-  db.collection("booktest")
-    .doc(id)
-    .get()
-    .then((snapshot) => {
-      setUpdateBook({
-        authorName: snapshot.data().authorName,
-    bookName: snapshot.data().bookName,
-    description: snapshot.data().description,
-     pdfLink: snapshot.data().pdfLink,
-   image:snapshot.data().image,
-    bookType:snapshot.data().bookType,
-      });
-  var httpsReference = storage.refFromURL(snapshot.data().pdfLink).name
-  console.log('666666666666666666')
-  console.log(httpsReference)
-      console.log(snapshot.data().pdfLink);
-    })
-    .catch((e) => console.log(e));
+  const update = (id) => {
+    ///current id for set data to firebase
+    setCurrentId(id);
+    const db = firebase.firestore();
+    db.collection("booktest")
+      .doc(id)
+      .get()
+      .then((snapshot) => {
+        setUpdateBook({
+          authorName: snapshot.data().authorName,
+          bookName: snapshot.data().bookName,
+          description: snapshot.data().description,
+          pdfLink: snapshot.data().pdfLink,
+          image: snapshot.data().image,
+          bookType: snapshot.data().bookType,
+        });
+        var httpsReference = storage.refFromURL(snapshot.data().pdfLink).name;
+        console.log("666666666666666666");
+        console.log(httpsReference);
+        console.log(snapshot.data().pdfLink);
+      })
+      .catch((e) => console.log(e));
 
+    ///update alert open
+    setUpdateAlert(true);
+  };
 
-  ///update alert open
-  setUpdateAlert(true);
-};
-
-const bookUpdate = () => {
-  ///add update
-  const db = firebase.firestore();
-  db.collection("booktest")
-    .doc(currentID)
-    .update({
+  const bookUpdate = () => {
+    ///add update
+    const db = firebase.firestore();
+    db.collection("booktest").doc(currentID).update({
       authorName: updateBook.authorName,
       bookName: updateBook.bookName,
       description: updateBook.description,
-       pdfLink: updateBook.pdfLink,
-     image:updateBook.image,
-      bookType:updateBook.bookType,
+      pdfLink: updateBook.pdfLink,
+      image: updateBook.image,
+      bookType: updateBook.bookType,
     });
 
-  ///update alert close
-  setUpdateAlert(false);
-};
-
-
+    ///update alert close
+    setUpdateAlert(false);
+  };
 
   return (
     <>
@@ -401,7 +383,7 @@ const bookUpdate = () => {
       </Grid>
 
       {/* add alert */}
-        <Dialog
+      <Dialog
         open={open}
         TransitionComponent={Transition}
         keepMounted
@@ -416,11 +398,11 @@ const bookUpdate = () => {
                   <Paper className={classes.paper}>
                     <TextField
                       id="outlined-basic"
-                      name='authorName'
+                      name="authorName"
                       label="Author Name"
                       variant="outlined"
                       value={addBook.authorName}
-                      onChange ={handleChange}
+                      onChange={handleChange}
                       style={{ width: "100%" }}
                     />
                   </Paper>
@@ -430,9 +412,9 @@ const bookUpdate = () => {
                     {" "}
                     <TextField
                       id="outlined-basic"
-                      name='bookName'
+                      name="bookName"
                       value={addBook.bookName}
-                      onChange ={handleChange}
+                      onChange={handleChange}
                       label="Title"
                       variant="outlined"
                       style={{ width: "100%" }}
@@ -470,9 +452,9 @@ const bookUpdate = () => {
                     <TextField
                       id="outlined-basic"
                       label="Description"
-                      name='description'
+                      name="description"
                       value={addBook.description}
-                      onChange ={handleChange}
+                      onChange={handleChange}
                       variant="outlined"
                       style={{ width: "100%", marginLeft: "0%", margin: "1%" }}
                     />
@@ -483,7 +465,7 @@ const bookUpdate = () => {
                     <input
                       type="file"
                       id="imageInput"
-                      name='pdfLink'
+                      name="pdfLink"
                       // value={addBook.pdfLink}
                       onChange={addUploadPdf}
                     />
@@ -494,15 +476,13 @@ const bookUpdate = () => {
                     <input
                       type="file"
                       id="imageInput"
-                      name='image'
+                      name="image"
                       // value={addBook.image}
 
                       onChange={addUploadImage}
                     />
                   </Paper>
                 </Grid>
-              
-              
               </Grid>
             </div>
           </DialogContentText>
@@ -522,10 +502,10 @@ const bookUpdate = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    {/* finish add alert */}
+      {/* finish add alert */}
 
-    {/* delete alert */}
-    <Dialog
+      {/* delete alert */}
+      <Dialog
         open={deleteAlert}
         TransitionComponent={Transition}
         keepMounted
@@ -570,18 +550,18 @@ const bookUpdate = () => {
         </DialogContent>
         <DialogActions></DialogActions>
       </Dialog>
-{/* finish delete alert */}
+      {/* finish delete alert */}
 
+      {/* edit alert */}
 
-{/* edit alert */}
-
-<Dialog
+      <Dialog
         open={updateAlert}
         TransitionComponent={Transition}
         keepMounted
         onClose={alertClose}
       >
-        <DialogTitle>{"Book"}</DialogTitle>
+        <DialogTitle>{"Book"} </DialogTitle>
+
         <DialogContent>
           <DialogContentText>
             <div className={classes.root}>
@@ -590,23 +570,22 @@ const bookUpdate = () => {
                   <Paper className={classes.paper}>
                     <TextField
                       id="outlined-basic"
-                      name='authorName'
+                      name="authorName"
                       label="Author Name"
                       variant="outlined"
                       value={updateBook.authorName}
-                      onChange ={updateChange}
+                      onChange={updateChange}
                       style={{ width: "100%" }}
                     />
                   </Paper>
                 </Grid>
                 <Grid item xs={6}>
                   <Paper className={classes.paper}>
-                    {" "}
                     <TextField
                       id="outlined-basic"
-                      name='bookName'
+                      name="bookName"
                       value={updateBook.bookName}
-                      onChange ={updateChange}
+                      onChange={updateChange}
                       label="Title"
                       variant="outlined"
                       style={{ width: "100%" }}
@@ -622,14 +601,15 @@ const bookUpdate = () => {
                         aria-label="gender"
                         name="bookType"
                         onChange={updateChange}
+                        value={updateBook.bookType}
                       >
                         <FormControlLabel
-                          value={updateBook.bookType == 'free' ?updateBook.bookType:'free'}
+                          value="free"
                           control={<Radio />}
                           label="Free"
                         />
                         <FormControlLabel
-                          value={updateBook.bookType == 'paid' ?updateBook.bookType:'paid'}
+                          value="paid"
                           control={<Radio />}
                           label="Paid"
                         />
@@ -643,38 +623,74 @@ const bookUpdate = () => {
                     <TextField
                       id="outlined-basic"
                       label="Description"
-                      name='description'
+                      name="description"
                       value={updateBook.description}
-                      onChange ={updateChange}
+                      onChange={updateChange}
                       variant="outlined"
                       style={{ width: "100%", marginLeft: "0%", margin: "1%" }}
                     />
                   </Paper>
                 </Grid>
                 <Grid item xs={12}>
-                  <Paper className={classes.paper}>
+                  <Paper
+                    className={classes.paper}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-around",
+                      alignItems: "center",
+                    }}
+                  >
                     <input
                       type="file"
                       id="imageInput"
-                      name='pdfLink'  
+                      name="pdfLink"
                       // value={updateBook.pdfLink}
-                      onChange={ updateUploadPdf }
+                      onChange={updateUploadPdf}
                     />
+                    <Link
+                      to={`/book/preview/test`}
+                      style={{ color: "gray" }}
+                      title="preview document"
+                    >
+                      <DescriptionIcon fontSize="large" />
+                    </Link>
                   </Paper>
                 </Grid>
                 <Grid item xs={12}>
-                  <Paper className={classes.paper}>
-                  <Avatar alt="Remy Sharp" src={updateBook.image} />
+                  <Paper
+                    className={classes.pape}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-around",
+                      alignItems: "center",
+                    }}
+                  >
                     <input
                       type="file"
                       id="imageInput"
-                      name='image'
-                     onChange={updateUploadImage}
+                      name="image"
+                      onChange={updateUploadImage}
                     />
+                    <div
+                      className="book-img-edit"
+                      style={{
+                        backgroundColor: "#E0E0E0",
+                        height: 30 * 3,
+                        width: 35 * 2,
+                        display: "inline-block",
+                      }}
+                    >
+                      <img
+                        style={{
+                          height: "100%",
+                          width: "100%",
+                          objectFit: "cover",
+                        }}
+                        src={updateBook.image}
+                      />
+                    </div>
                   </Paper>
                 </Grid>
-              
-              
               </Grid>
             </div>
           </DialogContentText>
@@ -695,12 +711,7 @@ const bookUpdate = () => {
         </DialogActions>
       </Dialog>
 
-{/* finish edit alert */}
-
-
-    
-    
-    
+      {/* finish edit alert */}
     </>
   );
 }
