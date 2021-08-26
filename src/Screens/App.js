@@ -5,9 +5,12 @@ import { Container, CssBaseline } from "@material-ui/core";
 import Article from "../Screens/Article";
 import Query from "../Screens/Query";
 import Book from "../Screens/Book";
-import Video from "../Screens/Vedio";
+import AddVideos from "../Screens/video/AddVideos";
 import Appbar from "../component/AppBar";
 import HiddenDrawer from "../component/Drawer";
+import SimpleModal from "./video/VideoPost";
+import TransitionsModal from "./video/VideoPost";
+import ArticleDetails from "./ArticleDetails";
 
 const drawerWidth = 240;
 
@@ -46,6 +49,12 @@ function App() {
               <Article />
             </Container>
           </Route>
+          <Route exact path="/article/:id">
+            <Container className={classes.content}>
+              <div className={classes.toolbar} />
+              <ArticleDetails />
+            </Container>
+          </Route>
           <div className={classes.content}>
             <div className={classes.toolbar} />
             <Route exact path="/book">
@@ -53,9 +62,14 @@ function App() {
                 <Book />
               </Container>
             </Route>
-            <Route exact path="/video">
+            <Route exact path="/video/:id">
               <Container>
-                <Video />
+                <AddVideos />
+              </Container>
+            </Route>
+            <Route exact path="/postVideo">
+              <Container>
+                <TransitionsModal />
               </Container>
             </Route>
             <Route exact path="/query">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import firebase from "../firebaseConfig/fbConfig";
+import { Link } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -19,8 +20,10 @@ import {
   Paper,
   Grid,
   Avatar,
-  Snackbar
+  Snackbar,
+ 
 } from "@material-ui/core";
+import ArticleDetails from "./ArticleDetails";
 // import { CloudDownloadTwoTone, Delete, Edit } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,11 +38,13 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#e6e6e6",
   },
 
-  cardTitle : {
-    fontSize: "20px",
+  cardTitle: {
+    fontSize: "18px",
     overflow: "hidden",
     textOverflow: "ellipsis",
     height: "30px",
+    color: "grey",
+    fontWeight: "500",
   },
 
   cardDescription: {
@@ -83,14 +88,17 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
 export default function Article() {
   const storage = firebase.storage();
   const classes = useStyles();
-  const [open, setOpen] = useState(false);
+  const [addAlert, setAddAlertOpen] = useState(false);
   const [updateAlert, setUpdateAlert] = useState(false);
+<<<<<<< HEAD
   const [alert, setAlert] = useState(false);
  
+=======
+  const [deleteAlert, setDeleteAlert] = useState(false);
+>>>>>>> fc3dd0ad370672d7111ffd35dc8ae84950753052
   const [article, setArticle] = useState({
     name: "",
     description: "",
@@ -105,6 +113,7 @@ export default function Article() {
   const [currentID, setCurrentID] = useState();
 
   const addUploadClick = (e) => {
+    console.log(e.target.files[0].name);
     var upload = storage
       .ref(`articles/${e.target.files[0].name}`)
       .put(e.target.files[0]);
@@ -143,19 +152,22 @@ export default function Article() {
           .ref("articles")
           .child(e.target.files[0].name)
           .getDownloadURL()
-          .then((url) => setUpdateData({...updateData, image: url}));
+          .then((url) => setUpdateData({ ...updateData, image: url }));
       }
     );
   };
 
   useEffect(() => {
     const db = firebase.firestore();
-    return db.collection("test").orderBy("createdAt").onSnapshot((snapshot) => {
-      const getData = [];
-      snapshot.forEach((doc) => getData.push({ ...doc.data(), id: doc.id }));
-      console.log(getData, "//////////////////////");
-      setData(getData);
-    });
+    return db
+      .collection("test")
+      .orderBy("createdAt")
+      .onSnapshot((snapshot) => {
+        const getData = [];
+        snapshot.forEach((doc) => getData.push({ ...doc.data(), id: doc.id }));
+        console.log(getData, "//////////////////////");
+        setData(getData);
+      });
   }, []);
 
   const update = (id) => {
@@ -183,22 +195,27 @@ export default function Article() {
   const articleUpdate = () => {
     ///add update
     const db = firebase.firestore();
-    db.collection("test")
-      .doc(currentID)
-      .update({
-        name: updateData.name,
-        image: updateData.image,
-        description: updateData.description,
-      });
+    db.collection("test").doc(currentID).update({
+      name: updateData.name,
+      image: updateData.image,
+      description: updateData.description,
+    });
 
     ///update alert close
     setUpdateAlert(false);
   };
 
   const articleDelete = (id) => {
-    const db = firebase.firestore();
-    db.collection("test").doc(id).delete();
+    setCurrentID(id);
+    setDeleteAlert(true);
   };
+
+  const articleDeleteAlert = () => {
+    const db = firebase.firestore();
+    db.collection("test").doc(currentID).delete();
+    setCurrentID();
+    setDeleteAlert(false);
+  }
 
   const alertUpdate = (e) => {
     console.log(e.target.name, "//////////////////////// event name");
@@ -206,9 +223,6 @@ export default function Article() {
     setUpdateData({ ...updateData, [e.target.name]: e.target.value });
   };
 
-  const addArticleClickOpen = () => {
-    setOpen(true);
-  };
 
   const onChangeArticle = (e) => {
     console.log(e.target.value);
@@ -221,20 +235,10 @@ export default function Article() {
       name: article.name,
       image: article.image,
       description: article.description,
-      createdAt : Date(),
+      createdAt: Date(),
     });
-    setOpen(false);
+    setAddAlertOpen(false)
     console.log(Date());
-  };
-
-  const alertOpen = (image) => {
-    setAlert(true);
-    getArticleData(image);
-    console.log(image);
-  };
-
-  const alertClose = () => {
-    setAlert(false);
   };
 
 
@@ -244,7 +248,7 @@ export default function Article() {
         <Button
           variant="outlined"
           style={{ borderColor: "#1F6DE2", color: "#1F6DE2" }}
-          onClick={addArticleClickOpen}
+          onClick={() => setAddAlertOpen(true)}
         >
           + Add Article
         </Button>
@@ -252,10 +256,11 @@ export default function Article() {
 
       {/* alert delete */}
       <Dialog
-        open={alert}
+        open={deleteAlert}
+        onClose={() => setDeleteAlert(false)}
         TransitionComponent={Transition}
         keepMounted
-        onClose={alertClose}
+        
       >
         <DialogTitle>{"Are you sure want to delete"}</DialogTitle>
         <DialogContent>
@@ -264,24 +269,25 @@ export default function Article() {
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <Button
-                    onClick={alertClose}
-                    variant="contained"
+                    onClick={() => setDeleteAlert(false)}
+                    variant="outlined"
                     style={{
                       background: "#1F6DE2",
                       width: "13%",
                       height: "55px",
                       color: "white",
+                      marginLeft: "25px",
                     }}
                   >
                     NO
                   </Button>
 
                   <Button
-                    onClick={alertClose}
+                    onClick={articleDeleteAlert}
                     variant="contained"
                     style={{
-                      background: "#1F6DE2",
-                      marginLeft: "47%",
+                      backgroundColor: "rgba(255, 0, 0, 0.8)",
+                      marginLeft: "60px",
                       width: "13%",
                       height: "55px",
                       color: "white",
@@ -299,10 +305,10 @@ export default function Article() {
 
       {/* add article */}
       <Dialog
-        open={open}
+        open={addAlert}
+        onClose={() => setAddAlertOpen(false)}
         TransitionComponent={Transition}
         keepMounted
-        onClose={open}
       >
         <DialogTitle>Article</DialogTitle>
         <DialogContent>
@@ -312,7 +318,7 @@ export default function Article() {
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
-                      name = "name"
+                      name="name"
                       id="outlined-basic"
                       label="Title"
                       variant="outlined"
@@ -324,7 +330,7 @@ export default function Article() {
                 </Grid>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
-                  <Avatar alt="Remy Sharp" src={article.image} />
+                    <Avatar alt="Remy Sharp" src={article.image} />
                     <input
                       type="file"
                       id="imageInput"
@@ -335,7 +341,7 @@ export default function Article() {
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
-                      name = "description"
+                      name="description"
                       id="outlined-basic"
                       label="Description"
                       variant="outlined"
@@ -368,9 +374,10 @@ export default function Article() {
       {/* Update article */}
       <Dialog
         open={updateAlert}
+        onClose={() =>  setUpdateAlert(false)}
         TransitionComponent={Transition}
         keepMounted
-        onClose={updateAlert}
+        
       >
         <DialogTitle>Article</DialogTitle>
         <DialogContent>
@@ -441,11 +448,17 @@ export default function Article() {
 
         {data.map((item) => (
           <Grid item>
-            <Card  className={classes.card}>
+            <Card className={classes.card}>
+             <Link to={`article/${item.id}`} style= {{textDecoration: "none", color: '#6996FF'}}>
               <CardActionArea>
                 <CardMedia className={classes.media} image={item.image} />
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="h2" className={classes.cardTitle} >
+                  <Typography
+                    gutterBottom
+                    variant="h5"
+                    component="h2"
+                    className={classes.cardTitle}
+                  >
                     {item.name}
                   </Typography>
                   <Typography
@@ -458,6 +471,7 @@ export default function Article() {
                   </Typography>
                 </CardContent>
               </CardActionArea>
+              </Link>
               <CardActions>
                 <Button
                   size="small"
@@ -469,14 +483,15 @@ export default function Article() {
                 <Button
                   size="small"
                   color="primary"
-                  onClick={update.bind(this, item.id)}>
+                  onClick={update.bind(this, item.id)}
+                >
                   EDIT
                 </Button>
               </CardActions>
             </Card>
           </Grid>
         ))}
-        
+
         {/* <Snackbar
         // anchorOrigin={{ vertical, horizontal }}
         open= {updateData.image === ""  &&  true}
