@@ -90,6 +90,7 @@ export default function Article() {
   const [open, setOpen] = useState(false);
   const [updateAlert, setUpdateAlert] = useState(false);
   const [alert, setAlert] = useState(false);
+ 
   const [article, setArticle] = useState({
     name: "",
     description: "",
@@ -247,7 +248,7 @@ export default function Article() {
         >
           + Add Article
         </Button>
-      </div>
+      
 
       {/* alert delete */}
       <Dialog
@@ -433,7 +434,7 @@ export default function Article() {
           </Button>
         </DialogActions>
       </Dialog>
-
+      </div>  
       {/* article Design start */}
       <Grid container direction="row" justifyContent="flex-start" spacing={10}>
         {/* {JSON.stringify(updateData)} */}
@@ -485,6 +486,8 @@ export default function Article() {
         // key={vertical + horizontal}
       /> */}
       </Grid>
+
+   
     </>
   );
 }
