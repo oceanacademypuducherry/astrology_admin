@@ -95,7 +95,11 @@ export default function MediaCard({
       </CardActionArea>
       <CardActions>
         <EditVideo videoInfo={videoInfo} docId={docId} videoType={videoType} />
-        <DeleteVideo videoInfo={videoInfo} />
+        <DeleteVideo
+          videoInfo={videoInfo}
+          docId={docId}
+          videoType={videoType}
+        />
       </CardActions>
     </Card>
   );

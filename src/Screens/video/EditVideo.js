@@ -7,6 +7,7 @@ import Button from "@material-ui/core/Button";
 import ReactPlayer from "react-player";
 import "./editVideo.css";
 import firebase from "../../firebaseConfig/fbConfig";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -24,8 +25,18 @@ const useStyles = makeStyles((theme) => ({
 export default function EditVideo({ videoInfo, docId, videoType }) {
   const collectionName = videoType === "free" ? "youtubeVedios" : "PaidVedios";
   const firestore = firebase.firestore();
+
+  const storage = firebase.storage();
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+  const [localAssetsImage, setLocalAssetsImage] = useState({
+    image: null,
+    imageStatus: 0,
+  });
+  const [localAssetsVideo, setLocalAssetsVideo] = useState({
+    video: null,
+    videoStatus: 0,
+  });
   const [editVideo, setEditVideo] = useState({
     title: videoInfo.title,
     description: videoInfo.description,
@@ -34,6 +45,79 @@ export default function EditVideo({ videoInfo, docId, videoType }) {
     type: videoInfo.type,
   });
 
+  const handleImageChange = (e) => {
+    console.log(e.target.name);
+    if (e.target.files[0]) {
+      setLocalAssetsImage({
+        ...localAssetsImage,
+        image: e.target.files[0],
+      });
+    }
+  };
+
+  function handleImageUpload() {
+    const uploadTask = storage
+      .ref(`allVideo/${videoType}/${localAssetsImage.image.name}`)
+      .put(localAssetsImage.image);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setLocalAssetsImage({ ...localAssetsImage, imageStatus: progress });
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        storage
+          .ref(`allVideo/${videoType}`)
+          .child(localAssetsImage.image.name)
+          .getDownloadURL()
+          .then((imageUrl) => {
+            console.log(imageUrl);
+            setEditVideo({ ...editVideo, videoImage: imageUrl });
+          });
+      }
+    );
+  }
+  const handleVideoChange = (e) => {
+    console.log(e.target.name);
+    if (e.target.files[0]) {
+      setLocalAssetsVideo({
+        ...localAssetsVideo,
+        video: e.target.files[0],
+      });
+    }
+  };
+  function handleVideoUpload() {
+    const uploadTask = storage
+      .ref(`allVideo/${videoType}/${localAssetsVideo.video.name}`)
+      .put(localAssetsVideo.video);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setLocalAssetsVideo({ ...localAssetsVideo, videoStatus: progress });
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        storage
+          .ref(`allVideo/${videoType}`)
+          .child(localAssetsVideo.video.name)
+          .getDownloadURL()
+          .then((imageUrl) => {
+            console.log(imageUrl);
+            setEditVideo({ ...editVideo, videoUrl: imageUrl });
+          });
+      }
+    );
+  }
   function onChangeInputs(e) {
     const { name, value } = e.target;
     setEditVideo({ ...editVideo, [name]: value });
@@ -46,7 +130,6 @@ export default function EditVideo({ videoInfo, docId, videoType }) {
 
   const handleClose = () => {
     setOpen(false);
-    // location.reload();
   };
   function getVideoData() {
     const videoData = firestore.collection(collectionName).doc(docId).get();
@@ -63,9 +146,19 @@ export default function EditVideo({ videoInfo, docId, videoType }) {
 
     handleClose();
   }
-  //   useEffect(() => {
+  useEffect(() => {
+    console.log(localAssetsImage.image);
+    if (localAssetsImage.image !== null) {
+      handleImageUpload();
+    }
+    if (localAssetsVideo.video !== null) {
+      handleVideoUpload();
+    }
 
-  //   }, []);
+    return () => {
+      console.log("cleanup");
+    };
+  }, [localAssetsImage.image, localAssetsVideo.video]);
 
   return (
     <div>
@@ -76,7 +169,7 @@ export default function EditVideo({ videoInfo, docId, videoType }) {
       <Modal
         className={classes.modal}
         open={open}
-        onClose={handleClose}
+        // onClose={handleClose}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -93,23 +186,46 @@ export default function EditVideo({ videoInfo, docId, videoType }) {
                 onChange={onChangeInputs}
                 value={editVideo.videoUrl}
               />
+
               <div className="this-video">
+                <input
+                  type="file"
+                  id="videoFile"
+                  className="file-inp in"
+                  onChange={handleVideoChange}
+                />
+
                 <ReactPlayer
                   url={editVideo.videoUrl}
                   controls={true}
                   height={"100%"}
                   width={"100%"}
+                  className="in"
                 />
+                <div
+                  className="in in-icon"
+                  onClick={() => {
+                    const videoFilePick = document.getElementById("videoFile");
+                    videoFilePick.click();
+                  }}
+                >
+                  <CloudUploadIcon fontSize="large" />
+                </div>
               </div>
               <div className="this-visible">
                 <div className="this-thumbnail">
-                  <input type="hidden" id="file" />
+                  <input
+                    type="file"
+                    id="files"
+                    className="file-inp"
+                    onChange={handleImageChange}
+                  />
                   <img
                     src={editVideo.videoImage}
                     alt=""
                     onClick={() => {
-                      let files = document.getElementById("file");
-                      files.type = "file";
+                      let files = document.getElementById("files");
+
                       files.click();
                     }}
                   />
@@ -136,6 +252,9 @@ export default function EditVideo({ videoInfo, docId, videoType }) {
               {" "}
               <button className="update-button" onClick={() => onUpdate()}>
                 Update
+              </button>
+              <button className="update-button" onClick={handleClose}>
+                Cancel
               </button>
             </div>
           </div>

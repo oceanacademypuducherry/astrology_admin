@@ -70,7 +70,7 @@ export default function HiddenDrawer(props) {
                 <ListItemText primary={"Book"} />
               </ListItem>
             </Link>
-            <Link to="/video" className={classes.link}>
+            <Link to="/video/free" className={classes.link}>
               <ListItem button>
                 <ListItemIcon>
                   <SlowMotionVideoIcon />
@@ -114,7 +114,7 @@ export default function HiddenDrawer(props) {
                 <ListItemText primary={"Book"} />
               </ListItem>
             </Link>
-            <Link to="/video" className={classes.link}>
+            <Link to="/video/free" className={classes.link}>
               <ListItem button>
                 <ListItemIcon>
                   <SlowMotionVideoIcon />

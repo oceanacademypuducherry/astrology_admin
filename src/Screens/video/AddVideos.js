@@ -41,42 +41,42 @@ export default function AddVideos() {
   const storage = firebase.storage();
 
   // get paid video
-  function getVideoData() {
-    let videoResponse = [];
-    firestore
-      .collection("PaidVedios")
-      .get()
-      .then((response) => {
-        response.docs.forEach((videoData) => {
-          let dbField = videoData.data();
-          dbField["docId"] = videoData.id;
-          videoResponse.push(dbField);
-        });
-        setAllVideos(videoResponse);
-      })
-      .catch((e) => {
-        console.log(e.message);
-      });
-  }
+  // function getVideoData() {
+  //   let videoResponse = [];
+  //   firestore
+  //     .collection("PaidVedios")
+  //     .get()
+  //     .then((response) => {
+  //       response.docs.forEach((videoData) => {
+  //         let dbField = videoData.data();
+  //         dbField["docId"] = videoData.id;
+  //         videoResponse.push(dbField);
+  //       });
+  //       setAllVideos(videoResponse);
+  //     })
+  //     .catch((e) => {
+  //       console.log(e.message);
+  //     });
+  // }
   // get free video
-  function getYoutubeVideoData() {
-    let videoResponse = [];
-    firestore
-      .collection("youtubeVedios")
-      .get()
-      .then((response) => {
-        response.docs.forEach((videoData) => {
-          let dbField = videoData.data();
-          dbField["docId"] = videoData.id;
+  // function getYoutubeVideoData() {
+  //   let videoResponse = [];
+  //   firestore
+  //     .collection("youtubeVedios")
+  //     .get()
+  //     .then((response) => {
+  //       response.docs.forEach((videoData) => {
+  //         let dbField = videoData.data();
+  //         dbField["docId"] = videoData.id;
 
-          videoResponse.push(dbField);
-        });
-        setAllVideos(videoResponse);
-      })
-      .catch((e) => {
-        console.log(e.message);
-      });
-  }
+  //         videoResponse.push(dbField);
+  //       });
+  //       setAllVideos(videoResponse);
+  //     })
+  //     .catch((e) => {
+  //       console.log(e.message);
+  //     });
+  // }
 
   const folder = id !== "free" ? "PaidVedios" : "youtubeVedios";
   let fireData = firestore.collection(folder);

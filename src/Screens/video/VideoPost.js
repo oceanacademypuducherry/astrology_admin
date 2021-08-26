@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { dialogStyle } from "./videoPostStyle";
 import firebase from "../../firebaseConfig/fbConfig";
+import "./addpost.css";
 import {
   Modal,
   TextField,
@@ -82,61 +83,69 @@ export default function TransitionsModal() {
 
   function handleImageUpload() {
     setSubmit(true);
-    const uploadTask = storage
-      .ref(`allVideo/${addVideo.type}/${localAssetsImage.image.name}`)
-      .put(localAssetsImage.image);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setLocalAssetsImage({ ...localAssetsImage, imageStatus: progress });
-      },
-      (error) => {
-        console.log(error);
-      },
-      () => {
-        storage
-          .ref(`allVideo/${addVideo.type}`)
-          .child(localAssetsImage.image.name)
-          .getDownloadURL()
-          .then((imageUrl) => {
-            console.log(imageUrl);
-            setAddVideo({ ...addVideo, videoImage: imageUrl });
-            setSubmit(false);
-          });
-      }
-    );
+    if (localAssetsImage.image !== null) {
+      const uploadTask = storage
+        .ref(`allVideo/${addVideo.type}/${localAssetsImage.image.name}`)
+        .put(localAssetsImage.image);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setLocalAssetsImage({ ...localAssetsImage, imageStatus: progress });
+        },
+        (error) => {
+          console.log(error);
+        },
+        () => {
+          storage
+            .ref(`allVideo/${addVideo.type}`)
+            .child(localAssetsImage.image.name)
+            .getDownloadURL()
+            .then((imageUrl) => {
+              console.log(imageUrl);
+              setAddVideo({ ...addVideo, videoImage: imageUrl });
+              setSubmit(false);
+            });
+        }
+      );
+    } else {
+      alert("Choose File");
+    }
   }
   function handleVideoUpload() {
     setSubmit(true);
-    const uploadTask = storage
-      .ref(`allVideo/${addVideo.type}/${localAssetsVideo.video.name}`)
-      .put(localAssetsVideo.video);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setLocalAssetsVideo({ ...localAssetsVideo, videoStatus: progress });
-      },
-      (error) => {
-        console.log(error);
-      },
-      () => {
-        storage
-          .ref(`allVideo/${addVideo.type}`)
-          .child(localAssetsVideo.video.name)
-          .getDownloadURL()
-          .then((imageUrl) => {
-            setAddVideo({ ...addVideo, videoUrl: imageUrl });
-            console.log(imageUrl);
-            setSubmit(false);
-          });
-      }
-    );
+    if (localAssetsVideo.video !== null) {
+      const uploadTask = storage
+        .ref(`allVideo/${addVideo.type}/${localAssetsVideo.video.name}`)
+        .put(localAssetsVideo.video);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setLocalAssetsVideo({ ...localAssetsVideo, videoStatus: progress });
+        },
+        (error) => {
+          console.log(error);
+        },
+        () => {
+          storage
+            .ref(`allVideo/${addVideo.type}`)
+            .child(localAssetsVideo.video.name)
+            .getDownloadURL()
+            .then((imageUrl) => {
+              setAddVideo({ ...addVideo, videoUrl: imageUrl });
+              console.log(imageUrl);
+              setSubmit(false);
+            });
+        }
+      );
+    } else {
+      alert("Choose file");
+    }
   }
   // firebase add function
 
@@ -148,6 +157,14 @@ export default function TransitionsModal() {
       .add(addData)
       .then((test) => console.log(test))
       .catch((error) => console.log(error));
+    // setAddVideo({
+    //   ...addVideo,
+    //   title: "",
+    //   description: "",
+    //   videoImage: "",
+    //   videoUrl: "",
+    //   type: "free",
+    // });
   }
 
   function onSubmitButton() {
@@ -166,7 +183,21 @@ export default function TransitionsModal() {
       setOpen(false);
     }
   }
-
+  useEffect(() => {
+    setAddVideo({
+      ...addVideo,
+      title: "",
+      description: "",
+      videoImage: "",
+      videoUrl: "",
+      type: "free",
+    });
+    setLocalAssetsVideo({ video: null, videoStatus: 0 });
+    setLocalAssetsImage({ image: null, imageStatus: 0 });
+    return () => {
+      console.log("cleanup add video ");
+    };
+  }, [open]);
   return (
     <div>
       <Fab
@@ -235,7 +266,11 @@ export default function TransitionsModal() {
                   placeholder="select video"
                 />
                 {localAssetsVideo.videoStatus === 0 ? (
-                  <button disabled={videoUpload} onClick={handleVideoUpload}>
+                  <button
+                    className="uploadBtn"
+                    disabled={videoUpload}
+                    onClick={handleVideoUpload}
+                  >
                     upload
                   </button>
                 ) : localAssetsVideo.videoStatus === 100 ? (
@@ -259,6 +294,7 @@ export default function TransitionsModal() {
             )}
             <div className="upload-file">
               <input
+                id="imageUpload"
                 name="image"
                 className={dialogCss.textFieldStyle}
                 type="file"
@@ -266,7 +302,11 @@ export default function TransitionsModal() {
                 placeholder="select image"
               />
               {localAssetsImage.imageStatus === 0 ? (
-                <button disabled={imageUpload} onClick={handleImageUpload}>
+                <button
+                  className="uploadBtn"
+                  disabled={imageUpload}
+                  onClick={handleImageUpload}
+                >
                   upload
                 </button>
               ) : localAssetsImage.imageStatus === 100 ? (
