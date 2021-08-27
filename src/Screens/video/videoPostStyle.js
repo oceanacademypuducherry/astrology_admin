@@ -37,6 +37,7 @@ export const dialogStyle = makeStyles((theme) => ({
   },
   submitButtonStyle: {
     margin: theme.spacing(1),
+    width: 150,
     background: "#1F6DE2",
     color: "white",
     "&:hover": {

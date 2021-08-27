@@ -13,3 +13,37 @@
 .uploadBtn:hover {
   background-color: rgb(224, 224, 224);
 }
+.uploadBtn {
+  width: 200px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.file-size {
+  color: green;
+}
+.disabled {
+  color: gray;
+}
+
+.input-wrapper {
+  display: flex;
+  width: 400px;
+  height: 50px;
+  background-color: rgb(185, 185, 185);
+  justify-content: start;
+  align-items: center;
+}
+.input-wrapper div {
+}
+.file-piker {
+  display: flex;
+}
+.choose-button {
+  /* width: 120px; */
+  font-size: 18px;
+  padding: 10px 15px;
+  background-color: #e0e0e0;
+}
+.choose-title {
+}

@@ -97,6 +97,7 @@ export default function Article() {
     name: "",
     description: "",
     image: "",
+    link: "",
   });
   const [data, setData] = useState([]);
   const [updateData, setUpdateData] = useState({
@@ -111,22 +112,45 @@ export default function Article() {
     var upload = storage
       .ref(`articles/${e.target.files[0].name}`)
       .put(e.target.files[0]);
-    upload.on(
-      "state_changed",
-      (snapshot) => {
-        console.log(snapshot, "///////////////////////////////snapshots");
-      },
-      (error) => {
-        console.log(error);
-      },
-      () => {
-        storage
-          .ref("articles")
-          .child(e.target.files[0].name)
-          .getDownloadURL()
-          .then((url) => setArticle({ ...article, image: url }));
-      }
-    );
+    upload.on("state_changed",
+    (snapshot) => {
+      console.log(snapshot, "///////////////////////////////snapshots");
+    },
+    (error) => {
+      console.log(error);
+    },
+    
+    () => {
+      storage
+        .ref("articles")
+        .child(e.target.files[0].name)
+        .getDownloadURL()
+        .then((url) => setArticle({ ...article, image: url }));
+    });
+  };
+
+
+  const addPdfUploadClick = (e) => {
+    console.log(e.target.files[0].name);
+    var upload = storage
+      .ref(`articles/${e.target.files[0].name}`)
+      .put(e.target.files[0]);
+    upload.on("state_changed",
+    (snapshot) => {
+      console.log(snapshot, "///////////////////////////////snapshots");
+    },
+    (error) => {
+      console.log(error);
+    },
+    
+    () => {
+      storage
+        .ref("articles")
+        .child(e.target.files[0].name)
+        .getDownloadURL()
+        .then((url) => setArticle( { ...article, link: url }));
+        // console.log(url);
+    });
   };
 
   const updateUploadClick = (e) => {
@@ -154,7 +178,7 @@ export default function Article() {
   useEffect(() => {
     const db = firebase.firestore();
     return db
-      .collection("test")
+      .collection("articles")
       .orderBy("createdAt")
       .onSnapshot((snapshot) => {
         const getData = [];
@@ -168,14 +192,15 @@ export default function Article() {
     ///current id for set data to firebase
     setCurrentID(id);
     const db = firebase.firestore();
-    db.collection("test")
+    db.collection("articles")
       .doc(id)
       .get()
       .then((snapshot) => {
         setUpdateData({
-          name: snapshot.data().name,
-          description: snapshot.data().description,
-          image: snapshot.data().image,
+          name: snapshot.data().articleName,
+          description: snapshot.data().content,
+          image: snapshot.data().articleImage,
+          link: snapshot.data().link,
         });
         console.log(snapshot.data());
       })
@@ -187,13 +212,16 @@ export default function Article() {
   };
 
   const articleUpdate = () => {
-    ///add update
+    ///update
     const db = firebase.firestore();
-    db.collection("test").doc(currentID).update({
-      name: updateData.name,
-      image: updateData.image,
-      description: updateData.description,
+    db.collection("articles").doc(currentID).update({
+      articleName: updateData.name,
+      articleImage: updateData.image,
+      content: updateData.description,
+      link: updateData.link,
     });
+
+    setCurrentID();
 
     ///update alert close
     setUpdateAlert(false);
@@ -206,7 +234,7 @@ export default function Article() {
 
   const articleDeleteAlert = () => {
     const db = firebase.firestore();
-    db.collection("test").doc(currentID).delete();
+    db.collection("articles").doc(currentID).delete();
     setCurrentID();
     setDeleteAlert(false);
   };
@@ -224,14 +252,20 @@ export default function Article() {
 
   const addArticle = () => {
     ///add article
-    firebase.firestore().collection("test").add({
-      name: article.name,
-      image: article.image,
-      description: article.description,
+    firebase.firestore().collection("articles").add({
+      articleName: article.name,
+      articleImage: article.image,
+      content: article.description,
+      link: article.link,
       createdAt: Date(),
     });
+
+    setArticle({ name: "", description: "", image: "" });
+    ///add alert close
     setAddAlertOpen(false);
     console.log(Date());
+    ///clearing precious data in state
+    
   };
 
   return (
@@ -244,193 +278,208 @@ export default function Article() {
         >
           + Add Article
         </Button>
-
-        {/* alert delete */}
-        <Dialog
-          open={deleteAlert}
-          onClose={() => setDeleteAlert(false)}
-          TransitionComponent={Transition}
-          keepMounted
-        >
-          <DialogTitle>{"Are you sure want to delete"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              <div className={classes.root}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <Button
-                      onClick={() => setDeleteAlert(false)}
-                      variant="outlined"
-                      style={{
-                        background: "#1F6DE2",
-                        width: "13%",
-                        height: "55px",
-                        color: "white",
-                        marginLeft: "25px",
-                      }}
-                    >
-                      NO
-                    </Button>
-
-                    <Button
-                      onClick={articleDeleteAlert}
-                      variant="contained"
-                      style={{
-                        backgroundColor: "rgba(255, 0, 0, 0.8)",
-                        marginLeft: "60px",
-                        width: "13%",
-                        height: "55px",
-                        color: "white",
-                      }}
-                    >
-                      Yes
-                    </Button>
-                  </Grid>
-                </Grid>
-              </div>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions></DialogActions>
-        </Dialog>
-
-        {/* add article */}
-        <Dialog
-          open={addAlert}
-          onClose={() => setAddAlertOpen(false)}
-          TransitionComponent={Transition}
-          keepMounted
-        >
-          <DialogTitle>Article</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              <div className={classes.root}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                      <TextField
-                        name="name"
-                        id="outlined-basic"
-                        label="Title"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        value={article.name}
-                        onChange={onChangeArticle}
-                      />
-                    </Paper>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                      <Avatar alt="Remy Sharp" src={article.image} />
-                      <input
-                        type="file"
-                        id="imageInput"
-                        onChange={addUploadClick}
-                      />
-                    </Paper>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                      <TextField
-                        name="description"
-                        id="outlined-basic"
-                        label="Description"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        value={article.description}
-                        onChange={onChangeArticle}
-                      />
-                    </Paper>
-                  </Grid>
-                </Grid>
-              </div>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={addArticle}
-              variant="contained"
-              style={{
-                background: "#1F6DE2",
-                width: "100%",
-                height: "55px",
-                color: "white",
-              }}
-            >
-              Submit
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* Update article */}
-        <Dialog
-          open={updateAlert}
-          onClose={() => setUpdateAlert(false)}
-          TransitionComponent={Transition}
-          keepMounted
-        >
-          <DialogTitle>Article</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              <div className={classes.root}>
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                      <TextField
-                        name="name"
-                        id="outlined-basic"
-                        label="Title"
-                        variant="outlined"
-                        style={{ width: "100%" }}
-                        value={updateData.name}
-                        onChange={alertUpdate}
-                      />
-                    </Paper>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                      <Avatar alt="Remy Sharp" src={updateData.image} />
-                      <input
-                        name="image"
-                        type="file"
-                        id="imageInput"
-                        onChange={updateUploadClick}
-                      />
-                    </Paper>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Paper className={classes.paper}>
-                      <TextField
-                        id="outlined-basic"
-                        label="Description"
-                        variant="outlined"
-                        name="description"
-                        value={updateData.description}
-                        style={{ width: "100%" }}
-                        // maxLength={12}
-                        onChange={alertUpdate}
-                      />
-                    </Paper>
-                  </Grid>
-                </Grid>
-              </div>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={articleUpdate}
-              variant="contained"
-              style={{
-                background: "#1F6DE2",
-                width: "100%",
-                height: "55px",
-                color: "white",
-              }}
-            >
-              Submit
-            </Button>
-          </DialogActions>
-        </Dialog>
       </div>
+
+      {/* alert delete */}
+      <Dialog
+        open={deleteAlert}
+        onClose={() => setDeleteAlert(false)}
+        TransitionComponent={Transition}
+        keepMounted
+      >
+        <DialogTitle>{"Are you sure want to delete"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <div className={classes.root}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Button
+                    onClick={() => setDeleteAlert(false)}
+                    variant="outlined"
+                    style={{
+                      background: "#1F6DE2",
+                      width: "13%",
+                      height: "55px",
+                      color: "white",
+                      marginLeft: "25px",
+                    }}
+                  >
+                    NO
+                  </Button>
+
+                  <Button
+                    onClick={articleDeleteAlert}
+                    variant="contained"
+                    style={{
+                      backgroundColor: "rgba(255, 0, 0, 0.8)",
+                      marginLeft: "60px",
+                      width: "13%",
+                      height: "55px",
+                      color: "white",
+                    }}
+                  >
+                    Yes
+                  </Button>
+                </Grid>
+              </Grid>
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions></DialogActions>
+      </Dialog>
+
+      {/* add article */}
+      <Dialog
+        open={addAlert}
+        onClose={() => setAddAlertOpen(false)}
+        TransitionComponent={Transition}
+        keepMounted
+      >
+        <DialogTitle>Add Article</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <div className={classes.root}>
+              <Grid container spacing={3}>
+
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <Avatar alt="Remy Sharp" src={article.image} />
+                    <input
+                      type="file"
+                      id="imageInput"
+                      onChange={addUploadClick}
+                    />
+                  </Paper>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Paper style={{padding: "20px"}}>
+                   <Typography>Add Pdf</Typography>
+                    <input
+                      type="file"
+                      id="pdf"
+                      onChange={addPdfUploadClick}
+                    />
+                  </Paper>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      name="name"
+                      id="outlined-basic"
+                      label="Title"
+                      variant="outlined"
+                      style={{ width: "100%" }}
+                      value={article.name}
+                      onChange={onChangeArticle}
+                    />
+                  </Paper>
+                </Grid>
+          
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      name="description"
+                      id="outlined-basic"
+                      label="Description"
+                      variant="outlined"
+                      style={{ width: "100%" }}
+                      value={article.description}
+                      onChange={onChangeArticle}
+                    />
+                  </Paper>
+                </Grid>
+              </Grid>
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={addArticle}
+            variant="contained"
+            style={{
+              background: "#1F6DE2",
+              width: "100%",
+              height: "55px",
+              color: "white",
+            }}
+          >
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Update article */}
+      <Dialog
+        open={updateAlert}
+        onClose={() => setUpdateAlert(false)}
+        TransitionComponent={Transition}
+        keepMounted
+      >
+        <DialogTitle>Article</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <div className={classes.root}>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      name="name"
+                      id="outlined-basic"
+                      label="Title"
+                      variant="outlined"
+                      style={{ width: "100%" }}
+                      value={updateData.name}
+                      onChange={alertUpdate}
+                    />
+                  </Paper>
+                </Grid>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <Avatar alt="Remy Sharp" src={updateData.image} />
+                    <input
+                      name="image"
+                      type="file"
+                      id="imageInput"
+                      onChange={updateUploadClick}
+                    />
+                  </Paper>
+                </Grid>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      id="outlined-basic"
+                      label="Description"
+                      variant="outlined"
+                      name="description"
+                      value={updateData.description}
+                      style={{ width: "100%" }}
+                      // maxLength={12}
+                      onChange={alertUpdate}
+                    />
+                  </Paper>
+                </Grid>
+              </Grid>
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={articleUpdate}
+            variant="contained"
+            style={{
+              background: "#1F6DE2",
+              width: "100%",
+              height: "55px",
+              color: "white",
+            }}
+          >
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       {/* article Design start */}
       <Grid container direction="row" justifyContent="flex-start" spacing={10}>
         {/* {JSON.stringify(updateData)} */}
@@ -443,7 +492,7 @@ export default function Article() {
                 style={{ textDecoration: "none", color: "#6996FF" }}
               >
                 <CardActionArea>
-                  <CardMedia className={classes.media} image={item.image} />
+                  <CardMedia className={classes.media} image={item.articleImage} />
                   <CardContent>
                     <Typography
                       gutterBottom
@@ -451,7 +500,7 @@ export default function Article() {
                       component="h2"
                       className={classes.cardTitle}
                     >
-                      {item.name}
+                      {item.articleName}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -459,7 +508,7 @@ export default function Article() {
                       component="p"
                       className={classes.cardDescription}
                     >
-                      {item.description}
+                      {item.content}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
