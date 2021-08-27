@@ -21,7 +21,6 @@ import {
   Grid,
   Avatar,
   Snackbar,
- 
 } from "@material-ui/core";
 import ArticleDetails from "./ArticleDetails";
 // import { CloudDownloadTwoTone, Delete, Edit } from "@material-ui/icons";
@@ -98,6 +97,7 @@ export default function Article() {
     name: "",
     description: "",
     image: "",
+    link: "",
   });
   const [data, setData] = useState([]);
   const [updateData, setUpdateData] = useState({
@@ -112,22 +112,45 @@ export default function Article() {
     var upload = storage
       .ref(`articles/${e.target.files[0].name}`)
       .put(e.target.files[0]);
-    upload.on(
-      "state_changed",
-      (snapshot) => {
-        console.log(snapshot, "///////////////////////////////snapshots");
-      },
-      (error) => {
-        console.log(error);
-      },
-      () => {
-        storage
-          .ref("articles")
-          .child(e.target.files[0].name)
-          .getDownloadURL()
-          .then((url) => setArticle({ ...article, image: url }));
-      }
-    );
+    upload.on("state_changed",
+    (snapshot) => {
+      console.log(snapshot, "///////////////////////////////snapshots");
+    },
+    (error) => {
+      console.log(error);
+    },
+    
+    () => {
+      storage
+        .ref("articles")
+        .child(e.target.files[0].name)
+        .getDownloadURL()
+        .then((url) => setArticle({ ...article, image: url }));
+    });
+  };
+
+
+  const addPdfUploadClick = (e) => {
+    console.log(e.target.files[0].name);
+    var upload = storage
+      .ref(`articles/${e.target.files[0].name}`)
+      .put(e.target.files[0]);
+    upload.on("state_changed",
+    (snapshot) => {
+      console.log(snapshot, "///////////////////////////////snapshots");
+    },
+    (error) => {
+      console.log(error);
+    },
+    
+    () => {
+      storage
+        .ref("articles")
+        .child(e.target.files[0].name)
+        .getDownloadURL()
+        .then((url) => setArticle( { ...article, link: url }));
+        // console.log(url);
+    });
   };
 
   const updateUploadClick = (e) => {
@@ -155,7 +178,7 @@ export default function Article() {
   useEffect(() => {
     const db = firebase.firestore();
     return db
-      .collection("test")
+      .collection("articles")
       .orderBy("createdAt")
       .onSnapshot((snapshot) => {
         const getData = [];
@@ -169,14 +192,15 @@ export default function Article() {
     ///current id for set data to firebase
     setCurrentID(id);
     const db = firebase.firestore();
-    db.collection("test")
+    db.collection("articles")
       .doc(id)
       .get()
       .then((snapshot) => {
         setUpdateData({
-          name: snapshot.data().name,
-          description: snapshot.data().description,
-          image: snapshot.data().image,
+          name: snapshot.data().articleName,
+          description: snapshot.data().content,
+          image: snapshot.data().articleImage,
+          link: snapshot.data().link,
         });
         console.log(snapshot.data());
       })
@@ -188,13 +212,16 @@ export default function Article() {
   };
 
   const articleUpdate = () => {
-    ///add update
+    ///update
     const db = firebase.firestore();
-    db.collection("test").doc(currentID).update({
-      name: updateData.name,
-      image: updateData.image,
-      description: updateData.description,
+    db.collection("articles").doc(currentID).update({
+      articleName: updateData.name,
+      articleImage: updateData.image,
+      content: updateData.description,
+      link: updateData.link,
     });
+
+    setCurrentID();
 
     ///update alert close
     setUpdateAlert(false);
@@ -207,17 +234,16 @@ export default function Article() {
 
   const articleDeleteAlert = () => {
     const db = firebase.firestore();
-    db.collection("test").doc(currentID).delete();
+    db.collection("articles").doc(currentID).delete();
     setCurrentID();
     setDeleteAlert(false);
-  }
+  };
 
   const alertUpdate = (e) => {
     console.log(e.target.name, "//////////////////////// event name");
     console.log(e.target.value, "//////////////////////// event value");
     setUpdateData({ ...updateData, [e.target.name]: e.target.value });
   };
-
 
   const onChangeArticle = (e) => {
     console.log(e.target.value);
@@ -226,16 +252,21 @@ export default function Article() {
 
   const addArticle = () => {
     ///add article
-    firebase.firestore().collection("test").add({
-      name: article.name,
-      image: article.image,
-      description: article.description,
+    firebase.firestore().collection("articles").add({
+      articleName: article.name,
+      articleImage: article.image,
+      content: article.description,
+      link: article.link,
       createdAt: Date(),
     });
-    setAddAlertOpen(false)
-    console.log(Date());
-  };
 
+    setArticle({ name: "", description: "", image: "" });
+    ///add alert close
+    setAddAlertOpen(false);
+    console.log(Date());
+    ///clearing precious data in state
+    
+  };
 
   return (
     <>
@@ -255,7 +286,6 @@ export default function Article() {
         onClose={() => setDeleteAlert(false)}
         TransitionComponent={Transition}
         keepMounted
-        
       >
         <DialogTitle>{"Are you sure want to delete"}</DialogTitle>
         <DialogContent>
@@ -305,11 +335,34 @@ export default function Article() {
         TransitionComponent={Transition}
         keepMounted
       >
-        <DialogTitle>Article</DialogTitle>
+        <DialogTitle>Add Article</DialogTitle>
         <DialogContent>
           <DialogContentText>
             <div className={classes.root}>
               <Grid container spacing={3}>
+
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <Avatar alt="Remy Sharp" src={article.image} />
+                    <input
+                      type="file"
+                      id="imageInput"
+                      onChange={addUploadClick}
+                    />
+                  </Paper>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Paper style={{padding: "20px"}}>
+                   <Typography>Add Pdf</Typography>
+                    <input
+                      type="file"
+                      id="pdf"
+                      onChange={addPdfUploadClick}
+                    />
+                  </Paper>
+                </Grid>
+
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
@@ -323,16 +376,7 @@ export default function Article() {
                     />
                   </Paper>
                 </Grid>
-                <Grid item xs={12}>
-                  <Paper className={classes.paper}>
-                    <Avatar alt="Remy Sharp" src={article.image} />
-                    <input
-                      type="file"
-                      id="imageInput"
-                      onChange={addUploadClick}
-                    />
-                  </Paper>
-                </Grid>
+          
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
@@ -369,10 +413,9 @@ export default function Article() {
       {/* Update article */}
       <Dialog
         open={updateAlert}
-        onClose={() =>  setUpdateAlert(false)}
+        onClose={() => setUpdateAlert(false)}
         TransitionComponent={Transition}
         keepMounted
-        
       >
         <DialogTitle>Article</DialogTitle>
         <DialogContent>
@@ -444,28 +487,31 @@ export default function Article() {
         {data.map((item) => (
           <Grid item>
             <Card className={classes.card}>
-             <Link to={`article/${item.id}`} style= {{textDecoration: "none", color: '#6996FF'}}>
-              <CardActionArea>
-                <CardMedia className={classes.media} image={item.image} />
-                <CardContent>
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="h2"
-                    className={classes.cardTitle}
-                  >
-                    {item.name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p"
-                    className={classes.cardDescription}
-                  >
-                    {item.description}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
+              <Link
+                to={`article/${item.id}`}
+                style={{ textDecoration: "none", color: "#6996FF" }}
+              >
+                <CardActionArea>
+                  <CardMedia className={classes.media} image={item.articleImage} />
+                  <CardContent>
+                    <Typography
+                      gutterBottom
+                      variant="h5"
+                      component="h2"
+                      className={classes.cardTitle}
+                    >
+                      {item.articleName}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      component="p"
+                      className={classes.cardDescription}
+                    >
+                      {item.content}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
               </Link>
               <CardActions>
                 <Button
