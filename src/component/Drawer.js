@@ -106,7 +106,7 @@ export default function HiddenDrawer(props) {
                 <ListItemText primary={"Article"} />
               </ListItem>
             </Link>
-            <Link to="/book" className={classes.link}>
+            <Link to="/book/free" className={classes.link}>
               <ListItem button>
                 <ListItemIcon>
                   <MenuBookIcon />

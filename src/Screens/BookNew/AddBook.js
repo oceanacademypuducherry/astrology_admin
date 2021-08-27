@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import firebase from "../../firebaseConfig/fbConfig";
 import { useParams } from "react-router";
-import MediaCard from "./Video";
-import "./video.css";
+ import BookCard from "./BookScreen";
+// import "../video/video.css";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 
-import TransitionsModal from "./VideoPost";
+import AddBookModel from "../BookNew/AddModel";
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -30,28 +30,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AddVideos() {
+export default function AddBook() {
   const classes = useStyles();
-  const [allVideos, setAllVideos] = useState([]);
-  const [videoType, setVideoType] = useState(true);
+  const [allBooks, setAllBooks] = useState([]);
+  const [bookType, setBookType] = useState(true);
   const { id } = useParams();
 
-  // firebase functions
-  const firestore = firebase.firestore();
- const folder = id !== "free" ? "PaidVedios" : "youtubeVedios";
-  let fireData = firestore.collection(folder);
+  const folder = id !== "free" ? "!=" : "==";
+// console.log(folder)
 
-  // use effect
+  // firebase functions
+const firestore = firebase.firestore();
+let fireData = firestore.collection('booktest');
+// use effect
   useEffect(() => {
-    fireData.onSnapshot((querySnapshot) => {
-      let videoResponse = [];
+    fireData.where('bookType',`${folder}`,'free').onSnapshot((querySnapshot) => {
+      let bookDetails = [];
       querySnapshot.docs.map((doc) => {
         console.log(doc.data());
         let dbField = doc.data();
         dbField["docId"] = doc.id;
-        videoResponse.push(dbField);
+        bookDetails.push(dbField);
       });
-      setAllVideos(videoResponse);
+      setAllBooks(bookDetails);
+      console.log(bookDetails)
     });
   }, [id]);
 
@@ -59,25 +61,25 @@ export default function AddVideos() {
     <div className="add-video">
       <div className="toggle">
         <div>
-          <Link to={`/video/free`} className={"to-link"}>
+          <Link to={`/book/free`} className={"to-link"}>
             <Button
               className={classes.togleBtn}
               variant="outlined"
               color="primary"
               onClick={() => {
-                setVideoType(true);
+                setBookType(true);
               }}
             >
               Free
             </Button>
           </Link>
-          <Link to={`/video/paid`} className={"to-link"}>
+          <Link to={`/book/paid`} className={"to-link"}>
             <Button
               className={classes.togleBtn}
               variant="outlined"
               color="primary"
               onClick={() => {
-                setVideoType(false);
+                setBookType(false);
               }}
             >
               Paid
@@ -87,16 +89,15 @@ export default function AddVideos() {
       </div>
 
       <div className="all-video">
-        {allVideos.map((video) => (
-          <MediaCard
-            videoInfo={video}
-          
-            docId={video.docId}
-            videoType={video.type}
+        {allBooks.map((book) => (
+          <BookCard
+          bookInfo={book}
+            docId={book.docId}
+            videoType={book.type}
           />
         ))}
       </div>
-      <TransitionsModal />
+      <AddBookModel />
     </div>
   );
 }

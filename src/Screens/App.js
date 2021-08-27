@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Container, CssBaseline } from "@material-ui/core";
 import Article from "../Screens/Article";
 import Query from "../Screens/Query";
-import Book from "../Screens/Book";
+// import Book from "../Screens/Book";
+import AddBook from '../Screens/BookNew/AddBook';
 import AddVideos from "../Screens/video/AddVideos";
 import Appbar from "../component/AppBar";
 import HiddenDrawer from "../component/Drawer";
@@ -58,9 +59,9 @@ function App() {
           </Route>
           <div className={classes.content}>
             <div className={classes.toolbar} />
-            <Route exact path="/book">
+            <Route exact path="/book/:id">
               <Container>
-                <Book />
+                <AddBook />
               </Container>
             </Route>
             <Route exact path="/video/:id">
