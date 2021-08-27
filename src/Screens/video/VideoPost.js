@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { dialogStyle } from "./videoPostStyle";
 import firebase from "../../firebaseConfig/fbConfig";
+import "./addpost.css";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {
   Modal,
   TextField,
@@ -19,36 +21,53 @@ import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 
 export default function TransitionsModal() {
   const storage = firebase.storage();
+  const firestore = firebase.firestore();
   const dialogCss = dialogStyle();
   const [videoUpload, setVideoUpload] = useState(true);
   const [imageUpload, setImageUpload] = useState(true);
+  const [videoSize, setVideoSize] = useState("0kb");
+  const [imageSize, setImageSize] = useState("0kb");
+  const [submit, setSubmit] = useState(false);
   const [open, setOpen] = React.useState(false);
-  const [localAssets, setLocalAssets] = useState({
+  const [localAssetsVideo, setLocalAssetsVideo] = useState({
+    video: null,
+    videoStatus: 0,
+    videoSize: "0kb",
+  });
+  const [localAssetsImage, setLocalAssetsImage] = useState({
     image: null,
     imageStatus: 0,
-
-    video: null,
-
-    videoStatus: 0,
+    imageSize: "0kb",
   });
   const [addVideo, setAddVideo] = useState({
-    videoTitle: "",
-    videoDescription: "",
+    title: "",
+    description: "",
     videoImage: "",
     videoUrl: "",
-    videoType: "free",
+    type: "free",
   });
   const handleOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
+    setAddVideo({
+      ...addVideo,
+      title: "",
+      description: "",
+      videoImage: "",
+      videoUrl: "",
+      type: "free",
+    });
+    setLocalAssetsVideo({ video: null, videoStatus: 0 });
+    setLocalAssetsImage({ image: null, imageStatus: 0 });
+    setVideoUpload(true);
   };
 
   //radio field
-  function videoTypeHandler(e) {
+  function typeHandler(e) {
     console.log(e.target.value);
-    setAddVideo({ ...addVideo, videoType: e.target.value });
+    setAddVideo({ ...addVideo, type: e.target.value });
   }
 
   //input field
@@ -57,80 +76,164 @@ export default function TransitionsModal() {
     setAddVideo({ ...addVideo, [name]: value });
   }
   //flie piker
-  const handleChange = (e) => {
+  const handleImageChange = (e) => {
     console.log(e.target.name);
     if (e.target.files[0]) {
-      setLocalAssets({ ...localAssets, [e.target.name]: e.target.files[0] });
-
-      if (e.target.name == "video") {
-        setVideoUpload(false);
-      } else if (e.target.name == "image") {
-        setImageUpload(false);
+      setLocalAssetsImage({
+        ...localAssetsImage,
+        image: e.target.files[0],
+      });
+      setImageUpload(false);
+      var fileSize = e.target.files[0].size;
+      console.log(fileSize.toFixed(2));
+      if (fileSize / (1024 * 1024) < 1) {
+        setImageSize(`${(fileSize / 1024).toFixed(0)}kb`);
+      } else if (fileSize / (1024 * 1024 * 1024) < 1) {
+        setImageSize(`${(fileSize / (1024 * 1024)).toFixed(0)}mb`);
+      } else {
+        setImageSize(`${fileSize.toFixed(0)}gb`);
+      }
+    }
+  };
+  const handleVideoChange = (e) => {
+    console.log(e.target.name);
+    if (e.target.files[0]) {
+      setLocalAssetsVideo({
+        ...localAssetsVideo,
+        video: e.target.files[0],
+      });
+      setVideoUpload(false);
+      var fileSize = e.target.files[0].size;
+      console.log(fileSize.toFixed(2));
+      if (fileSize / (1024 * 1024) < 1) {
+        setVideoSize(`${(fileSize / 1024).toFixed(0)}kb`);
+      } else if (fileSize / (1024 * 1024 * 1024) < 1) {
+        setVideoSize(`${(fileSize / (1024 * 1024)).toFixed(0)}mb`);
+      } else {
+        setVideoSize(`${fileSize.toFixed(0)}gb`);
       }
     }
   };
 
   function handleImageUpload() {
-    const uploadTask = storage
-      .ref(`allVideo/${addVideo.videoType}/${localAssets.image.name}`)
-      .put(localAssets.image);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setLocalAssets({ ...localAssets, imageStatus: progress });
-      },
-      (error) => {
-        console.log(error);
-      },
-      () => {
-        storage
-          .ref(`allVideo/${addVideo.videoType}`)
-          .child(localAssets.image.name)
-          .getDownloadURL()
-          .then((imageUrl) => {
-            console.log(imageUrl);
-            setAddVideo({ ...addVideo, videoImage: imageUrl });
-          });
-      }
-    );
-    console.log(addVideo);
-    console.log(localAssets.image.name);
-    console.log(localAssets.image);
+    setSubmit(true);
+    if (localAssetsImage.image !== null) {
+      const uploadTask = storage
+        .ref(`allVideo/${addVideo.type}/${localAssetsImage.image.name}`)
+        .put(localAssetsImage.image);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setLocalAssetsImage({ ...localAssetsImage, imageStatus: progress });
+        },
+        (error) => {
+          console.log(error);
+        },
+        () => {
+          storage
+            .ref(`allVideo/${addVideo.type}`)
+            .child(localAssetsImage.image.name)
+            .getDownloadURL()
+            .then((imageUrl) => {
+              console.log(imageUrl);
+              setAddVideo({ ...addVideo, videoImage: imageUrl });
+              setSubmit(false);
+            });
+        }
+      );
+    } else {
+      alert("Choose image file");
+    }
   }
   function handleVideoUpload() {
-    const uploadTask = storage
-      .ref(`allVideo/${addVideo.videoType}/${localAssets.video.name}`)
-      .put(localAssets.video);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress = Math.round(
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-        );
-        setLocalAssets({ ...localAssets, videoStatus: progress });
-      },
-      (error) => {
-        console.log(error);
-      },
-      () => {
-        storage
-          .ref(`allVideo/${addVideo.videoType}`)
-          .child(localAssets.video.name)
-          .getDownloadURL()
-          .then((imageUrl) => {
-            console.log(imageUrl);
-            setAddVideo({ ...addVideo, videoUrl: imageUrl });
-          });
-      }
-    );
-    console.log(addVideo);
-    console.log(localAssets.video.name);
-    console.log(localAssets.video);
+    setSubmit(true);
+    if (localAssetsVideo.video !== null) {
+      const uploadTask = storage
+        .ref(`allVideo/${addVideo.type}/${localAssetsVideo.video.name}`)
+        .put(localAssetsVideo.video);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          setLocalAssetsVideo({ ...localAssetsVideo, videoStatus: progress });
+        },
+        (error) => {
+          console.log(error);
+        },
+        () => {
+          storage
+            .ref(`allVideo/${addVideo.type}`)
+            .child(localAssetsVideo.video.name)
+            .getDownloadURL()
+            .then((imageUrl) => {
+              setAddVideo({ ...addVideo, videoUrl: imageUrl });
+              console.log(imageUrl);
+              setSubmit(false);
+            });
+        }
+      );
+    } else {
+      alert("Choose video file");
+    }
+  }
+  // firebase add function
+
+  function addVideoDataToFirestore(addData) {
+    let setColection =
+      addVideo.type === "free" ? "youtubeVedios" : "PaidVedios";
+    firestore
+      .collection(setColection)
+      .add(addData)
+      .then((test) => console.log(test))
+      .catch((error) => console.log(error));
+    // setAddVideo({
+    //   ...addVideo,
+    //   title: "",
+    //   description: "",
+    //   videoImage: "",
+    //   videoUrl: "",
+    //   type: "free",
+    // });
   }
 
+  function onSubmitButton() {
+    var isNotValid = Object.keys(addVideo).some(function (i) {
+      if (addVideo[i] === "") {
+        alert(`${i} is empty`);
+      }
+
+      return addVideo[i] === "";
+    });
+    if (isNotValid) {
+      console.log("field is empty");
+    } else {
+      console.log(addVideo);
+      addVideoDataToFirestore(addVideo);
+      setOpen(false);
+    }
+  }
+  useEffect(() => {
+    setAddVideo({
+      ...addVideo,
+      title: "",
+      description: "",
+      videoImage: "",
+      videoUrl: "",
+      type: "free",
+    });
+    setLocalAssetsVideo({ video: null, videoStatus: 0 });
+    setLocalAssetsImage({ image: null, imageStatus: 0 });
+    setImageSize("0kb");
+    setVideoSize("0kb");
+    return () => {
+      console.log("cleanup add video ");
+    };
+  }, [open]);
   return (
     <div>
       <Fab
@@ -144,7 +247,7 @@ export default function TransitionsModal() {
       <Modal
         className={dialogCss.modal}
         open={open}
-        onClose={handleClose}
+        // onClose={handleClose}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -153,13 +256,15 @@ export default function TransitionsModal() {
       >
         <Fade in={open}>
           <div className={dialogCss.paper}>
+            {localAssetsImage.imageStatus}
+            sdfsdsdf
             <TextField
               className={dialogCss.textFieldStyle}
               type="text"
               label="Title"
               variant="outlined"
-              name="videoTitle"
-              value={addVideo.videoTitle}
+              name="title"
+              value={addVideo.title}
               onChange={onChangeHandler}
             />
             <TextField
@@ -167,14 +272,14 @@ export default function TransitionsModal() {
               type="text"
               label="Description"
               variant="outlined"
-              name="videoDescription"
-              value={addVideo.videoDescription}
+              name="description"
+              value={addVideo.description}
               onChange={onChangeHandler}
             />
             <RadioGroup
-              name="videoType"
-              value={addVideo.videoType}
-              onChange={videoTypeHandler}
+              name="type"
+              value={addVideo.type}
+              onChange={typeHandler}
             >
               <div className="upload-file">
                 <FormControlLabel
@@ -189,23 +294,34 @@ export default function TransitionsModal() {
                 />
               </div>
             </RadioGroup>
-            {addVideo.videoType === "paid" ? (
+            {addVideo.type === "paid" ? (
               <div className="upload-file">
                 <input
                   className={dialogCss.textFieldStyle}
                   type="file"
                   name="video"
-                  onChange={handleChange}
+                  onChange={handleVideoChange}
                   placeholder="select video"
                 />
-                {localAssets.videoStatus === 0 ? (
-                  <button disabled={videoUpload} onClick={handleVideoUpload}>
-                    upload
+                {localAssetsVideo.videoStatus === 0 ? (
+                  <button
+                    className="uploadBtn"
+                    disabled={videoUpload}
+                    onClick={handleVideoUpload}
+                  >
+                    <CloudUploadIcon
+                      style={{ color: videoUpload ? "gray" : "green" }}
+                    />{" "}
+                    <span
+                      className={`file-size ${videoUpload && "disabled"}`}
+                    >{`${videoSize}`}</span>
                   </button>
-                ) : localAssets.videoStatus === 100 ? (
+                ) : localAssetsVideo.videoStatus === 100 ? (
                   <CheckCircleIcon className={dialogCss.completedIcon} />
                 ) : (
-                  <CircularProgressWithLabel value={localAssets.videoStatus} />
+                  <CircularProgressWithLabel
+                    value={localAssetsVideo.videoStatus}
+                  />
                 )}
               </div>
             ) : (
@@ -221,47 +337,59 @@ export default function TransitionsModal() {
             )}
             <div className="upload-file">
               <input
+                id="imageUpload"
                 name="image"
                 className={dialogCss.textFieldStyle}
                 type="file"
-                onChange={handleChange}
-                placeholder="select image"
+                onChange={handleImageChange}
               />
-              {localAssets.imageStatus === 0 ? (
-                <button disabled={imageUpload} onClick={handleImageUpload}>
-                  upload
+
+              {localAssetsImage.imageStatus === 0 ? (
+                <button
+                  className="uploadBtn"
+                  disabled={imageUpload}
+                  onClick={handleImageUpload}
+                >
+                  <CloudUploadIcon
+                    style={{ color: imageUpload ? "gray" : "green" }}
+                  />{" "}
+                  <span
+                    className={`file-size ${imageUpload && "disabled"}`}
+                  >{`${imageSize}`}</span>
                 </button>
-              ) : localAssets.imageStatus === 100 ? (
+              ) : localAssetsImage.imageStatus === 100 ? (
                 <CheckCircleIcon className={dialogCss.completedIcon} />
               ) : (
-                <CircularProgressWithLabel value={localAssets.imageStatus} />
+                <CircularProgressWithLabel
+                  value={localAssetsImage.imageStatus}
+                />
               )}
             </div>
-            <Button
-              className={dialogCss.submitButtonStyle}
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                // if (localAssets.image !== null) {
-                //   handleUpload();
-                // } else {
-                //   alert("select image");
-                // }
-                // if (addVideo.videoUrl.length === 0) {
-                //   handleUpload({
-                //     storagePath: `allVideo/${addVideo.videoType}`,
-                //     pickedFile: localAssets.video,
-                //     localState: localAssets,
-                //     localStateUploadStatus: "videoStatus",
-                //     mainStateProps: "videoUrl",
-                //   });
-                // } else {
-                //   alert("select video");
-                // }
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-around",
+                marginTop: 20,
               }}
             >
-              Submit
-            </Button>
+              <Button
+                className={dialogCss.submitButtonStyle}
+                variant="contained"
+                color="primary"
+                onClick={onSubmitButton}
+                disabled={submit}
+              >
+                Submit
+              </Button>
+              <Button
+                className={dialogCss.submitButtonStyle}
+                variant="contained"
+                color="primary"
+                onClick={handleClose}
+              >
+                Calcel
+              </Button>
+            </div>
           </div>
         </Fade>
       </Modal>
