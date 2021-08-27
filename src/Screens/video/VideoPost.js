@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { dialogStyle } from "./videoPostStyle";
 import firebase from "../../firebaseConfig/fbConfig";
 import "./addpost.css";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import {
   Modal,
   TextField,
@@ -24,15 +25,19 @@ export default function TransitionsModal() {
   const dialogCss = dialogStyle();
   const [videoUpload, setVideoUpload] = useState(true);
   const [imageUpload, setImageUpload] = useState(true);
+  const [videoSize, setVideoSize] = useState("0kb");
+  const [imageSize, setImageSize] = useState("0kb");
   const [submit, setSubmit] = useState(false);
   const [open, setOpen] = React.useState(false);
   const [localAssetsVideo, setLocalAssetsVideo] = useState({
     video: null,
     videoStatus: 0,
+    videoSize: "0kb",
   });
   const [localAssetsImage, setLocalAssetsImage] = useState({
     image: null,
     imageStatus: 0,
+    imageSize: "0kb",
   });
   const [addVideo, setAddVideo] = useState({
     title: "",
@@ -46,6 +51,17 @@ export default function TransitionsModal() {
   };
   const handleClose = () => {
     setOpen(false);
+    setAddVideo({
+      ...addVideo,
+      title: "",
+      description: "",
+      videoImage: "",
+      videoUrl: "",
+      type: "free",
+    });
+    setLocalAssetsVideo({ video: null, videoStatus: 0 });
+    setLocalAssetsImage({ image: null, imageStatus: 0 });
+    setVideoUpload(true);
   };
 
   //radio field
@@ -68,6 +84,15 @@ export default function TransitionsModal() {
         image: e.target.files[0],
       });
       setImageUpload(false);
+      var fileSize = e.target.files[0].size;
+      console.log(fileSize.toFixed(2));
+      if (fileSize / (1024 * 1024) < 1) {
+        setImageSize(`${(fileSize / 1024).toFixed(0)}kb`);
+      } else if (fileSize / (1024 * 1024 * 1024) < 1) {
+        setImageSize(`${(fileSize / (1024 * 1024)).toFixed(0)}mb`);
+      } else {
+        setImageSize(`${fileSize.toFixed(0)}gb`);
+      }
     }
   };
   const handleVideoChange = (e) => {
@@ -78,6 +103,15 @@ export default function TransitionsModal() {
         video: e.target.files[0],
       });
       setVideoUpload(false);
+      var fileSize = e.target.files[0].size;
+      console.log(fileSize.toFixed(2));
+      if (fileSize / (1024 * 1024) < 1) {
+        setVideoSize(`${(fileSize / 1024).toFixed(0)}kb`);
+      } else if (fileSize / (1024 * 1024 * 1024) < 1) {
+        setVideoSize(`${(fileSize / (1024 * 1024)).toFixed(0)}mb`);
+      } else {
+        setVideoSize(`${fileSize.toFixed(0)}gb`);
+      }
     }
   };
 
@@ -111,7 +145,7 @@ export default function TransitionsModal() {
         }
       );
     } else {
-      alert("Choose File");
+      alert("Choose image file");
     }
   }
   function handleVideoUpload() {
@@ -144,7 +178,7 @@ export default function TransitionsModal() {
         }
       );
     } else {
-      alert("Choose file");
+      alert("Choose video file");
     }
   }
   // firebase add function
@@ -194,6 +228,8 @@ export default function TransitionsModal() {
     });
     setLocalAssetsVideo({ video: null, videoStatus: 0 });
     setLocalAssetsImage({ image: null, imageStatus: 0 });
+    setImageSize("0kb");
+    setVideoSize("0kb");
     return () => {
       console.log("cleanup add video ");
     };
@@ -211,7 +247,7 @@ export default function TransitionsModal() {
       <Modal
         className={dialogCss.modal}
         open={open}
-        onClose={handleClose}
+        // onClose={handleClose}
         closeAfterTransition
         BackdropComponent={Backdrop}
         BackdropProps={{
@@ -220,6 +256,8 @@ export default function TransitionsModal() {
       >
         <Fade in={open}>
           <div className={dialogCss.paper}>
+            {localAssetsImage.imageStatus}
+            sdfsdsdf
             <TextField
               className={dialogCss.textFieldStyle}
               type="text"
@@ -271,7 +309,12 @@ export default function TransitionsModal() {
                     disabled={videoUpload}
                     onClick={handleVideoUpload}
                   >
-                    upload
+                    <CloudUploadIcon
+                      style={{ color: videoUpload ? "gray" : "green" }}
+                    />{" "}
+                    <span
+                      className={`file-size ${videoUpload && "disabled"}`}
+                    >{`${videoSize}`}</span>
                   </button>
                 ) : localAssetsVideo.videoStatus === 100 ? (
                   <CheckCircleIcon className={dialogCss.completedIcon} />
@@ -299,15 +342,20 @@ export default function TransitionsModal() {
                 className={dialogCss.textFieldStyle}
                 type="file"
                 onChange={handleImageChange}
-                placeholder="select image"
               />
+
               {localAssetsImage.imageStatus === 0 ? (
                 <button
                   className="uploadBtn"
                   disabled={imageUpload}
                   onClick={handleImageUpload}
                 >
-                  upload
+                  <CloudUploadIcon
+                    style={{ color: imageUpload ? "gray" : "green" }}
+                  />{" "}
+                  <span
+                    className={`file-size ${imageUpload && "disabled"}`}
+                  >{`${imageSize}`}</span>
                 </button>
               ) : localAssetsImage.imageStatus === 100 ? (
                 <CheckCircleIcon className={dialogCss.completedIcon} />
@@ -317,15 +365,31 @@ export default function TransitionsModal() {
                 />
               )}
             </div>
-            <Button
-              className={dialogCss.submitButtonStyle}
-              variant="contained"
-              color="primary"
-              onClick={onSubmitButton}
-              disabled={submit}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-around",
+                marginTop: 20,
+              }}
             >
-              Submit
-            </Button>
+              <Button
+                className={dialogCss.submitButtonStyle}
+                variant="contained"
+                color="primary"
+                onClick={onSubmitButton}
+                disabled={submit}
+              >
+                Submit
+              </Button>
+              <Button
+                className={dialogCss.submitButtonStyle}
+                variant="contained"
+                color="primary"
+                onClick={handleClose}
+              >
+                Calcel
+              </Button>
+            </div>
           </div>
         </Fade>
       </Modal>
