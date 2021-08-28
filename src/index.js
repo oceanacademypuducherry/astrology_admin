@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./Screens/App";
+import Login from './Screens/Login'
 
 
 
-ReactDOM.render(<App/>, document.querySelector("#root"));
+ReactDOM.render(<Login/>, document.querySelector("#root"));
