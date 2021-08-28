@@ -58,8 +58,9 @@ function Appbar() {
                 background: "#1F6DE2",
                 color: "white",
               }}
+              onClick = {()=>{localStorage.clear()}}
             >
-              Log out
+              Log out 
             </Button>
           </Box>
         </Toolbar>

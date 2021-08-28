@@ -315,6 +315,9 @@ const classes = useStyles();
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
+                     multiline
+                     rows={5}
+                     rowsMax={6}
                       id="outlined-basic"
                       label="Description"
                       name="description"
