@@ -13,7 +13,7 @@ import SimpleModal from "./video/VideoPost";
 import TransitionsModal from "./video/VideoPost";
 import ArticleDetails from "./ArticleDetails";
 import BookView from "./BookView";
-import Zoom from "./Zoom/zoom";
+import Zoom from "./Zoom/Zoom";
 
 const drawerWidth = 240;
 

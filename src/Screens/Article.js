@@ -482,8 +482,6 @@ export default function Article() {
 
       {/* article Design start */}
       <Grid container direction="row" justifyContent="flex-start" spacing={10}>
-        {/* {JSON.stringify(updateData)} */}
-
         {data.map((item) => (
           <Grid item>
             <Card className={classes.card}>
