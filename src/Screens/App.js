@@ -13,6 +13,7 @@ import SimpleModal from "./video/VideoPost";
 import TransitionsModal from "./video/VideoPost";
 import ArticleDetails from "./ArticleDetails";
 import BookView from "./BookView";
+import Zoom from "./Zoom/zoom";
 
 const drawerWidth = 240;
 
@@ -77,6 +78,11 @@ function App() {
             <Route exact path="/query">
               <Container>
                 <Query />
+              </Container>
+            </Route>
+            <Route exact path="/zoom">
+              <Container>
+                <Zoom />
               </Container>
             </Route>
             <Route exact path="/book/preview/:id">
