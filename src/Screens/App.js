@@ -13,12 +13,10 @@ import SimpleModal from "./video/VideoPost";
 import TransitionsModal from "./video/VideoPost";
 import ArticleDetails from "./ArticleDetails";
 import BookView from "./BookView";
-<<<<<<< HEAD
-import Zoom from "./Zoom/zoom";
-import Login from './Login'
-=======
 import Zoom from "./Zoom/Zoom";
->>>>>>> 9f5a34863c4db71b5b1f0d121ed6129874d73854
+import BookingDetails from "./Zoom/BookingDetails";
+import Login from './Login'
+
 
 const drawerWidth = 240;
 
@@ -105,6 +103,11 @@ function App() {
             <Route exact path="/book/preview/:id">
               <Container>
                 <BookView />
+              </Container>
+            </Route>
+            <Route exact path="/zoom/:id">
+              <Container>
+                <BookingDetails />
               </Container>
             </Route>
             <Route exact path="/login">
