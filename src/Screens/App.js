@@ -13,8 +13,12 @@ import SimpleModal from "./video/VideoPost";
 import TransitionsModal from "./video/VideoPost";
 import ArticleDetails from "./ArticleDetails";
 import BookView from "./BookView";
+<<<<<<< HEAD
 import Zoom from "./Zoom/zoom";
 import Login from './Login'
+=======
+import Zoom from "./Zoom/Zoom";
+>>>>>>> 9f5a34863c4db71b5b1f0d121ed6129874d73854
 
 const drawerWidth = 240;
 
