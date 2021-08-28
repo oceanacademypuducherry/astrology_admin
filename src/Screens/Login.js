@@ -8,10 +8,11 @@ export default function Login() {
          'username':'',
          'password' :''
      })
+     const gettingValue = JSON.parse(localStorage.getItem('MJADM')) 
      useEffect(() => {
 
 
-        const gettingValue = JSON.parse(localStorage.getItem('MJADM')) 
+        
         console.log(gettingValue)
         if(gettingValue !== null){
             setLogin(true)
