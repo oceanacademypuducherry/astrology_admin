@@ -222,7 +222,7 @@ export default function EditVideo({ videoInfo, docId, videoType }) {
                   />
                   <img
                     src={editVideo.videoImage}
-                    alt=""
+                    alt="Upload Image"
                     onClick={() => {
                       let files = document.getElementById("files");
 

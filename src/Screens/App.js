@@ -1,11 +1,11 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Container, CssBaseline } from "@material-ui/core";
 import Article from "../Screens/Article";
 import Query from "../Screens/Query";
 // import Book from "../Screens/Book";
-import AddBook from '../Screens/BookNew/AddBook';
+import AddBook from "../Screens/BookNew/AddBook";
 import AddVideos from "../Screens/video/AddVideos";
 import Appbar from "../component/AppBar";
 import HiddenDrawer from "../component/Drawer";
@@ -40,13 +40,13 @@ const useStyles = makeStyles((theme) => ({
 
 function App() {
   const classes = useStyles();
-  const suma = true
-  const gettingValue = JSON.parse(localStorage.getItem('MYADM'))
+  const suma = true;
+  const gettingValue = JSON.parse(localStorage.getItem("MYADM"));
   // useEffect(() => {
-//   if(gettingValue === null){
+  //   if(gettingValue === null){
   //     window.location = '/login'
   //   }
-  // return () =>{} 
+  // return () =>{}
   // console.log('99999999999999999999')
   // },[suma])
 
@@ -109,11 +109,11 @@ function App() {
               </Container>
             </Route>
             <Route exact path="/login">
-            <Container className={classes.content}>
-              <div className={classes.toolbar} />
-              <Login />
-            </Container>
-          </Route>
+              <Container className={classes.content}>
+                <div className={classes.toolbar} />
+                <Login />
+              </Container>
+            </Route>
           </div>
         </Switch>
       </Router>
