@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "astrology-7cec1"
+  },
+  "targets": {
+    "astrology-7cec1": {
+      "hosting": {
+        "admin": [
+          "makarajothiadmin-a07c8"
+        ]
+      }
+    }
+  }
+}
