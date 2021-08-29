@@ -16,6 +16,20 @@ function BookingDetails() {
   console.log(id, "☻☻☻☻☻☻☻");
   const [data, setData] = useState([]);
   const [purposeFor, setPurposeFor] = useState([]);
+  let monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   useEffect(() => {
     const db = firebase.firestore();
@@ -24,7 +38,7 @@ function BookingDetails() {
       .doc(id)
       .onSnapshot((snapshot) => {
         setData(snapshot.data());
-        setPurposeFor((snapshot.data().purposeFor));
+        setPurposeFor(snapshot.data().purposeFor);
         console.log(snapshot.data().time.toDate().getHours(), "////////hours");
         console.log(
           snapshot.data().time.toDate().getMinutes(),
@@ -49,7 +63,7 @@ function BookingDetails() {
 
   return (
     <>
-      {/* {JSON.stringify(purposeFor)} */}
+      {JSON.stringify(`${data.time.toDate().getDate()}`)}
       <Grid container spacing={3} style={{ margin: "0%", padding: "0%" }}>
         <Grid item xs={12} md={6}>
           <div className={classes.leftContent}>
@@ -131,20 +145,7 @@ function BookingDetails() {
             </Paper>
             <Paper variant="outlined" className={classes.paper}>
               <h3>APPOINTMENT TIME</h3>
-              <p>
-                {
-                  <p>
-                    {Intl.DateTimeFormat("en-US", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                    }).format(data.time)}
-                  </p>
-                }
-              </p>
+              {/* <p>`${data.time.toDate().getDate()}`</p> */}
             </Paper>
             <Paper variant="outlined" className={classes.paper}>
               <h3>PAYMENT</h3>

@@ -10,7 +10,7 @@ import {
   Grid,
   IconButton,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { useStyles } from "./MUI/MainCardDesignMUI";
@@ -40,22 +40,27 @@ export default function MainCardDesign({ data }) {
     "December",
   ];
 
-  const handleOpen = (id) => {
-    console.log(id, "♦♦♦♦♦♦♦ Set document id ♦♦♦♦♦♦♦");
-    setDocumentId(id);
-    const db = firebase.firestore();
-    db.collection("booking")
-      .doc(id)
-      .get()
-      .then((snapshot) => {
-        setSpecificData(snapshot.data());
-        console.log(snapshot.data(), "☻☻☻☻☻☻☻☻☻, get data");
-        //  setData(snapshot.data());
-      })
-      .catch((e) => console.log(e));
+//   useEffect(() => {
+   
+// //  console.log(toDate().getDate());
+//   }, [])
 
-    setIsOpen(!isOpen);
-  };
+  // const handleOpen = (id) => {
+  //   console.log(id, "♦♦♦♦♦♦♦ Set document id ♦♦♦♦♦♦♦");
+  //   setDocumentId(id);
+  //   const db = firebase.firestore();
+  //   db.collection("booking")
+  //     .doc(id)
+  //     .get()
+  //     .then((snapshot) => {
+  //       setSpecificData(snapshot.data());
+  //       console.log(snapshot.data(), "☻☻☻☻☻☻☻☻☻, get data");
+  //       //  setData(snapshot.data());
+  //     })
+  //     .catch((e) => console.log(e));
+
+  //   setIsOpen(!isOpen);
+  // };
 
   return (
     <>
@@ -129,19 +134,11 @@ export default function MainCardDesign({ data }) {
                       fontFamily: "Ubuntu",
                     }}
                   >
-                    {/* {Intl.DateTimeFormat("en-US", {
-                    // year: "2-digit",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                  }).format(data.time)} */}
                     {`${data.time.toDate().getDate()} ${
                       monthNames[data.time.toDate().getMonth()]}  
                       ${data.time.toDate().getFullYear()}  
-                      ${data.time.toDate().getHours()}:${data.time.toDate().getMinutes()}
-                      ${((data.time.toDate().getHours() + 11) % 12 + 1) + data.time >= 12 ? "PM":"AM"}
+                      ${data.time.toDate().getHours() % 12  || 12}:${data.time.toDate().getMinutes()}
+                      ${data.time.toDate().getHours() >= 12 ? 'PM' : 'AM'}
                     `}
                   </p>
                 </CardContent>
