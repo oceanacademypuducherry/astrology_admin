@@ -1,0 +1,12 @@
+.ab-image-div {
+  height: 100px;
+  width: 70px;
+  background-color: red;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.ab-image-div img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
