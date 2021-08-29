@@ -21,8 +21,8 @@ export default function Login() {
        
         
      }, [login])
-    const user = 'jayalatha'
-    const pass = '12345'
+    const user = 'astro'
+    const pass = 'astro@123'
 
     const handleChange = ((e)=>{
         const{name,value} = e.target
@@ -47,7 +47,7 @@ export default function Login() {
     return (
 
 
-login ? <App/>:<div >
+login ? <App/>: <div >
     <label for="username"><b>Username</b></label>
     <input type="text" placeholder="Enter Username" name="username" onChange = {handleChange}/><br/>
 
