@@ -98,13 +98,13 @@ export default function Article() {
     description: "",
     postId: "",
     image: "",
-    link: "",
   });
   const [data, setData] = useState([]);
   const [updateData, setUpdateData] = useState({
     name: "",
     image: "",
     description: "",
+    postId: "",
   });
   const [currentID, setCurrentID] = useState();
 
@@ -261,7 +261,6 @@ export default function Article() {
       articleImage: article.image,
       content: article.description,
       postId: article.postId,
-      link: article.link,
       createdAt: Date(),
     });
 
@@ -291,7 +290,7 @@ export default function Article() {
         TransitionComponent={Transition}
         keepMounted
       >
-        <DialogTitle>{"Are you sure want to delete"}</DialogTitle>
+        <DialogTitle>Are you sure want to delete</DialogTitle>
         <DialogContent>
           <DialogContentText>
             <div className={classes.root}>
@@ -460,6 +459,21 @@ export default function Article() {
                       variant="outlined"
                       name="description"
                       value={updateData.description}
+                      style={{ width: "100%" }}
+                      // maxLength={12}
+                      onChange={alertUpdate}
+                    />
+                  </Paper>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      id="outlined-basic"
+                      label="Post Id"
+                      variant="outlined"
+                      name="postId"
+                      value={updateData.postId}
                       style={{ width: "100%" }}
                       // maxLength={12}
                       onChange={alertUpdate}
