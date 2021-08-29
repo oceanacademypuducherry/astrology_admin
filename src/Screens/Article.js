@@ -96,6 +96,7 @@ export default function Article() {
   const [article, setArticle] = useState({
     name: "",
     description: "",
+    postId: "",
     image: "",
     link: "",
   });
@@ -112,45 +113,48 @@ export default function Article() {
     var upload = storage
       .ref(`articles/${e.target.files[0].name}`)
       .put(e.target.files[0]);
-    upload.on("state_changed",
-    (snapshot) => {
-      console.log(snapshot, "///////////////////////////////snapshots");
-    },
-    (error) => {
-      console.log(error);
-    },
-    
-    () => {
-      storage
-        .ref("articles")
-        .child(e.target.files[0].name)
-        .getDownloadURL()
-        .then((url) => setArticle({ ...article, image: url }));
-    });
-  };
+    upload.on(
+      "state_changed",
+      (snapshot) => {
+        console.log(snapshot, "///////////////////////////////snapshots");
+      },
+      (error) => {
+        console.log(error);
+      },
 
+      () => {
+        storage
+          .ref("articles")
+          .child(e.target.files[0].name)
+          .getDownloadURL()
+          .then((url) => setArticle({ ...article, image: url }));
+      }
+    );
+  };
 
   const addPdfUploadClick = (e) => {
     console.log(e.target.files[0].name);
     var upload = storage
       .ref(`articles/${e.target.files[0].name}`)
       .put(e.target.files[0]);
-    upload.on("state_changed",
-    (snapshot) => {
-      console.log(snapshot, "///////////////////////////////snapshots");
-    },
-    (error) => {
-      console.log(error);
-    },
-    
-    () => {
-      storage
-        .ref("articles")
-        .child(e.target.files[0].name)
-        .getDownloadURL()
-        .then((url) => setArticle( { ...article, link: url }));
+    upload.on(
+      "state_changed",
+      (snapshot) => {
+        console.log(snapshot, "///////////////////////////////snapshots");
+      },
+      (error) => {
+        console.log(error);
+      },
+
+      () => {
+        storage
+          .ref("articles")
+          .child(e.target.files[0].name)
+          .getDownloadURL()
+          .then((url) => setArticle({ ...article, link: url }));
         // console.log(url);
-    });
+      }
+    );
   };
 
   const updateUploadClick = (e) => {
@@ -256,6 +260,7 @@ export default function Article() {
       articleName: article.name,
       articleImage: article.image,
       content: article.description,
+      postId: article.postId,
       link: article.link,
       createdAt: Date(),
     });
@@ -265,7 +270,6 @@ export default function Article() {
     setAddAlertOpen(false);
     console.log(Date());
     ///clearing precious data in state
-    
   };
 
   return (
@@ -340,7 +344,6 @@ export default function Article() {
           <DialogContentText>
             <div className={classes.root}>
               <Grid container spacing={3}>
-
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <Avatar alt="Remy Sharp" src={article.image} />
@@ -348,17 +351,6 @@ export default function Article() {
                       type="file"
                       id="imageInput"
                       onChange={addUploadClick}
-                    />
-                  </Paper>
-                </Grid>
-
-                <Grid item xs={12}>
-                  <Paper style={{padding: "20px"}}>
-                   <Typography>Add Pdf</Typography>
-                    <input
-                      type="file"
-                      id="pdf"
-                      onChange={addPdfUploadClick}
                     />
                   </Paper>
                 </Grid>
@@ -376,7 +368,7 @@ export default function Article() {
                     />
                   </Paper>
                 </Grid>
-          
+
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
@@ -386,6 +378,20 @@ export default function Article() {
                       variant="outlined"
                       style={{ width: "100%" }}
                       value={article.description}
+                      onChange={onChangeArticle}
+                    />
+                  </Paper>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      name="postId"
+                      id="outlined-basic"
+                      label="Post Id"
+                      variant="outlined"
+                      style={{ width: "100%" }}
+                      value={article.postId}
                       onChange={onChangeArticle}
                     />
                   </Paper>
@@ -490,7 +496,10 @@ export default function Article() {
                 style={{ textDecoration: "none", color: "#6996FF" }}
               >
                 <CardActionArea>
-                  <CardMedia className={classes.media} image={item.articleImage} />
+                  <CardMedia
+                    className={classes.media}
+                    image={item.articleImage}
+                  />
                   <CardContent>
                     <Typography
                       gutterBottom

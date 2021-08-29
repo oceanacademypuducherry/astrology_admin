@@ -67,62 +67,71 @@ export default function MainCardDesign({ data }) {
         {data.map((data) => (
           <Grid item>
             <Card className={classes.root}>
-              <CardHeader
-                avatar={
-                  <Avatar className={classes.avatar} src={data.profile} />
-                }
-                action={
-                  data.userZoomLink && data.adminZoomLink !== "" ? (
-                    <IconButton disabled>
-                      <CheckCircleIcon style={{ color: "green" }} />
-                    </IconButton>
-                  ) : (
-                    <IconButton disabled>
-                      <CancelIcon style={{ color: "red" }} />
-                    </IconButton>
-                  )
-                }
-                title={data.userName}
-                subheader="Time"
-              />
-              <CardMedia
-                className={classes.media}
-                image={data.jadhagam}
-                //   title="Sorry! NO Jadhagam is Uploaded"
-              />
-              <CardContent>
-                <Typography
-                  variant="subtitle1"
-                  color="textSecondary"
-                  style={{ fontWeight: "bold" }}
-                >
-                  Phone Number
-                </Typography>
-                <Typography variant="subtitle2" color="textSecondary">
-                  {data.phoneNumber}
-                </Typography>
-              </CardContent>
+              <Link to={`zoom/${data.id}`} style={{ textDecoration: "none" }}>
+                <CardHeader
+                  style={{ color: "black" }}
+                  avatar={
+                    <Avatar className={classes.avatar} src={data.profile} />
+                  }
+                  action={
+                    data.userZoomLink && data.adminZoomLink !== "" ? (
+                      <IconButton disabled>
+                        <CheckCircleIcon style={{ color: "green" }} />
+                      </IconButton>
+                    ) : (
+                      <IconButton disabled>
+                        <CancelIcon style={{ color: "red" }} />
+                      </IconButton>
+                    )
+                  }
+                  title={data.userName}
+                  subheader="1 July, 2021"
+                />
+                <CardMedia
+                  className={classes.media}
+                  image={data.jadhagam}
+                  //   title="Sorry! NO Jadhagam is Uploaded"
+                />
+                <CardContent>
+                  <h3
+                    variant="subtitle1"
+                    color="textSecondary"
+                    style={{
+                      marginBottom: "5px",
+                      color: "grey",
+                      fontFamily: "Ubuntu",
+                      marginTop: "0px",
+                    }}
+                  >
+                    Phone Number
+                  </h3>
+                  <p
+                    variant="subtitle2"
+                    color="textSecondary"
+                    style={{
+                      marginTop: "0px",
+                      marginBottom: "0px",
+                      color: "grey",
+                      fontFamily: "Ubuntu",
+                    }}
+                  >
+                    {data.phoneNumber}
+                  </p>
+                </CardContent>
+              </Link>
               <CardActions>
-                {data.userZoomLink && data.adminZoomLink !== "" ? (
-                  <a href="https://zoom.us/" style={{ textDecoration: "none" }}>
-                    <Button variant="outlined" color="secondary">
-                      Launch Zoom
-                    </Button>
-                  </a>
-                ) : (
+                <a
+                  href={data.adminZoomLink}
+                  style={{ textDecoration: "none", width: "100%" }}
+                >
                   <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={() => handleOpen(data.id)}
+                    style={{ width: "100%" }}
                   >
-                    Schedule
+                    Launch Zoom
                   </Button>
-                )}
-                <Link to={`zoom/${data.id}`} style={{ textDecoration: "none" }}>
-                  <Button variant="outlined" color="secondary">
-                    View
-                  </Button>
-                </Link>
+                </a>
               </CardActions>
             </Card>
           </Grid>
