@@ -33,16 +33,12 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-function Appbar() {
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+function Appbar({handleDrawerToggle}) {
   const logout = () =>{
     localStorage.clear();
     window.location='/login'
   }
   const classes = useStyles();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
   return (
     <div>
       <AppBar position="fixed" className={classes.appBar}>

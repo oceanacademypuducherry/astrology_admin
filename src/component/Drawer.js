@@ -13,6 +13,7 @@ import AlternateEmailIcon from "@material-ui/icons/AlternateEmail";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Appbar from "./AppBar";
 
 const drawerWidth = 240;
 
@@ -86,6 +87,14 @@ export default function HiddenDrawer(props) {
                 <ListItemText primary={"Query"} />
               </ListItem>
             </Link>
+            <Link to="/zoom" className={classes.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <AlternateEmailIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Zoom"} />
+              </ListItem>
+            </Link>
           </List>
         </Drawer>
       </Hidden>
@@ -141,6 +150,7 @@ export default function HiddenDrawer(props) {
           </List>
         </Drawer>
       </Hidden>
+      <Appbar handleDrawerToggle={handleDrawerToggle}/>
     </div>
   );
 }

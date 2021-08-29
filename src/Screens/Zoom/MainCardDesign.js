@@ -25,6 +25,20 @@ export default function MainCardDesign({ data }) {
   const [isOpen, setIsOpen] = useState(false);
   const [specificData, setSpecificData] = useState();
   const [documentId, setDocumentId] = useState();
+  let monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   const handleOpen = (id) => {
     console.log(id, "♦♦♦♦♦♦♦ Set document id ♦♦♦♦♦♦♦");
@@ -63,7 +77,7 @@ export default function MainCardDesign({ data }) {
       />
       {/* ScheduleAlert */}
 
-      <Grid container direction="row" justifyContent="flex-start" spacing={10}>
+      <Grid container direction="row" justifyContent="flex-start" spacing={8}>
         {data.map((data) => (
           <Grid item>
             <Card className={classes.root}>
@@ -85,7 +99,7 @@ export default function MainCardDesign({ data }) {
                     )
                   }
                   title={data.userName}
-                  subheader="1 July, 2021"
+                  subheader={data.phoneNumber}
                 />
                 <CardMedia
                   className={classes.media}
@@ -103,7 +117,7 @@ export default function MainCardDesign({ data }) {
                       marginTop: "0px",
                     }}
                   >
-                    Phone Number
+                    Appointment Time
                   </h3>
                   <p
                     variant="subtitle2"
@@ -115,7 +129,20 @@ export default function MainCardDesign({ data }) {
                       fontFamily: "Ubuntu",
                     }}
                   >
-                    {data.phoneNumber}
+                    {/* {Intl.DateTimeFormat("en-US", {
+                    // year: "2-digit",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  }).format(data.time)} */}
+                    {`${data.time.toDate().getDate()} ${
+                      monthNames[data.time.toDate().getMonth()]}  
+                      ${data.time.toDate().getFullYear()}  
+                      ${data.time.toDate().getHours()}:${data.time.toDate().getMinutes()}
+                      ${((data.time.toDate().getHours() + 11) % 12 + 1) + data.time >= 12 ? "PM":"AM"}
+                    `}
                   </p>
                 </CardContent>
               </Link>
