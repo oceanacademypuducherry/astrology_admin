@@ -105,11 +105,7 @@ export default function MainCardDesign({ data }) {
               <CardActions>
                 {data.userZoomLink && data.adminZoomLink !== "" ? (
                   <a href="https://zoom.us/" style={{ textDecoration: "none" }}>
-                    <Button
-                      variant="outlined"
-                      color="secondary"
-                      // onClick={() => handleOpen(data.id)}
-                    >
+                    <Button variant="outlined" color="secondary">
                       Launch Zoom
                     </Button>
                   </a>
@@ -122,7 +118,7 @@ export default function MainCardDesign({ data }) {
                     Schedule
                   </Button>
                 )}
-                <Link to= {`zoom/${data.id}`}>
+                <Link to={`zoom/${data.id}`} style={{ textDecoration: "none" }}>
                   <Button variant="outlined" color="secondary">
                     View
                   </Button>

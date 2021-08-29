@@ -22,7 +22,7 @@ export default function Login() {
         
      }, [login])
     const user = 'astro'
-    const pass = '@astro123'
+    const pass = 'astro@123'
 
     const handleChange = ((e)=>{
         const{name,value} = e.target
