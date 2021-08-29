@@ -117,7 +117,7 @@ const alertClose = () => {
     setOpen(false); };
 
     function getBookData() {
-        const bookData = firestore.collection('booktest').doc(docId).get();
+        const bookData = firestore.collection('books').doc(docId).get();
         bookData
           .then((data) => {
             console.log(data.data());
@@ -187,7 +187,7 @@ const bookUpdate = () => {
             alert('field empty')
           }else{
             const db = firebase.firestore();
-            db.collection("booktest").doc(docId).update({
+            db.collection("books").doc(docId).update({
               authorName: updateBook.authorName,
               bookName: updateBook.bookName,
               description: updateBook.description,

@@ -35,7 +35,7 @@ export default function BookDelete({ bookInfo, docId, bookType }) {
   };
 
   function deleteFunction() {
-    firestore.collection('booktest').doc(docId).delete();
+    firestore.collection('books').doc(docId).delete();
     console.log(docId);
   }
 

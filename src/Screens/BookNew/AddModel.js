@@ -108,7 +108,7 @@ const classes = useStyles();
     description: "",
     pdfLink: "",
     image: "",
-    paid:"",
+    paid:"paid",
     bookType: "free",
    
   });
@@ -120,6 +120,9 @@ const classes = useStyles();
     setOpen(false); };
 
   const submit = () => {
+    console.log(addBook.bookType)
+    console.log(addBook.paid)
+   
     var checker = Object.keys(addBook).some(function (i) {
       return addBook[i] === "";
     });
@@ -138,13 +141,19 @@ const classes = useStyles();
      } };
 
   const addBooks = () => {
-    firebase.firestore().collection("booktest").add({
+    const type = addBook.bookType === 'free' ?  addBook.bookType : addBook.paid
+    console.log(type)
+
+    
+    
+  
+    firebase.firestore().collection("books").add({
       authorName: addBook.authorName,
       bookName: addBook.bookName,
       description: addBook.description,
       image: addBook.image,
       pdfLink: addBook.pdfLink,
-      bookType: addBook.bookType === 'free'?  addBook.bookType : addBook.paid ,
+      bookType: type,
       createdAt: Date(),
     });
 
