@@ -13,6 +13,7 @@ import AlternateEmailIcon from "@material-ui/icons/AlternateEmail";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import DuoIcon from '@material-ui/icons/Duo';
 import Appbar from "./AppBar";
 
 const drawerWidth = 240;
@@ -90,7 +91,7 @@ export default function HiddenDrawer(props) {
             <Link to="/zoom" className={classes.link}>
               <ListItem button>
                 <ListItemIcon>
-                  <AlternateEmailIcon />
+                  <DuoIcon />
                 </ListItemIcon>
                 <ListItemText primary={"Zoom"} />
               </ListItem>
@@ -142,7 +143,7 @@ export default function HiddenDrawer(props) {
             <Link to="/zoom" className={classes.link}>
               <ListItem button>
                 <ListItemIcon>
-                  <AlternateEmailIcon />
+                  <DuoIcon />
                 </ListItemIcon>
                 <ListItemText primary={"zoom"} />
               </ListItem>
