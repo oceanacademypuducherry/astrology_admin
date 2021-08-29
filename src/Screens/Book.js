@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import DescriptionIcon from "@material-ui/icons/Description";
+import './book.css'
 
 import {
   Button,
@@ -85,6 +86,16 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: "100%",
     maxHeight: "100%",
   },
+  submitButtonStyle: {
+    margin: theme.spacing(1),
+    width: 150,
+    background: "#1F6DE2",
+    color: "white",
+    "&:hover": {
+      background: "#054cb5",
+    },
+  },
+
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -99,13 +110,14 @@ export default function MediaBook() {
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [updateAlert, setUpdateAlert] = useState(false);
   const [currentId, setCurrentId] = useState();
+  const[isSubmitDisable,setIsSubmitDisable] = useState(true)
   const [addBook, setAddBook] = useState({
     authorName: "",
     bookName: "",
     description: "",
     pdfLink: "",
     image: "",
-    createdAt: "",
+    // createdAt: "",
     bookType: "free",
   });
   const [updateBook, setUpdateBook] = useState({
@@ -127,8 +139,19 @@ export default function MediaBook() {
   };
 
   const handleClose = () => {
-    addBooks();
-    setOpen(false);
+   
+ 
+
+    var checker = Object.keys(addBook).some(function (i) {
+      return addBook[i] === "";
+    });
+    if(checker){
+      alert('field empty')
+    }else{
+      addBooks();
+      setOpen(false);
+    }
+
   };
 
   const addUploadImage = (e) => {
@@ -170,7 +193,13 @@ export default function MediaBook() {
           .ref("bookPdf")
           .child(e.target.files[0].name)
           .getDownloadURL()
-          .then((url) => setAddBook({ ...addBook, pdfLink: url }));
+          .then((url) => {
+            console.log('OOOOOOOOOOOOOOOOOOOOOO')
+            console.log(url)
+            setAddBook({ ...addBook, pdfLink: url })
+            setIsSubmitDisable(false)
+            
+          });
       }
     );
   };
@@ -235,7 +264,7 @@ export default function MediaBook() {
 
   useEffect(() => {
     const db = firebase.firestore();
-    return db.collection("booktest").onSnapshot((snapshot) => {
+    return db.collection("books").onSnapshot((snapshot) => {
       const getBooks = [];
       snapshot.forEach((doc) => getBooks.push({ ...doc.data(), id: doc.id }));
       setBooks(getBooks);
@@ -255,7 +284,7 @@ export default function MediaBook() {
 
   ///add book
   const addBooks = () => {
-    firebase.firestore().collection("booktest").add({
+    firebase.firestore().collection("books").add({
       authorName: addBook.authorName,
       bookName: addBook.bookName,
       description: addBook.description,
@@ -271,7 +300,7 @@ export default function MediaBook() {
   /// delete book
   const bookDelete = () => {
     const db = firebase.firestore();
-    db.collection("booktest").doc(currentId).delete();
+    db.collection("books").doc(currentId).delete();
     setDeleteAlert(false);
   };
 
@@ -281,7 +310,7 @@ export default function MediaBook() {
     ///current id for set data to firebase
     setCurrentId(id);
     const db = firebase.firestore();
-    db.collection("booktest")
+    db.collection("books")
       .doc(id)
       .get()
       .then((snapshot) => {
@@ -307,7 +336,7 @@ export default function MediaBook() {
   const bookUpdate = () => {
     ///add update
     const db = firebase.firestore();
-    db.collection("booktest").doc(currentID).update({
+    db.collection("books").doc(currentID).update({
       authorName: updateBook.authorName,
       bookName: updateBook.bookName,
       description: updateBook.description,
@@ -359,6 +388,15 @@ export default function MediaBook() {
                   >
                     {item.bookName}
                   </Typography>
+
+                  <Typography
+                      variant="body2"
+                      color="textSecondary"
+                      component="p"
+                      className={classes.cardDescription}
+                    >
+                      {item.description}
+                    </Typography>
                 </CardContent>
               </CardActionArea>
               <CardActions>
@@ -394,6 +432,23 @@ export default function MediaBook() {
           <DialogContentText>
             <div className={classes.root}>
               <Grid container spacing={3}>
+              <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                  <label>upload Image</label>
+                  <Avatar alt="Remy Sharp" src={addBook.image} />
+                 
+                    <input
+                      type="file"
+                      id="imageInput"
+                      name="image"
+                  
+                      // label = "upload image"
+                      // value={addBook.image}
+
+                      onChange={addUploadImage}
+                    />
+                  </Paper>
+                </Grid>
                 <Grid item xs={6}>
                   <Paper className={classes.paper}>
                     <TextField
@@ -425,9 +480,10 @@ export default function MediaBook() {
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <FormControl component="fieldset">
-                      <FormLabel component="legend">Gender</FormLabel>
+           
                       <RadioGroup
-                        aria-label="gender"
+                      row = "true"
+                    
                         name="bookType"
                         value={addBook.bookType}
                         onChange={handleChange}
@@ -471,35 +527,31 @@ export default function MediaBook() {
                     />
                   </Paper>
                 </Grid>
-                <Grid item xs={12}>
-                  <Paper className={classes.paper}>
-                    <input
-                      type="file"
-                      id="imageInput"
-                      name="image"
-                      // value={addBook.image}
-
-                      onChange={addUploadImage}
-                    />
-                  </Paper>
-                </Grid>
+               
               </Grid>
             </div>
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleClose}
-            variant="contained"
-            style={{
-              background: "#1F6DE2",
-              width: "100%",
-              height: "55px",
-              color: "white",
-            }}
-          >
-            Submit
-          </Button>
+        <DialogActions style={{display: 'flex', justifyContent:'space-around'}}>
+        <Button
+                className={classes.submitButtonStyle}
+                variant="contained"
+                color="primary"
+                onClick={handleClose}
+                disabled={
+                  isSubmitDisable}
+              >
+                Submit
+              </Button>
+              <Button
+                className={classes.submitButtonStyle}
+                variant="contained"
+                color="primary"
+                onClick={handleClose}
+              
+              >
+                cancel
+              </Button>
         </DialogActions>
       </Dialog>
       {/* finish add alert */}

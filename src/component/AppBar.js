@@ -6,6 +6,7 @@ import {
   Toolbar,
   Typography,
 } from "@material-ui/core";
+import { Link } from 'react-router-dom'
 import React from "react";
 import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles } from "@material-ui/core/styles";
@@ -30,10 +31,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+
+
 function Appbar() {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+  const logout = () =>{
+    localStorage.clear();
+    window.location='/login'
+  }
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   return (
@@ -58,8 +65,9 @@ function Appbar() {
                 background: "#1F6DE2",
                 color: "white",
               }}
+              onClick = {logout}
             >
-              Log out
+              Log out 
             </Button>
           </Box>
         </Toolbar>

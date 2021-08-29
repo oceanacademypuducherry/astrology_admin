@@ -106,7 +106,7 @@ export default function HiddenDrawer(props) {
                 <ListItemText primary={"Article"} />
               </ListItem>
             </Link>
-            <Link to="/book" className={classes.link}>
+            <Link to="/book/free" className={classes.link}>
               <ListItem button>
                 <ListItemIcon>
                   <MenuBookIcon />
@@ -128,6 +128,14 @@ export default function HiddenDrawer(props) {
                   <AlternateEmailIcon />
                 </ListItemIcon>
                 <ListItemText primary={"Query"} />
+              </ListItem>
+            </Link>
+            <Link to="/zoom" className={classes.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <AlternateEmailIcon />
+                </ListItemIcon>
+                <ListItemText primary={"zoom"} />
               </ListItem>
             </Link>
           </List>
