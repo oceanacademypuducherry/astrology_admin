@@ -11,7 +11,7 @@ export default function BookView() {
   console.log(id)
 
   function getBookData() {
-    const bookData = firestore.collection('booktest').doc(id).get();
+    const bookData = firestore.collection('books').doc(id).get();
     bookData
       .then((data) => {
         console.log(data.data());

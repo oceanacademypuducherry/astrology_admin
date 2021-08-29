@@ -41,7 +41,7 @@ export default function AddBook() {
 
   // firebase functions
 const firestore = firebase.firestore();
-let fireData = firestore.collection('booktest');
+let fireData = firestore.collection('books');
 // use effect
   useEffect(() => {
     fireData.where('bookType',`${folder}`,'free').onSnapshot((querySnapshot) => {

@@ -264,7 +264,7 @@ export default function MediaBook() {
 
   useEffect(() => {
     const db = firebase.firestore();
-    return db.collection("booktest").onSnapshot((snapshot) => {
+    return db.collection("books").onSnapshot((snapshot) => {
       const getBooks = [];
       snapshot.forEach((doc) => getBooks.push({ ...doc.data(), id: doc.id }));
       setBooks(getBooks);
@@ -284,7 +284,7 @@ export default function MediaBook() {
 
   ///add book
   const addBooks = () => {
-    firebase.firestore().collection("booktest").add({
+    firebase.firestore().collection("books").add({
       authorName: addBook.authorName,
       bookName: addBook.bookName,
       description: addBook.description,
@@ -300,7 +300,7 @@ export default function MediaBook() {
   /// delete book
   const bookDelete = () => {
     const db = firebase.firestore();
-    db.collection("booktest").doc(currentId).delete();
+    db.collection("books").doc(currentId).delete();
     setDeleteAlert(false);
   };
 
@@ -310,7 +310,7 @@ export default function MediaBook() {
     ///current id for set data to firebase
     setCurrentId(id);
     const db = firebase.firestore();
-    db.collection("booktest")
+    db.collection("books")
       .doc(id)
       .get()
       .then((snapshot) => {
@@ -336,7 +336,7 @@ export default function MediaBook() {
   const bookUpdate = () => {
     ///add update
     const db = firebase.firestore();
-    db.collection("booktest").doc(currentID).update({
+    db.collection("books").doc(currentID).update({
       authorName: updateBook.authorName,
       bookName: updateBook.bookName,
       description: updateBook.description,
