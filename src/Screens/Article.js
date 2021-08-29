@@ -346,7 +346,7 @@ export default function Article() {
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <Avatar alt="Remy Sharp" src={article.image} />
-                    <input
+                    <TextField
                       type="file"
                       id="imageInput"
                       onChange={addUploadClick}

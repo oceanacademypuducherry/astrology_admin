@@ -292,6 +292,7 @@ export default function Query() {
           + Add Query
         </Button>
       </div>
+      
 
       {/* alert delete */}
       <Dialog
