@@ -13,7 +13,9 @@ import AlternateEmailIcon from "@material-ui/icons/AlternateEmail";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import DuoIcon from "@material-ui/icons/Duo";
 import Appbar from "./AppBar";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 
 const drawerWidth = 240;
 
@@ -22,10 +24,9 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: "none",
     color: theme.palette.text.primary,
   },
-   toolbar: theme.mixins.toolbar,
+  toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
-
   },
 }));
 
@@ -37,7 +38,6 @@ export default function HiddenDrawer(props) {
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
-    
   };
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -46,14 +46,14 @@ export default function HiddenDrawer(props) {
       <div className={classes.toolbar} />
       <Hidden>
         <Drawer
-        container={container}
-            variant="temporary"
-            anchor={theme.direction === "rtl" ? "right" : "left"}
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            classes={{
-              paper: classes.drawerPaper
-            }}
+          container={container}
+          variant="temporary"
+          anchor={theme.direction === "rtl" ? "right" : "left"}
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          classes={{
+            paper: classes.drawerPaper,
+          }}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}
@@ -89,6 +89,22 @@ export default function HiddenDrawer(props) {
                   <AlternateEmailIcon />
                 </ListItemIcon>
                 <ListItemText primary={"Query"} />
+              </ListItem>
+            </Link>
+            <Link to="/zoom" className={classes.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <DuoIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Zoom"} />
+              </ListItem>
+            </Link>
+            <Link to="/product" className={classes.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <ShoppingCartIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Product"} />
               </ListItem>
             </Link>
           </List>
@@ -138,9 +154,17 @@ export default function HiddenDrawer(props) {
             <Link to="/zoom" className={classes.link}>
               <ListItem button>
                 <ListItemIcon>
-                  <AlternateEmailIcon />
+                  <DuoIcon />
                 </ListItemIcon>
                 <ListItemText primary={"zoom"} />
+              </ListItem>
+            </Link>
+            <Link to="/product" className={classes.link}>
+              <ListItem button>
+                <ListItemIcon>
+                  <ShoppingCartIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Product"} />
               </ListItem>
             </Link>
           </List>

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { dialogStyle } from "../video/videoPostStyle";
 import { makeStyles } from "@material-ui/core/styles";
 import firebase from "../../firebaseConfig/fbConfig";
+import "./addModel.css";
 // import "./addpost.css";
 import {
-
   TextField,
   Dialog,
   DialogActions,
@@ -22,131 +22,131 @@ import {
   RadioGroup,
   FormControlLabel,
   Typography,
-
- 
 } from "@material-ui/core";
 
 import SlowMotionVideoIcon from "@material-ui/icons/SlowMotionVideo";
 // import CircularProgressWithLabel from "./progressBar";
 // import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 const useStyles = makeStyles((theme) => ({
-    card: {
-      width: 300,
-      height: 420,
+  card: {
+    width: 300,
+    height: 420,
+  },
+  media: {
+    height: 240,
+    maxWidth: 300,
+    boxShadow: "5px 5px #F5F5F5",
+    backgroundColor: "#e6e6e6",
+  },
+
+  cardTitle: {
+    fontSize: "20px",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    height: "30px",
+  },
+
+  cardDescription: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    height: "60px",
+  },
+  addArticle: {
+    marginBottom: "20px",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+    display: "flex",
+    justifyContent: "space-around",
+    alignItems: "center",
+  },
+  inputRoot: {
+    // backgroundColor: "grey",
+    display: "flex",
+    flexDirection: "row",
+  },
+  inputPaper: {
+    padding: theme.spacing(5),
+    maxWidth: 500,
+  },
+  image: {
+    width: 200,
+    height: 200,
+  },
+  img: {
+    margin: "auto",
+    display: "block",
+    maxWidth: "100%",
+    maxHeight: "100%",
+  },
+  submitButtonStyle: {
+    margin: theme.spacing(1),
+    width: 150,
+    background: "#1F6DE2",
+    color: "white",
+    "&:hover": {
+      background: "#054cb5",
     },
-    media: {
-      height: 240,
-      maxWidth: 300,
-      boxShadow: "5px 5px #F5F5F5",
-      backgroundColor: "#e6e6e6",
-    },
-  
-    cardTitle: {
-      fontSize: "20px",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      height: "30px",
-    },
-  
-    cardDescription: {
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      height: "60px",
-    },
-    addArticle: {
-      marginBottom: "20px",
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "flex-end",
-    },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: "center",
-      color: theme.palette.text.secondary,
-    },
-    inputRoot: {
-      // backgroundColor: "grey",
-      display: "flex",
-      flexDirection: "row",
-    },
-    inputPaper: {
-      padding: theme.spacing(5),
-      maxWidth: 500,
-    },
-    image: {
-      width: 200,
-      height: 200,
-    },
-    img: {
-      margin: "auto",
-      display: "block",
-      maxWidth: "100%",
-      maxHeight: "100%",
-    },
-    submitButtonStyle: {
-      margin: theme.spacing(1),
-      width: 150,
-      background: "#1F6DE2",
-      color: "white",
-      "&:hover": {
-        background: "#054cb5",
-      },
-    },
-  
-  }));
+  },
+}));
 export default function AddBookModel() {
-const classes = useStyles();
+  const classes = useStyles();
   const storage = firebase.storage();
   const firestore = firebase.firestore();
-  const[isSubmitDisable,setIsSubmitDisable] = useState(true)
+  const [isSubmitDisable, setIsSubmitDisable] = useState(true);
   const dialogCss = dialogStyle();
   const [open, setOpen] = useState(false);
-  
+
   const [addBook, setAddBook] = useState({
     authorName: "",
     bookName: "",
     description: "",
     pdfLink: "",
     image: "",
-    paid:"paid",
+    paid: "paid",
     bookType: "free",
-   
   });
   const alertOpen = () => {
     setOpen(true);
   };
 
   const alertClose = () => {
-    setOpen(false); };
+    setOpen(false);
+  };
 
   const submit = () => {
-    console.log(addBook.bookType)
-    console.log(addBook.paid)
-   
+    console.log(addBook.bookType);
+    console.log(addBook.paid);
+
     var checker = Object.keys(addBook).some(function (i) {
       return addBook[i] === "";
     });
-    if(checker){
-      alert('field empty')
-    }else{
+    if (checker) {
+      alert("field empty");
+    } else {
       addBooks();
       setOpen(false);
-      setAddBook({ authorName: "",
-      bookName: "",
-      description: "",
-      pdfLink: "",
-      image: "",
-      bookType: "free",
-    paid:""})
-     } };
+      setAddBook({
+        authorName: "",
+        bookName: "",
+        description: "",
+        pdfLink: "",
+        image: "",
+        bookType: "free",
+        paid: "",
+      });
+    }
+  };
 
   const addBooks = () => {
-    const type = addBook.bookType === 'free' ?  addBook.bookType : addBook.paid
-    console.log(type)
+    const type = addBook.bookType === "free" ? addBook.bookType : addBook.paid;
+    console.log(type);
 
-    
-    
-  
     firebase.firestore().collection("books").add({
       authorName: addBook.authorName,
       bookName: addBook.bookName,
@@ -166,6 +166,7 @@ const classes = useStyles();
     console.log(`${name}iiiiiiiiiiiiiiiiiiiiiiiiiiiiii ${value}`);
   };
 
+  const [imageLoading, setimageLoading] = useState(0);
   const addUploadImage = (e) => {
     var upload = storage
       .ref(`books/${e.target.files[0].name}`)
@@ -173,6 +174,10 @@ const classes = useStyles();
     upload.on(
       "state_changed",
       (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setimageLoading(progress);
         console.log(snapshot, "///////////////////////////////snapshots");
       },
       (error) => {
@@ -187,7 +192,7 @@ const classes = useStyles();
       }
     );
   };
-
+  const [pdfLoading, setPdfLoading] = useState(0);
   const addUploadPdf = (e) => {
     var upload = storage
       .ref(`bookPdf/${e.target.files[0].name}`)
@@ -195,6 +200,10 @@ const classes = useStyles();
     upload.on(
       "state_changed",
       (snapshot) => {
+        const progress = Math.round(
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        );
+        setPdfLoading(progress);
         console.log(snapshot, "///////////////////////////////snapshots");
       },
       (error) => {
@@ -206,11 +215,10 @@ const classes = useStyles();
           .child(e.target.files[0].name)
           .getDownloadURL()
           .then((url) => {
-            console.log('OOOOOOOOOOOOOOOOOOOOOO')
-            console.log(url)
-            setAddBook({ ...addBook, pdfLink: url })
-            setIsSubmitDisable(false)
-            
+            console.log("OOOOOOOOOOOOOOOOOOOOOO");
+            console.log(url);
+            setAddBook({ ...addBook, pdfLink: url });
+            setIsSubmitDisable(false);
           });
       }
     );
@@ -226,107 +234,118 @@ const classes = useStyles();
         <SlowMotionVideoIcon className={dialogCss.extendedButton} /> Add Book
       </Fab>
       <Fade in={open}>
-      <Dialog
-        open={open}
-        keepMounted
-      onClose={alertClose}
-      closeAfterTransition
-      >
-        <DialogTitle>{"Book"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            <div className={classes.root}>
-              <Grid container spacing={3}>
-              <Grid item xs={12}>
-                  <Paper className={classes.paper}>
-                  <label>upload Image</label>
-                  <Avatar alt="Remy Sharp" src={addBook.image} />
-                 
-                    <input
-                      type="file"
-                      id="imageInput"
-                      name="image"
-                  
-                      // label = "upload image"
-                      // value={addBook.image}
+        <Dialog
+          open={open}
+          keepMounted
+          onClose={alertClose}
+          closeAfterTransition
+        >
+          <DialogTitle>{"Book"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              <div className={classes.root}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <Paper className={classes.paper}>
+                      <div className="ab-image-div">
+                        {" "}
+                        <img src={addBook.image} />
+                      </div>
+                      <h3 style={{ color: "#A6A6A6" }}>{imageLoading}%</h3>
 
-                      onChange={addUploadImage}
-                    />
-                  </Paper>
-                </Grid>
-                <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <TextField
-                      id="outlined-basic"
-                      name="authorName"
-                      label="Author Name"
-                      variant="outlined"
-                      value={addBook.authorName}
-                      onChange={handleChange}
-                      style={{ width: "100%" }}
-                    />
-                  </Paper>
-                </Grid>
-                <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    {" "}
-                    <TextField
-                      id="outlined-basic"
-                      name="bookName"
-                      value={addBook.bookName}
-                      onChange={handleChange}
-                      label="Title"
-                      variant="outlined"
-                      style={{ width: "100%" }}
-                    />
-                  </Paper>
-                </Grid>
+                      <input
+                        type="file"
+                        id="imageInput"
+                        name="image"
+                        // label = "upload image"
+                        // value={addBook.image}
 
-                <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <FormControl component="fieldset" style = {{border : 'solid 2px',borderRadius: '5px',padding : '10px 30px 15px 30px' ,color :'#CACACA'}}>
-           
-                      <RadioGroup
-                      row = "true"
-                    
-                        name="bookType"
-                        value={addBook.bookType}
+                        onChange={addUploadImage}
+                      />
+                    </Paper>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Paper className={classes.paper}>
+                      <TextField
+                        id="outlined-basic"
+                        name="authorName"
+                        label="Author Name"
+                        variant="outlined"
+                        value={addBook.authorName}
                         onChange={handleChange}
+                        style={{ width: "100%" }}
+                      />
+                    </Paper>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Paper className={classes.paper}>
+                      {" "}
+                      <TextField
+                        id="outlined-basic"
+                        name="bookName"
+                        value={addBook.bookName}
+                        onChange={handleChange}
+                        label="Title"
+                        variant="outlined"
+                        style={{ width: "100%" }}
+                      />
+                    </Paper>
+                  </Grid>
+
+                  <Grid item xs={6}>
+                    <Paper className={classes.paper}>
+                      <FormControl
+                        component="fieldset"
+                        style={{
+                          border: "solid 2px",
+                          borderRadius: "5px",
+                          padding: "10px 30px 15px 30px",
+                          color: "#CACACA",
+                        }}
                       >
-                        <FormControlLabel
-                          value="free"
-                          control={<Radio />}
-                          label="Free"
+                        <RadioGroup
+                          row="true"
+                          name="bookType"
+                          value={addBook.bookType}
+                          onChange={handleChange}
+                        >
+                          <FormControlLabel
+                            value="free"
+                            control={<Radio />}
+                            label="Free"
+                          />
+                          <FormControlLabel
+                            value="paid"
+                            control={<Radio />}
+                            label="Paid"
+                          />
+                        </RadioGroup>
+                      </FormControl>
+                    </Paper>
+                  </Grid>
+                  {addBook.bookType !== "free" && (
+                    <Grid item xs={6}>
+                      <Paper className={classes.paper}>
+                        <TextField
+                          id="outlined-basic"
+                          name="paid"
+                          value={addBook.paid}
+                          onChange={handleChange}
+                          label="Enter amount"
+                          variant="outlined"
+                          style={{ width: "100%" }}
                         />
-                        <FormControlLabel
-                          value="paid"
-                          control={<Radio />}
-                          label="Paid"
-                        />
-                      </RadioGroup>
-                    </FormControl>
-                  </Paper>
-                </Grid>
-               {addBook.bookType !== 'free' &&  <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <TextField
-                      id="outlined-basic"
-                      name="paid"
-                      value={addBook.paid}
-                      onChange={handleChange}
-                      label="Enter amount"
-                      variant="outlined"
-                      style={{ width: "100%" }}
-                    />
-                  </Paper></Grid>}
+                      </Paper>
+                    </Grid>
+                  )}
                 </Grid>
 
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
-                     multiline
-                     rows={5}
-                     rowsMax={6}
+                      multiline
+                      rows={5}
+                      rowsMax={6}
                       id="outlined-basic"
                       label="Description"
                       name="description"
@@ -339,6 +358,7 @@ const classes = useStyles();
                 </Grid>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
+                    <h2>{pdfLoading}%</h2>
                     <input
                       type="file"
                       id="imageInput"
@@ -348,33 +368,31 @@ const classes = useStyles();
                     />
                   </Paper>
                 </Grid>
-               
-            
-            </div>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions style={{display: 'flex', justifyContent:'space-around'}}>
-        <Button
-                className={classes.submitButtonStyle}
-                variant="contained"
-                color="primary"
-                onClick={submit}
-                disabled={
-                  isSubmitDisable}
-              >
-                Submit
-              </Button>
-              <Button
-                className={classes.submitButtonStyle}
-                variant="contained"
-                color="primary"
-                onClick={alertClose}
-              
-              >
-                cancel
-              </Button>
-        </DialogActions>
-      </Dialog>
+              </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions
+            style={{ display: "flex", justifyContent: "space-around" }}
+          >
+            <Button
+              className={classes.submitButtonStyle}
+              variant="contained"
+              color="primary"
+              onClick={submit}
+              disabled={isSubmitDisable}
+            >
+              Submit
+            </Button>
+            <Button
+              className={classes.submitButtonStyle}
+              variant="contained"
+              color="primary"
+              onClick={alertClose}
+            >
+              cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Fade>
     </div>
   );

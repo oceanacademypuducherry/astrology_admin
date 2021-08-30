@@ -35,7 +35,7 @@ export default function BookDelete({ bookInfo, docId, bookType }) {
   };
 
   function deleteFunction() {
-    firestore.collection('books').doc(docId).delete();
+    firestore.collection("books").doc(docId).delete();
     console.log(docId);
   }
 
@@ -56,7 +56,7 @@ export default function BookDelete({ bookInfo, docId, bookType }) {
       >
         <Fade in={open}>
           <div className={classes.paper}>
-            <h1>Are you sure to delete this video</h1>
+            <h1>Are you sure to delete this Book</h1>
             <h2 id="transition-modal-title">{bookInfo.bookName}</h2>
             <p id="transition-modal-description">{bookInfo.description}</p>
             <div className="update-btn">

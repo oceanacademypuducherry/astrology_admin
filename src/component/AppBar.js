@@ -5,11 +5,11 @@ import {
   IconButton,
   Toolbar,
   Typography,
-  CssBaseline
+  CssBaseline,
 } from "@material-ui/core";
 import React from "react";
 import MenuIcon from "@material-ui/icons/Menu";
-import { makeStyles} from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core/styles";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -27,29 +27,23 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
     [theme.breakpoints.up("sm")]: {
       display: "none",
-      background:"black"
+      background: "black",
     },
   },
 }));
 
-
-
-function Appbar({handleDrawerToggle}) {
- 
-
-  
-  const logout = () =>{
+function Appbar({ handleDrawerToggle }) {
+  const logout = () => {
     localStorage.clear();
-    window.location='/login'
-  }
+    window.location = "/login";
+  };
   const classes = useStyles();
-  
   return (
     <div>
       <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar style={{ justifyContent: "space-between" }}>
-            <IconButton
+          <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
@@ -67,9 +61,9 @@ function Appbar({handleDrawerToggle}) {
                 background: "#1F6DE2",
                 color: "white",
               }}
-              onClick = {logout}
+              onClick={logout}
             >
-              Log out 
+              Log out
             </Button>
           </Box>
         </Toolbar>

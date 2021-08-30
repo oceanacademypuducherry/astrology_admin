@@ -10,7 +10,7 @@ import {
   Grid,
   IconButton,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { useStyles } from "./MUI/MainCardDesignMUI";
@@ -25,23 +25,39 @@ export default function MainCardDesign({ data }) {
   const [isOpen, setIsOpen] = useState(false);
   const [specificData, setSpecificData] = useState();
   const [documentId, setDocumentId] = useState();
+  const [date, setDate] = useState();
+  let monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-  const handleOpen = (id) => {
-    console.log(id, "♦♦♦♦♦♦♦ Set document id ♦♦♦♦♦♦♦");
-    setDocumentId(id);
-    const db = firebase.firestore();
-    db.collection("booking")
-      .doc(id)
-      .get()
-      .then((snapshot) => {
-        setSpecificData(snapshot.data());
-        console.log(snapshot.data(), "☻☻☻☻☻☻☻☻☻, get data");
-        //  setData(snapshot.data());
-      })
-      .catch((e) => console.log(e));
 
-    setIsOpen(!isOpen);
-  };
+  // const handleOpen = (id) => {
+  //   console.log(id, "♦♦♦♦♦♦♦ Set document id ♦♦♦♦♦♦♦");
+  //   setDocumentId(id);
+  //   const db = firebase.firestore();
+  //   db.collection("booking")
+  //     .doc(id)
+  //     .get()
+  //     .then((snapshot) => {
+  //       setSpecificData(snapshot.data());
+  //       console.log(snapshot.data(), "☻☻☻☻☻☻☻☻☻, get data");
+  //       //  setData(snapshot.data());
+  //     })
+  //     .catch((e) => console.log(e));
+
+  //   setIsOpen(!isOpen);
+  // };
 
   return (
     <>
@@ -63,7 +79,7 @@ export default function MainCardDesign({ data }) {
       />
       {/* ScheduleAlert */}
 
-      <Grid container direction="row" justifyContent="flex-start" spacing={10}>
+      <Grid container direction="row" justifyContent="flex-start" spacing={8}>
         {data.map((data) => (
           <Grid item>
             <Card className={classes.root}>
@@ -85,7 +101,7 @@ export default function MainCardDesign({ data }) {
                     )
                   }
                   title={data.userName}
-                  subheader="1 July, 2021"
+                  subheader={data.phoneNumber}
                 />
                 <CardMedia
                   className={classes.media}
@@ -103,7 +119,7 @@ export default function MainCardDesign({ data }) {
                       marginTop: "0px",
                     }}
                   >
-                    Phone Number
+                    Appointment Time
                   </h3>
                   <p
                     variant="subtitle2"
@@ -115,7 +131,12 @@ export default function MainCardDesign({ data }) {
                       fontFamily: "Ubuntu",
                     }}
                   >
-                    {data.phoneNumber}
+                    {`${data.time.toDate().getDate()} ${
+                      monthNames[data.time.toDate().getMonth()]}  
+                      ${data.time.toDate().getFullYear()}  
+                      ${data.time.toDate().getHours() % 12  || 12}:${data.time.toDate().getMinutes()}
+                      ${data.time.toDate().getHours() >= 12 ? 'PM' : 'AM'}
+                    `}
                   </p>
                 </CardContent>
               </Link>

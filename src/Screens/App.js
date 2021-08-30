@@ -14,11 +14,9 @@ import TransitionsModal from "./video/VideoPost";
 import ArticleDetails from "./ArticleDetails";
 import BookView from "./BookView";
 import Zoom from "./Zoom/Zoom";
-import Login from './Login'
-import BookingDetails from "../Screens/Zoom/BookingDetails"
-
-
-
+import Login from "./Login";
+import BookingDetails from "../Screens/Zoom/BookingDetails";
+import Product from "./Product";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -96,6 +94,11 @@ function App() {
             <Route exact path="/zoom">
               <Container>
                 <Zoom />
+              </Container>
+            </Route>
+            <Route exact path="/product">
+              <Container>
+                <Product />
               </Container>
             </Route>
             <Route exact path="/book/preview/:id">
