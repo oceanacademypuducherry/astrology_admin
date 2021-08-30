@@ -5,11 +5,11 @@ import {
   IconButton,
   Toolbar,
   Typography,
+  CssBaseline
 } from "@material-ui/core";
-import { Link } from 'react-router-dom'
 import React from "react";
 import MenuIcon from "@material-ui/icons/Menu";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles} from "@material-ui/core/styles";
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -27,27 +27,29 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
     [theme.breakpoints.up("sm")]: {
       display: "none",
+      background:"black"
     },
   },
 }));
 
 
 
-function Appbar() {
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+function Appbar({handleDrawerToggle}) {
+ 
+
+  
   const logout = () =>{
     localStorage.clear();
     window.location='/login'
   }
   const classes = useStyles();
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  
   return (
     <div>
+      <CssBaseline />
       <AppBar position="fixed" className={classes.appBar}>
         <Toolbar style={{ justifyContent: "space-between" }}>
-          <IconButton
+            <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"

@@ -13,6 +13,7 @@ import AlternateEmailIcon from "@material-ui/icons/AlternateEmail";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Appbar from "./AppBar";
 
 const drawerWidth = 240;
 
@@ -21,8 +22,10 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: "none",
     color: theme.palette.text.primary,
   },
+   toolbar: theme.mixins.toolbar,
   drawerPaper: {
     width: drawerWidth,
+
   },
 }));
 
@@ -34,21 +37,23 @@ export default function HiddenDrawer(props) {
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+    
   };
   const container =
     window !== undefined ? () => window().document.body : undefined;
   return (
     <div>
+      <div className={classes.toolbar} />
       <Hidden>
         <Drawer
-          container={container}
-          variant="temporary"
-          anchor={theme.direction === "rtl" ? "right" : "left"}
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
+        container={container}
+            variant="temporary"
+            anchor={theme.direction === "rtl" ? "right" : "left"}
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            classes={{
+              paper: classes.drawerPaper
+            }}
           ModalProps={{
             keepMounted: true, // Better open performance on mobile.
           }}
@@ -141,6 +146,7 @@ export default function HiddenDrawer(props) {
           </List>
         </Drawer>
       </Hidden>
+      <Appbar handleDrawerToggle={handleDrawerToggle} />
     </div>
   );
 }
