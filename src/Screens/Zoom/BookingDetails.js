@@ -16,6 +16,20 @@ function BookingDetails() {
   console.log(id, "☻☻☻☻☻☻☻");
   const [data, setData] = useState([]);
   const [purposeFor, setPurposeFor] = useState([]);
+  const [dateTime, setDate] = useState({
+    date: "",
+    month: "",
+    year: "",
+    hour: "",
+    minute: "",
+    day: "",
+    birthDate: "",
+    birthMonth: "",
+    birthYear: "",
+    birthHour: "",
+    birthMinute: "",
+    birthDay: "",
+  });
   let monthNames = [
     "January",
     "February",
@@ -39,31 +53,34 @@ function BookingDetails() {
       .onSnapshot((snapshot) => {
         setData(snapshot.data());
         setPurposeFor(snapshot.data().purposeFor);
+        setDate({
+          ...dateTime,
+          date: snapshot.data().time.toDate().getDate(),
+          month: snapshot.data().time.toDate().getMonth(),
+          year: snapshot.data().time.toDate().getFullYear(),
+          hour: snapshot.data().time.toDate().getHours() % 12 || 12,
+          minute: snapshot.data().time.toDate().getMinutes(),
+          day: snapshot.data().time.toDate().getHours() >= 12 ? "PM" : "AM",
+          birthDate: snapshot.data().birthTime.toDate().getDate(),
+          birthMonth: snapshot.data().birthTime.toDate().getMonth(),
+          birthYear: snapshot.data().birthTime.toDate().getFullYear(),
+          birthHour: snapshot.data().birthTime.toDate().getHours() % 12 || 12,
+          birthMinute: snapshot.data().birthTime.toDate().getMinutes(),
+          birthDay: snapshot.data().birthTime.toDate().getHours() >= 12 ? "PM" : "AM",
+        });
         console.log(snapshot.data().time.toDate().getHours(), "////////hours");
-        console.log(
-          snapshot.data().time.toDate().getMinutes(),
-          "////////minutes"
-        );
+        console.log(snapshot.data().time.toDate().getMinutes(), "/////minutes");
         console.log(snapshot.data().time.toDate().getMonth(), "////////month");
         console.log(snapshot.data().time.toDate().getDate(), "////////date");
         console.log(snapshot.data().time.toDate().getYear(), "////////year");
-        console.log(
-          Intl.DateTimeFormat("en-US", {
-            year: "numeric",
-            month: "2-digit",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          }).format(snapshot.data().time.toDate())
-        );
-        console.log(snapshot.data().purposeFor, "purposeFor");
+        console.log(snapshot.data().time);
+        console.log(snapshot.data().birthTime.toDate(), "♣♠");
       });
   }, []);
 
   return (
     <>
-      {JSON.stringify(`${data.time.toDate().getDate()}`)}
+      {/* {JSON.stringify(`${dateTime.birthMonth}`)} */}
       <Grid container spacing={3} style={{ margin: "0%", padding: "0%" }}>
         <Grid item xs={12} md={6}>
           <div className={classes.leftContent}>
@@ -95,16 +112,8 @@ function BookingDetails() {
               </Paper>
               <Paper variant="outlined" className={classes.paper}>
                 <h3>DOB</h3>
-                <p>
-                  {Intl.DateTimeFormat("en-US", {
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                  }).format(data.birthTime)}
-                </p>
+                <p>{dateTime.birthDate} {monthNames[dateTime.birthMonth]} {dateTime.birthYear}{" "}
+                {dateTime.birthHour}:{dateTime.birthMinute} {dateTime.birthDay}</p>
               </Paper>
               <Paper variant="outlined" className={classes.paper}>
                 <h3>PHONE NUMBER</h3>
@@ -145,7 +154,10 @@ function BookingDetails() {
             </Paper>
             <Paper variant="outlined" className={classes.paper}>
               <h3>APPOINTMENT TIME</h3>
-              {/* <p>`${data.time.toDate().getDate()}`</p> */}
+              <p>
+                {dateTime.date} {monthNames[dateTime.month]} {dateTime.year}  {""}
+                {dateTime.hour}:{dateTime.minute} {dateTime.day}
+              </p>
             </Paper>
             <Paper variant="outlined" className={classes.paper}>
               <h3>PAYMENT</h3>

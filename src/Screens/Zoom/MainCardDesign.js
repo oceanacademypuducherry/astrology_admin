@@ -25,6 +25,7 @@ export default function MainCardDesign({ data }) {
   const [isOpen, setIsOpen] = useState(false);
   const [specificData, setSpecificData] = useState();
   const [documentId, setDocumentId] = useState();
+  const [date, setDate] = useState();
   let monthNames = [
     "January",
     "February",
@@ -40,10 +41,6 @@ export default function MainCardDesign({ data }) {
     "December",
   ];
 
-//   useEffect(() => {
-   
-// //  console.log(toDate().getDate());
-//   }, [])
 
   // const handleOpen = (id) => {
   //   console.log(id, "♦♦♦♦♦♦♦ Set document id ♦♦♦♦♦♦♦");

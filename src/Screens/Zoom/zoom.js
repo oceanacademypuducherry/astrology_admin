@@ -12,9 +12,10 @@ export default function Zoom() {
       .orderBy("time")
       .onSnapshot((snapshot) => {
         const getData = [];
-        snapshot.forEach((doc) => getData.push({ ...doc.data(), id: doc.id }));
+        snapshot.forEach(
+          (doc) => getData.push({ ...doc.data(), id: doc.id })
+          );
         setData(getData);
-        console.log(getData, "//////////////////////");
       });
   }, []);
 
