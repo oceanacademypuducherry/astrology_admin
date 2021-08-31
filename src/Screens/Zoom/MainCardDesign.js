@@ -14,18 +14,16 @@ import React, { useState, useEffect } from "react";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { useStyles } from "./MUI/MainCardDesignMUI";
-import ScheduleAlert from "./ScheduleAlert";
 import firebase from "../../firebaseConfig/fbConfig";
 import { Link } from "react-router-dom";
+import RestrictTimeAlert from "./RestrictTimeAlert";
 
 export default function MainCardDesign({ data }) {
   //declaring MUI style
   const classes = useStyles();
-  //usestate
+  //useState
   const [isOpen, setIsOpen] = useState(false);
-  const [specificData, setSpecificData] = useState();
-  const [documentId, setDocumentId] = useState();
-  const [date, setDate] = useState();
+  const [restrictTime, setrestrictTime] = useState([]);
   let monthNames = [
     "January",
     "February",
@@ -41,48 +39,43 @@ export default function MainCardDesign({ data }) {
     "December",
   ];
 
-
-  // const handleOpen = (id) => {
-  //   console.log(id, "♦♦♦♦♦♦♦ Set document id ♦♦♦♦♦♦♦");
-  //   setDocumentId(id);
-  //   const db = firebase.firestore();
-  //   db.collection("booking")
-  //     .doc(id)
-  //     .get()
-  //     .then((snapshot) => {
-  //       setSpecificData(snapshot.data());
-  //       console.log(snapshot.data(), "☻☻☻☻☻☻☻☻☻, get data");
-  //       //  setData(snapshot.data());
-  //     })
-  //     .catch((e) => console.log(e));
-
-  //   setIsOpen(!isOpen);
-  // };
+  const onClickrestrictTime = () => {
+    const db = firebase.firestore();
+    return db
+      .collection("availableTime")
+      .onSnapshot((snapshot) => {
+        const getData = [];
+        // console.log(Date.now());
+        snapshot.forEach((doc) => 
+        // console.log(doc.data().time, "////////time"),
+        getData.push({ ...doc.data()}),
+        );
+        setrestrictTime(getData);
+        setIsOpen(!isOpen);
+      });
+    
+  };
 
   return (
     <>
       {/* ScheduleAlert */}
-      <ScheduleAlert
-        data={specificData}
-        documentId={documentId}
+      <RestrictTimeAlert
+        retrictTime = {restrictTime}
         isDialogOpened={isOpen}
         handleCloseDialog={() => setIsOpen(false)}
       />
       {/* ScheduleAlert */}
 
-      {/* ScheduleAlert */}
-      <ScheduleAlert
-        data={specificData}
-        documentId={documentId}
-        isDialogOpened={isOpen}
-        handleCloseDialog={() => setIsOpen(false)}
-      />
-      {/* ScheduleAlert */}
+      <div style={{display: "flex", justifyContent: "flex-end"}}>
+        <Button variant="outlined" color="secondary" onClick={onClickrestrictTime}>RetrictTime</Button>
+      </div>
 
       <Grid container direction="row" justifyContent="flex-start" spacing={8}>
+      {/* {JSON.stringify(restrictTime)} */}
         {data.map((data) => (
           <Grid item>
             <Card className={classes.root}>
+            {/* {JSON.stringify(data.time)} */}
               <Link to={`zoom/${data.id}`} style={{ textDecoration: "none" }}>
                 <CardHeader
                   style={{ color: "black" }}
@@ -132,10 +125,13 @@ export default function MainCardDesign({ data }) {
                     }}
                   >
                     {`${data.time.toDate().getDate()} ${
-                      monthNames[data.time.toDate().getMonth()]}  
+                      monthNames[data.time.toDate().getMonth()]
+                    }  
                       ${data.time.toDate().getFullYear()}  
-                      ${data.time.toDate().getHours() % 12  || 12}:${data.time.toDate().getMinutes()}
-                      ${data.time.toDate().getHours() >= 12 ? 'PM' : 'AM'}
+                      ${data.time.toDate().getHours() % 12 || 12}:${data.time
+                      .toDate()
+                      .getMinutes()}
+                      ${data.time.toDate().getHours() >= 12 ? "PM" : "AM"}
                     `}
                   </p>
                 </CardContent>

@@ -9,6 +9,7 @@
     "@material-ui/icons": "latest",
     "@react-pdf-viewer/core": "^2.7.2",
     "@react-pdf-viewer/default-layout": "^2.7.2",
+    "@syncfusion/ej2-react-calendars": "^19.2.55",
     "clsx": "latest",
     "firebase": "^8.9.1",
     "pdfjs-dist": "^2.6.347",
