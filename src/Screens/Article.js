@@ -132,30 +132,30 @@ export default function Article() {
     );
   };
 
-  const addPdfUploadClick = (e) => {
-    console.log(e.target.files[0].name);
-    var upload = storage
-      .ref(`articles/${e.target.files[0].name}`)
-      .put(e.target.files[0]);
-    upload.on(
-      "state_changed",
-      (snapshot) => {
-        console.log(snapshot, "///////////////////////////////snapshots");
-      },
-      (error) => {
-        console.log(error);
-      },
+  // const addPdfUploadClick = (e) => {
+  //   console.log(e.target.files[0].name);
+  //   var upload = storage
+  //     .ref(`articles/${e.target.files[0].name}`)
+  //     .put(e.target.files[0]);
+  //   upload.on(
+  //     "state_changed",
+  //     (snapshot) => {
+  //       console.log(snapshot, "///////////////////////////////snapshots");
+  //     },
+  //     (error) => {
+  //       console.log(error);
+  //     },
 
-      () => {
-        storage
-          .ref("articles")
-          .child(e.target.files[0].name)
-          .getDownloadURL()
-          .then((url) => setArticle({ ...article, link: url }));
-        // console.log(url);
-      }
-    );
-  };
+  //     () => {
+  //       storage
+  //         .ref("articles")
+  //         .child(e.target.files[0].name)
+  //         .getDownloadURL()
+  //         .then((url) => setArticle({ ...article, link: url }));
+  //       // console.log(url);
+  //     }
+  //   );
+  // };
 
   const updateUploadClick = (e) => {
     var upload = storage
@@ -204,7 +204,7 @@ export default function Article() {
           name: snapshot.data().articleName,
           description: snapshot.data().content,
           image: snapshot.data().articleImage,
-          link: snapshot.data().link,
+          postId: snapshot.data().postId,
         });
         console.log(snapshot.data());
       })
@@ -500,8 +500,11 @@ export default function Article() {
         </DialogActions>
       </Dialog>
 
+
+  
       {/* article Design start */}
       <Grid container direction="row" justifyContent="flex-start" spacing={10}>
+        {JSON.stringify(data)}
         {data.map((item) => (
           <Grid item>
             <Card className={classes.card}>
