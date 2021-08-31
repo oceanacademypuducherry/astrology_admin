@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 function Appbar({ handleDrawerToggle }) {
   const logout = () => {
     localStorage.clear();
-    window.location = "/login";
+    window.location = "/";
   };
   const classes = useStyles();
   return (
