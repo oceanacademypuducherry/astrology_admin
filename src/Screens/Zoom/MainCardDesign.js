@@ -41,41 +41,46 @@ export default function MainCardDesign({ data }) {
 
   const onClickrestrictTime = () => {
     const db = firebase.firestore();
-    return db
-      .collection("availableTime")
-      .onSnapshot((snapshot) => {
-        const getData = [];
-        // console.log(Date.now());
-        snapshot.forEach((doc) => 
+    return db.collection("availableTime").onSnapshot((snapshot) => {
+      const getData = [];
+      // console.log(Date.now());
+      snapshot.forEach((doc) =>
         // console.log(doc.data().time, "////////time"),
-        getData.push({ ...doc.data()}),
-        );
-        setrestrictTime(getData);
-        setIsOpen(!isOpen);
-      });
-    
+        getData.push({ ...doc.data() })
+      );
+      setrestrictTime(getData);
+      setIsOpen(!isOpen);
+    });
   };
 
   return (
     <>
       {/* ScheduleAlert */}
       <RestrictTimeAlert
-        retrictTime = {restrictTime}
+        retrictTime={restrictTime}
         isDialogOpened={isOpen}
         handleCloseDialog={() => setIsOpen(false)}
       />
       {/* ScheduleAlert */}
 
-      <div style={{display: "flex", justifyContent: "flex-end"}}>
-        <Button variant="outlined" color="secondary" onClick={onClickrestrictTime}>RetrictTime</Button>
+      {/* RestrictButton */}
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "35px",  }}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={onClickrestrictTime}>
+          RetrictTime
+        </Button>
       </div>
+      {/* RestrictButton */}
 
       <Grid container direction="row" justifyContent="flex-start" spacing={8}>
-      {/* {JSON.stringify(restrictTime)} */}
+        {/* {JSON.stringify(restrictTime)} */}
         {data.map((data) => (
-          <Grid item>
+        //  data.time > Date.now() &&  
+         <Grid item>
             <Card className={classes.root}>
-            {/* {JSON.stringify(data.time)} */}
+              {/* {JSON.stringify(data.time)} */}
               <Link to={`zoom/${data.id}`} style={{ textDecoration: "none" }}>
                 <CardHeader
                   style={{ color: "black" }}
