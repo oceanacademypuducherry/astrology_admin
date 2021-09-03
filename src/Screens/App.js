@@ -16,7 +16,7 @@ import BookView from "./BookView";
 import Zoom from "./Zoom/Zoom";
 import Login from "./Login";
 import BookingDetails from "../Screens/Zoom/BookingDetails";
-import Product from "./Product";
+import Product from "./product/Product";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({

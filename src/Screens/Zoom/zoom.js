@@ -13,9 +13,9 @@ export default function Zoom() {
       .onSnapshot((snapshot) => {
         const getData = [];
         // console.log(Date.now());
-        snapshot.forEach((doc) => 
-        // console.log(doc.data().time, "////////time"),
-        getData.push({ ...doc.data(), id: doc.id }),
+        snapshot.forEach((doc) =>
+          // console.log(doc.data().time, "////////time"),
+          getData.push({ ...doc.data(), id: doc.id })
         );
         setData(getData);
       });
