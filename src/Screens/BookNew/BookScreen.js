@@ -50,13 +50,13 @@ export default function BookCard({
       >
         <CardMedia className={classes.media} image={image} title={bookName} />
         <CardContent className={classes.conten}>
-          <Typography gutterBottom variant="h5" component="h2">
-            {bookName.length < 55 ? bookName : `${bookName.slice(0, 55)}...`}
+          <Typography gutterBottom variant="h6" component="h6">
+            {bookName.length < 30 ? bookName : `${bookName.slice(0, 30)}...`}
           </Typography>
           <Typography variant="body2" color="textSecondary" component="p">
-            {description.length < 150
+            {description.length < 100
               ? description
-              : `${description.slice(0, 170)}...`}
+              : `${description.slice(0, 100)}...`}
           </Typography>
         </CardContent>
       </CardActionArea>

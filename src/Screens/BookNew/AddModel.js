@@ -101,6 +101,9 @@ export default function AddBookModel() {
   const [isSubmitDisable, setIsSubmitDisable] = useState(true);
   const dialogCss = dialogStyle();
   const [open, setOpen] = useState(false);
+  const[pickImage,setPickImage]=useState(null)
+  const [imageLoading, setimageLoading] = useState(0);
+  const [pdfLoading, setPdfLoading] = useState(0);
 
   const [addBook, setAddBook] = useState({
     authorName: "",
@@ -132,14 +135,20 @@ export default function AddBookModel() {
       addBooks();
       setOpen(false);
       setAddBook({
+        ...addBook,
         authorName: "",
         bookName: "",
-        description: "",
-        pdfLink: "",
         image: "",
+        pdfLink: "",
+        description: "",
         bookType: "free",
         paid: "",
+      
       });
+      setPickImage(null);
+  
+      setPdfLoading(0);
+      setimageLoading(0);
     }
   };
 
@@ -166,11 +175,20 @@ export default function AddBookModel() {
     console.log(`${name}iiiiiiiiiiiiiiiiiiiiiiiiiiiiii ${value}`);
   };
 
-  const [imageLoading, setimageLoading] = useState(0);
+    //only pick
+    const pick = (e) =>{
+      console.log(e.target.files[0]);
+      setPickImage(e.target.files[0]);
+      console.log('---------------------------')
+      console.log(pickImage);
+      
+     };
+
+ 
   const addUploadImage = (e) => {
     var upload = storage
-      .ref(`books/${e.target.files[0].name}`)
-      .put(e.target.files[0]);
+      .ref(`books/${pickImage.name}`)
+      .put(pickImage);
     upload.on(
       "state_changed",
       (snapshot) => {
@@ -186,13 +204,19 @@ export default function AddBookModel() {
       () => {
         storage
           .ref("books")
-          .child(e.target.files[0].name)
+          .child(pickImage.name)
           .getDownloadURL()
           .then((url) => setAddBook({ ...addBook, image: url }));
       }
     );
   };
-  const [pdfLoading, setPdfLoading] = useState(0);
+
+
+
+   
+   
+
+ 
   const addUploadPdf = (e) => {
     var upload = storage
       .ref(`bookPdf/${e.target.files[0].name}`)
@@ -219,6 +243,7 @@ export default function AddBookModel() {
             console.log(url);
             setAddBook({ ...addBook, pdfLink: url });
             setIsSubmitDisable(false);
+            
           });
       }
     );
@@ -257,11 +282,13 @@ export default function AddBookModel() {
                         type="file"
                         id="imageInput"
                         name="image"
-                        // label = "upload image"
-                        // value={addBook.image}
-
-                        onChange={addUploadImage}
+                        display="none"
+                        onChange={pick}
                       />
+                       <button onClick={addUploadImage}>
+                    book
+                  
+                  </button>
                     </Paper>
                   </Grid>
                   <Grid item xs={6}>
