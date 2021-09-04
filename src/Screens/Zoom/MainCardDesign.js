@@ -39,6 +39,11 @@ export default function MainCardDesign({ data }) {
     "December",
   ];
 
+
+  // useEffect(() => {
+  //  firebase.firestore.collection()
+  // }, [])
+
   const onClickrestrictTime = () => {
     const db = firebase.firestore();
     return db.collection("availableTime").onSnapshot((snapshot) => {
@@ -75,88 +80,92 @@ export default function MainCardDesign({ data }) {
       {/* RestrictButton */}
 
       <Grid container direction="row" justifyContent="flex-start" spacing={8}>
-        {/* {JSON.stringify(restrictTime)} */}
+       
+       
         {data.map((data) => (
-        //  data.time > Date.now() &&  
-         <Grid item>
-            <Card className={classes.root}>
-              {/* {JSON.stringify(data.time)} */}
-              <Link to={`zoom/${data.id}`} style={{ textDecoration: "none" }}>
-                <CardHeader
-                  style={{ color: "black" }}
-                  avatar={
-                    <Avatar className={classes.avatar} src={data.profile} />
-                  }
-                  action={
-                    data.userZoomLink && data.adminZoomLink !== "" ? (
-                      <IconButton disabled>
-                        <CheckCircleIcon style={{ color: "green" }} />
-                      </IconButton>
-                    ) : (
-                      <IconButton disabled>
-                        <CancelIcon style={{ color: "red" }} />
-                      </IconButton>
-                    )
-                  }
-                  title={data.userName}
-                  subheader={data.phoneNumber}
-                />
-                <CardMedia
-                  className={classes.media}
-                  image={data.jadhagam}
-                  //   title="Sorry! NO Jadhagam is Uploaded"
-                />
-                <CardContent>
-                  <h3
-                    variant="subtitle1"
-                    color="textSecondary"
-                    style={{
-                      marginBottom: "5px",
-                      color: "grey",
-                      fontFamily: "Ubuntu",
-                      marginTop: "0px",
-                    }}
-                  >
-                    Appointment Time
-                  </h3>
-                  <p
-                    variant="subtitle2"
-                    color="textSecondary"
-                    style={{
-                      marginTop: "0px",
-                      marginBottom: "0px",
-                      color: "grey",
-                      fontFamily: "Ubuntu",
-                    }}
-                  >
-                    {`${data.time.toDate().getDate()} ${
-                      monthNames[data.time.toDate().getMonth()]
-                    }  
-                      ${data.time.toDate().getFullYear()}  
-                      ${data.time.toDate().getHours() % 12 || 12}:${data.time
-                      .toDate()
-                      .getMinutes()}
-                      ${data.time.toDate().getHours() >= 12 ? "PM" : "AM"}
-                    `}
-                  </p>
-                </CardContent>
-              </Link>
-              <CardActions>
-                <a
-                  href={data.adminZoomLink}
-                  style={{ textDecoration: "none", width: "100%" }}
+         
+         new Date().getDate() <= data.time.toDate().getDate() &&
+         (
+          <Grid item>
+          <Card className={classes.root}>
+         { data.time.toDate().getDate()}
+            <Link to={`zoom/${data.id}`} style={{ textDecoration: "none" }}>
+              <CardHeader
+                style={{ color: "black" }}
+                avatar={
+                  <Avatar className={classes.avatar} src={data.profile} />
+                }
+                action={
+                  data.userZoomLink && data.adminZoomLink !== "" ? (
+                    <IconButton disabled>
+                      <CheckCircleIcon style={{ color: "green" }} />
+                    </IconButton>
+                  ) : (
+                    <IconButton disabled>
+                      <CancelIcon style={{ color: "red" }} />
+                    </IconButton>
+                  )
+                }
+                title={data.userName}
+                subheader={data.phoneNumber}
+              />
+              <CardMedia
+                className={classes.media}
+                image={data.jadhagam}
+                //   title="Sorry! NO Jadhagam is Uploaded"
+              />
+              <CardContent>
+                <h3
+                  variant="subtitle1"
+                  color="textSecondary"
+                  style={{
+                    marginBottom: "5px",
+                    color: "grey",
+                    fontFamily: "Ubuntu",
+                    marginTop: "0px",
+                  }}
                 >
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    style={{ width: "100%" }}
-                  >
-                    Launch Zoom
-                  </Button>
-                </a>
-              </CardActions>
-            </Card>
-          </Grid>
+                  Appointment Time
+                </h3>
+                <p
+                  variant="subtitle2"
+                  color="textSecondary"
+                  style={{
+                    marginTop: "0px",
+                    marginBottom: "0px",
+                    color: "grey",
+                    fontFamily: "Ubuntu",
+                  }}
+                >
+                  {`${data.time.toDate().getDate()} ${
+                    monthNames[data.time.toDate().getMonth()]
+                  }  
+                    ${data.time.toDate().getFullYear()}  
+                    ${data.time.toDate().getHours() % 12 || 12}:${data.time
+                    .toDate()
+                    .getMinutes()}
+                    ${data.time.toDate().getHours() >= 12 ? "PM" : "AM"}
+                  `}
+                </p>
+              </CardContent>
+            </Link>
+            <CardActions>
+              <a
+                href={data.adminZoomLink}
+                style={{ textDecoration: "none", width: "100%" }}
+              >
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  style={{ width: "100%" }}
+                >
+                  Launch Zoom
+                </Button>
+              </a>
+            </CardActions>
+          </Card>
+        </Grid>
+         )
         ))}
       </Grid>
     </>

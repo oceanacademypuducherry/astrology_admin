@@ -12,10 +12,10 @@ import {
 import React, { useState, useEffect } from "react";
 import firebase from "../../firebaseConfig/fbConfig";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
-import "./style/App.css";
+import "./style/Calendar.css";
 import { classNames } from "@react-pdf-viewer/core";
 import moment from "moment";
-// import { useStyles } from "./MUI/RestrictTimeAlertMUI";
+import { useStyles } from "./MUI/RestrictTimeAlertMUI";
 
 // const Transition = React.forwardRef(function Transition(props, ref) {
 //   return <Slide direction="up" ref={ref} {...props} />;
@@ -26,22 +26,21 @@ export default function RestrictTimeAlert({
   handleCloseDialog,
   retrictTime,
 }) {
+  const classes = useStyles();
   const [datepicker, setDatePicker] = useState();
-  // const [flag, setFlag] = useState(true);
+  const [flag, setFlag] = useState(false);
   const [time, setTime] = useState(
     {
       hour: "",
       minute: ""
     }
   );
-  // const classes = useStyles();
 
   const handleClose = () => {
     handleCloseDialog(false);
   };
 
   const onSubmit = () => {
-    // console.log(datepicker.date.getFullYear());
     let dd = datepicker.getDate();
     let mm = datepicker.getMonth();
     let yy = datepicker.getFullYear();
@@ -77,26 +76,23 @@ export default function RestrictTimeAlert({
   const datePickerOnChange = (e) => {
     console.log(e.target.value, "e.target.value ☻☻☻☻☻☻");
     setDatePicker(e.target.value);
+
+    () => {
+      console.log("date");
+    }
   };
 
-  const getTimeClick = (e) => {
-   let h = e.target.innerText
-
-   console.log(h.slice(0, 2));
-    
+  const getTimeClick = (time) => {
+   let h = time
+   console.log(h);
     setTime({...time, hour: h.slice(0, 2)});
-    // flag == true ? e.target.style.color= "red" : e.target.style.color= "black"
-    // console.log(e.target.style.color= "red", "☻☻☻☻☻☻☻☻☻☻☻☻");
-    // e.target.style.color= "red" == "red" ?
-    // setFlag(!flag);
+    // setFlag(flag ? false : true);
   };
 
   return (
     <>
       <Dialog
         // fullScreen={true}
-        // fullWidth={100}
-        // maxWidth={maxWidth}
         open={isDialogOpened}
         onClose={handleClose}
       >
@@ -109,6 +105,10 @@ export default function RestrictTimeAlert({
             <Grid spacing={3}>
               <Grid item xs={12} style={{ marginBottom: "20px" }}>
                 <DatePickerComponent
+                // firstDayOfWeek= {1}
+                // floatLabelType= "fghgjf"
+                   min={Date()}
+                // max={Date(Date.getDate() + 1 )}
                   value={datepicker}
                   onChange={datePickerOnChange}
                 ></DatePickerComponent>
@@ -120,16 +120,16 @@ export default function RestrictTimeAlert({
                 {retrictTime.map(
                   (time) =>
                     time.time < "12" && (
-                      <Button
-                        className={classNames.buttons}
+                      <Button          
+                        className={classes.buttons}
                         variant="outlined"
-                        onClick={getTimeClick}
+                        color={flag ? "primary" : "secondary"}
+                        onClick={getTimeClick.bind(this, time.time, event)}
                       >
-                        {time.time}
+                        {`${parseInt(time.time)}:00`}
                       </Button>
                     )
                 )}
-                {/* {JSON.stringify(retrictTime)} */}
               </div>
 
               <h6>Afternoon</h6>
@@ -140,11 +140,12 @@ export default function RestrictTimeAlert({
                     time.time > "12" &&
                     time.time < "16" && (
                       <Button
-                        className={classNames.buttons}
+                        className={classes.buttons}
                         variant="outlined"
-                        onClick={getTimeClick}
+                        color={flag ? "primary" : "secondary"}
+                        onClick={getTimeClick.bind(this, time.time)}
                       >
-                        {time.time}
+                        {`${parseInt(time.time) - 12}:00`}
                       </Button>
                     )
                 )}
@@ -158,12 +159,12 @@ export default function RestrictTimeAlert({
                     time.time > "16" &&
                     time.time < "24" && (
                       <Button
-                        className={classNames.buttons}
-                        name={time.time}
+                        className={classes.buttons}                    
                         variant="outlined"
-                        onClick={getTimeClick}
+                        color={flag ? "primary" : "secondary"}
+                        onClick={getTimeClick.bind(this, time.time)}
                       >
-                        {time.time}
+                        {`${parseInt(time.time) - 12}:00`}
                       </Button>
                     )
                 )}
@@ -171,7 +172,7 @@ export default function RestrictTimeAlert({
 
               <Grid item xs={12} style={{ marginTop: "10px" }}>
                 <Typography variant="caption">
-                  Note: Add zoom link to user
+                  Note: Restrict Date and Time 
                 </Typography>
               </Grid>
             </Grid>
