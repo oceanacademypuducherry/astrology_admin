@@ -25,8 +25,6 @@ import {
 } from "@material-ui/core";
 
 import SlowMotionVideoIcon from "@material-ui/icons/SlowMotionVideo";
-// import CircularProgressWithLabel from "./progressBar";
-// import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 const useStyles = makeStyles((theme) => ({
   card: {
     width: 300,
@@ -142,13 +140,18 @@ export default function AddBookModel() {
         pdfLink: "",
         description: "",
         bookType: "free",
-        paid: "",
+        paid: "paid",
       
       });
       setPickImage(null);
   
       setPdfLoading(0);
       setimageLoading(0);
+      setIsSubmitDisable(true);
+      const imageInput = document.getElementById('imageInput')
+      const pdfInput = document.getElementById('pdfInput')
+      imageInput.value = null
+      pdfInput.value = null
     }
   };
 
@@ -181,11 +184,11 @@ export default function AddBookModel() {
       setPickImage(e.target.files[0]);
       console.log('---------------------------')
       console.log(pickImage);
-      
+
      };
 
  
-  const addUploadImage = (e) => {
+  const addUploadImage = () => {
     var upload = storage
       .ref(`books/${pickImage.name}`)
       .put(pickImage);
@@ -248,6 +251,12 @@ export default function AddBookModel() {
       }
     );
   };
+  useEffect(() => {
+    if(pickImage !== null){
+      addUploadImage()
+    }
+    
+  }, [pickImage])
   return (
     <div>
       <Fab
@@ -285,10 +294,6 @@ export default function AddBookModel() {
                         display="none"
                         onChange={pick}
                       />
-                       <button onClick={addUploadImage}>
-                    book
-                  
-                  </button>
                     </Paper>
                   </Grid>
                   <Grid item xs={6}>
@@ -388,7 +393,7 @@ export default function AddBookModel() {
                     <h2>{pdfLoading}%</h2>
                     <input
                       type="file"
-                      id="imageInput"
+                      id="pdfInput"
                       name="pdfLink"
                       // value={addBook.pdfLink}
                       onChange={addUploadPdf}
