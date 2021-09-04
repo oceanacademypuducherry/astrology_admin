@@ -102,7 +102,7 @@ function App() {
                 <Product />
               </Container>
             </Route>
-            <Route exact path="add/product">
+            <Route exact path="/add/product">
               <Container>
                 <AddProduct />
               </Container>
