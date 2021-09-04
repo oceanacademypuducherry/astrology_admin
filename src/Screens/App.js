@@ -16,7 +16,8 @@ import BookView from "./BookView";
 import Zoom from "./Zoom/Zoom";
 import Login from "./Login";
 import BookingDetails from "../Screens/Zoom/BookingDetails";
-import Product from "./Product";
+import Product from "./product/Product";
+import AddProduct from "./product/AddProduct";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -99,6 +100,11 @@ function App() {
             <Route exact path="/product">
               <Container>
                 <Product />
+              </Container>
+            </Route>
+            <Route exact path="add/product">
+              <Container>
+                <AddProduct />
               </Container>
             </Route>
             <Route exact path="/book/preview/:id">
