@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import firebase from "../../firebaseConfig/fbConfig";
 import { useParams } from "react-router";
  import BookCard from "./BookScreen";
-// import "../video/video.css";
 import { makeStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 

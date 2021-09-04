@@ -25,8 +25,6 @@ import {
 } from "@material-ui/core";
 
 import SlowMotionVideoIcon from "@material-ui/icons/SlowMotionVideo";
-// import CircularProgressWithLabel from "./progressBar";
-// import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 const useStyles = makeStyles((theme) => ({
   card: {
     width: 300,
@@ -101,6 +99,9 @@ export default function AddBookModel() {
   const [isSubmitDisable, setIsSubmitDisable] = useState(true);
   const dialogCss = dialogStyle();
   const [open, setOpen] = useState(false);
+  const[pickImage,setPickImage]=useState(null)
+  const [imageLoading, setimageLoading] = useState(0);
+  const [pdfLoading, setPdfLoading] = useState(0);
 
   const [addBook, setAddBook] = useState({
     authorName: "",
@@ -132,14 +133,25 @@ export default function AddBookModel() {
       addBooks();
       setOpen(false);
       setAddBook({
+        ...addBook,
         authorName: "",
         bookName: "",
-        description: "",
-        pdfLink: "",
         image: "",
+        pdfLink: "",
+        description: "",
         bookType: "free",
-        paid: "",
+        paid: "paid",
+      
       });
+      setPickImage(null);
+  
+      setPdfLoading(0);
+      setimageLoading(0);
+      setIsSubmitDisable(true);
+      const imageInput = document.getElementById('imageInput')
+      const pdfInput = document.getElementById('pdfInput')
+      imageInput.value = null
+      pdfInput.value = null
     }
   };
 
@@ -166,11 +178,20 @@ export default function AddBookModel() {
     console.log(`${name}iiiiiiiiiiiiiiiiiiiiiiiiiiiiii ${value}`);
   };
 
-  const [imageLoading, setimageLoading] = useState(0);
-  const addUploadImage = (e) => {
+    //only pick
+    const pick = (e) =>{
+      console.log(e.target.files[0]);
+      setPickImage(e.target.files[0]);
+      console.log('---------------------------')
+      console.log(pickImage);
+
+     };
+
+ 
+  const addUploadImage = () => {
     var upload = storage
-      .ref(`books/${e.target.files[0].name}`)
-      .put(e.target.files[0]);
+      .ref(`books/${pickImage.name}`)
+      .put(pickImage);
     upload.on(
       "state_changed",
       (snapshot) => {
@@ -186,13 +207,19 @@ export default function AddBookModel() {
       () => {
         storage
           .ref("books")
-          .child(e.target.files[0].name)
+          .child(pickImage.name)
           .getDownloadURL()
           .then((url) => setAddBook({ ...addBook, image: url }));
       }
     );
   };
-  const [pdfLoading, setPdfLoading] = useState(0);
+
+
+
+   
+   
+
+ 
   const addUploadPdf = (e) => {
     var upload = storage
       .ref(`bookPdf/${e.target.files[0].name}`)
@@ -219,10 +246,17 @@ export default function AddBookModel() {
             console.log(url);
             setAddBook({ ...addBook, pdfLink: url });
             setIsSubmitDisable(false);
+            
           });
       }
     );
   };
+  useEffect(() => {
+    if(pickImage !== null){
+      addUploadImage()
+    }
+    
+  }, [pickImage])
   return (
     <div>
       <Fab
@@ -257,10 +291,8 @@ export default function AddBookModel() {
                         type="file"
                         id="imageInput"
                         name="image"
-                        // label = "upload image"
-                        // value={addBook.image}
-
-                        onChange={addUploadImage}
+                        display="none"
+                        onChange={pick}
                       />
                     </Paper>
                   </Grid>
@@ -361,7 +393,7 @@ export default function AddBookModel() {
                     <h2>{pdfLoading}%</h2>
                     <input
                       type="file"
-                      id="imageInput"
+                      id="pdfInput"
                       name="pdfLink"
                       // value={addBook.pdfLink}
                       onChange={addUploadPdf}
