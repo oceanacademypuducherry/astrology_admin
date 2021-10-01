@@ -28,7 +28,7 @@ export default function ProductCard({ product }) {
             starSpacing="5px"
             starRatedColor="#f76342"
           />
-          <h4>Rs.{product.productPrice}</h4>
+          <h4>₹ {product.productPrice}</h4>
         </div>
         <div className="p-buttons">
           <Link

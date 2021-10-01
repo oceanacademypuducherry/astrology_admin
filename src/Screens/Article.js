@@ -397,11 +397,10 @@ export default function Article() {
                 </Grid>
 
                 <Grid item xs={12}>
-                
-                    <p>Note: Article Image size 150*150 </p>
-                  
+                  <p>
+                    Note: Article Image size <b>200 x 200</b>
+                  </p>
                 </Grid>
-
               </Grid>
             </div>
           </DialogContentText>
@@ -507,8 +506,6 @@ export default function Article() {
         </DialogActions>
       </Dialog>
 
-
-  
       {/* article Design start */}
       <Grid container direction="row" justifyContent="flex-start" spacing={10}>
         {/* {JSON.stringify(data)} */}

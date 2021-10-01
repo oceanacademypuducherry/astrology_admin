@@ -160,6 +160,9 @@ export default function AddProduct() {
         </div>
       </div>
       <div className="viewProduct">
+        <p>
+          Note: Product Image size <b>200 x 200</b>
+        </p>
         <div
           className="p-img"
           onClick={() => {
@@ -190,7 +193,7 @@ export default function AddProduct() {
               starRatedColor="#f76342"
             />
           </span>
-          <span className="price">Rs. {productDetails.productPrice}</span>
+          <span className="price">₹ {productDetails.productPrice}</span>
         </div>
         <div className="p-d">{productDetails.productDescription}</div>
 

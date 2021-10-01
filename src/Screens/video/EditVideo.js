@@ -212,11 +212,9 @@ export default function EditVideo({ videoInfo, docId, videoType }) {
                   <CloudUploadIcon fontSize="large" />
                 </div>
               </div>
-         
+
               <div className="this-visible">
-            
                 <div className="this-thumbnail">
-              
                   <input
                     type="file"
                     id="files"
@@ -250,7 +248,9 @@ export default function EditVideo({ videoInfo, docId, videoType }) {
                   />
                 </div>
               </div>
-              <p >Note: Book Image size <b>400 x 240</b></p>
+              <p>
+                Note: Video Thumbnail size <b>400 x 240</b>
+              </p>
             </div>
             <div className="update-btn">
               {" "}

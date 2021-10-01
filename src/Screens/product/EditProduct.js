@@ -157,6 +157,9 @@ export default function EditProduct() {
         </div>
       </div>
       <div className="edit-output">
+        <p>
+          Note: Product Image size <b>200 x 200</b>
+        </p>
         <div
           className="eo-img"
           onClick={() => {
@@ -179,7 +182,7 @@ export default function EditProduct() {
               starRatedColor="#f76342"
             />
           </span>
-          <span className="price">Rs. {product.productPrice}</span>
+          <span className="price">₹ {product.productPrice}</span>
         </div>
         <button className="add-to-cart" onClick={submitFunction}>
           <ShoppingCartIcon fontSize="large" style={{ marginRight: 10 }} />

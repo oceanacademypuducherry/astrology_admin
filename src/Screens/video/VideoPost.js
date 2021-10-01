@@ -256,7 +256,6 @@ export default function TransitionsModal() {
       >
         <Fade in={open}>
           <div className={dialogCss.paper}>
-           
             <TextField
               className={dialogCss.textFieldStyle}
               type="text"
@@ -363,9 +362,10 @@ export default function TransitionsModal() {
                   value={localAssetsImage.imageStatus}
                 />
               )}
-             
             </div>
-            <p >Note: Book Image size <b>400 x 240</b></p>
+            <p>
+              Note: Video Thumbnail size <b>400 x 240</b>
+            </p>
             <div
               style={{
                 display: "flex",
