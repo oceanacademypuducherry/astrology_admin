@@ -276,6 +276,7 @@ export default function AddBookModel() {
         >
           <DialogTitle>{"Book"}</DialogTitle>
           <DialogContent>
+          <p>Note: Book Image size <b>150 x 200</b></p>
             <DialogContentText>
               <div className={classes.root}>
                 <Grid container spacing={3}>

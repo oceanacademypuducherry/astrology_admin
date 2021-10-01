@@ -324,6 +324,7 @@ export default function EditBook({ bookInfo, docId, bookType }) {
                         alignItems: "center",
                       }}
                     >
+                    
                       <input
                         type="file"
                         id="imageInput"
@@ -354,10 +355,12 @@ export default function EditBook({ bookInfo, docId, bookType }) {
                 </Grid>
               </div>
             </DialogContentText>
+            <p>Note: Book Image size <b>150 x 200</b></p>
           </DialogContent>
           <DialogActions
             style={{ display: "flex", justifyContent: "space-around" }}
           >
+       
             <Button
               onClick={bookUpdate}
               variant="contained"

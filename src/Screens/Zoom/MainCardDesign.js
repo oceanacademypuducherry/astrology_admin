@@ -63,6 +63,7 @@ export default function MainCardDesign({ data }) {
       {/* ScheduleAlert */}
       <RestrictTimeAlert
         retrictTime={restrictTime}
+        bookedTime={data}
         isDialogOpened={isOpen}
         handleCloseDialog={() => setIsOpen(false)}
       />
@@ -74,7 +75,7 @@ export default function MainCardDesign({ data }) {
           variant="outlined"
           color="secondary"
           onClick={onClickrestrictTime}>
-          RetrictTime
+          Retrict Time
         </Button>
       </div>
       {/* RestrictButton */}
@@ -82,13 +83,13 @@ export default function MainCardDesign({ data }) {
       <Grid container direction="row" justifyContent="flex-start" spacing={8}>
        
        
-        {data.map((data) => (
-         
+        {data.map((data) => (  
          new Date().getDate() <= data.time.toDate().getDate() &&
          (
           <Grid item>
           <Card className={classes.root}>
-         { data.time.toDate().getDate()}
+         { data.time.toDate().getDate() }
+         { new Date().getDate() }
             <Link to={`zoom/${data.id}`} style={{ textDecoration: "none" }}>
               <CardHeader
                 style={{ color: "black" }}

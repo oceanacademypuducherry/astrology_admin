@@ -431,6 +431,7 @@ export default function Query() {
                       id="imageInput"
                       onChange={addUploadClick}
                     />
+                        <p >Note: Book Image size <b>200 x 200</b></p>
                   </Paper>
                 </Grid>
                 <Grid item xs={12}>
@@ -522,6 +523,7 @@ export default function Query() {
                       id="imageInput"
                       onChange={updateUploadClick}
                     />
+                     <p >Note: Book Image size <b>200 x 200</b></p>
                   </Paper>
                 </Grid>
                 <Grid item xs={12}>

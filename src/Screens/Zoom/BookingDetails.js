@@ -144,6 +144,7 @@ function BookingDetails() {
                   style={{
                     display: "inline-grid",
                     marginRight: "10px",
+                    marginBottom: "10px",
                     paddingLeft: "10px",
                     paddingRight: "10px",
                   }}
