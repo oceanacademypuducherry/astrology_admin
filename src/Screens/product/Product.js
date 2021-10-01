@@ -7,6 +7,9 @@ export default function Product() {
       <Link to="add/product">
         <button>Add Product</button>
       </Link>
+      <Link to="seeAll/products">
+        <button>See all Products</button>
+      </Link>
     </div>
   );
 }

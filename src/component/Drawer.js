@@ -99,7 +99,7 @@ export default function HiddenDrawer(props) {
                 <ListItemText primary={"Zoom"} />
               </ListItem>
             </Link>
-            <Link to="/product" className={classes.link}>
+            <Link to="/seeAll/products" className={classes.link}>
               <ListItem button>
                 <ListItemIcon>
                   <ShoppingCartIcon />
@@ -159,7 +159,7 @@ export default function HiddenDrawer(props) {
                 <ListItemText primary={"zoom"} />
               </ListItem>
             </Link>
-            <Link to="/product" className={classes.link}>
+            <Link to="/seeAll/products" className={classes.link}>
               <ListItem button>
                 <ListItemIcon>
                   <ShoppingCartIcon />

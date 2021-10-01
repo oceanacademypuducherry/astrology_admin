@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./product.css";
+import "./addProduct.css";
 import firebase from "../../firebaseConfig/fbConfig";
 import StarRatings from "react-star-ratings";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
@@ -211,6 +211,7 @@ export default function AddProduct() {
             document.getElementById("filePicker").value = null;
             setRating(5);
             setLoadImage(0);
+            window.location.href = "/seeAll/products";
           }}
         >
           <CancelIcon fontSize="large" style={{ marginRight: 10 }} /> Cancel
