@@ -395,6 +395,13 @@ export default function Article() {
                     />
                   </Paper>
                 </Grid>
+
+                <Grid item xs={12}>
+                
+                    <p>Note: Article Image size 150*150 </p>
+                  
+                </Grid>
+
               </Grid>
             </div>
           </DialogContentText>
