@@ -58,7 +58,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "flex-end",
   },
   paper: {
-    padding: theme.spacing(2),
+    display: "flex",
+    alignItems : "center",
+    // padding : 5,
+    padding: theme.spacing(1),
     textAlign: "center",
     color: theme.palette.text.secondary,
   },
@@ -271,6 +274,11 @@ export default function Article() {
     ///clearing precious data in state
   };
 
+  const onClose = () => {
+    setAddAlertOpen(false); 
+    setArticle({...article, articleName : "", description : "", postId : ""})  ;
+  }
+
   return (
     <>
       <div className={classes.addArticle}>
@@ -334,7 +342,7 @@ export default function Article() {
       {/* add article */}
       <Dialog
         open={addAlert}
-        onClose={() => setAddAlertOpen(false)}
+        onClose={onClose}
         TransitionComponent={Transition}
         keepMounted
       >
@@ -345,8 +353,8 @@ export default function Article() {
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
-                    <Avatar alt="Remy Sharp" src={article.image} />
-                    <TextField
+                  <img style={{backgroundColor: "lightgrey", border : "1px solid black", marginRight : "20px", boxShadow: "inherit"}} height={120} width={120} src={article.image} />
+                    <input
                       type="file"
                       id="imageInput"
                       onChange={addUploadClick}
@@ -407,13 +415,13 @@ export default function Article() {
         </DialogContent>
         <DialogActions>
           <Button
+            disabled = { article.image === "" && article.name === "" && article.description === "" && article.postId === "" }
             onClick={addArticle}
             variant="contained"
+            color= "primary"
             style={{
-              background: "#1F6DE2",
               width: "100%",
               height: "55px",
-              color: "white",
             }}
           >
             Submit
@@ -433,6 +441,20 @@ export default function Article() {
           <DialogContentText>
             <div className={classes.root}>
               <Grid container spacing={3}>
+              <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    {/* <Avatar alt="Image not found" src={updateData.image} /> */}
+                    <img style={{backgroundColor: "lightgrey", border : "1px solid black", marginRight : "20px", boxShadow: "inherit"}} height={120} width={120} alt="Image not found" src={updateData.image}   />
+                    <input
+                      name="image"
+                      type="file"
+                      id="imageInput"
+                      onChange={updateUploadClick}
+                    />
+                  </Paper>
+                </Grid>
+
+
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
@@ -446,17 +468,7 @@ export default function Article() {
                     />
                   </Paper>
                 </Grid>
-                <Grid item xs={12}>
-                  <Paper className={classes.paper}>
-                    <Avatar alt="Remy Sharp" src={updateData.image} />
-                    <input
-                      name="image"
-                      type="file"
-                      id="imageInput"
-                      onChange={updateUploadClick}
-                    />
-                  </Paper>
-                </Grid>
+              
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
@@ -485,6 +497,12 @@ export default function Article() {
                       onChange={alertUpdate}
                     />
                   </Paper>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <p>
+                    Note: Article Image size <b>200 x 200</b>
+                  </p>
                 </Grid>
               </Grid>
             </div>

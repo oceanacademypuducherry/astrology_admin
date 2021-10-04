@@ -11,6 +11,7 @@ import {
   IconButton,
 } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
+import moment from 'moment'
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { useStyles } from "./MUI/MainCardDesignMUI";
@@ -84,13 +85,13 @@ export default function MainCardDesign({ data }) {
        
        
         {data.map((data) => (  
-         new Date().getDate() <= data.time.toDate().getDate() &&
+         new Date().getDate() >= data.time.toDate().getDate() &&
          (
           <Grid item>
           <Card className={classes.root}>
-         { data.time.toDate().getDate() }
-         { new Date().getDate() }
-            <Link to={`zoom/${data.id}`} style={{ textDecoration: "none" }}>
+         {JSON.stringify(new Date().getDate()) } {" "}
+         {JSON.stringify(data.time.toDate().getDate())}
+            <Link to={`zoom/${data.id}`} style={{ textDecoration: "none" }} >
               <CardHeader
                 style={{ color: "black" }}
                 avatar={
@@ -156,6 +157,7 @@ export default function MainCardDesign({ data }) {
                 style={{ textDecoration: "none", width: "100%" }}
               >
                 <Button
+                  disabled = {data.adminZoomLink === ""}
                   variant="outlined"
                   color="secondary"
                   style={{ width: "100%" }}
