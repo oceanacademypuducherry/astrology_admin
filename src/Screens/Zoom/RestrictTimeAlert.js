@@ -106,6 +106,7 @@ export default function RestrictTimeAlert({
   };
 
   function getBookedTime() {
+    
      //clear//
     setData([]);
     setTime({ ...time, hourWithDay: "" });
@@ -123,10 +124,11 @@ export default function RestrictTimeAlert({
       .onSnapshot((snapshot) => {
         snapshot.forEach((doc) => {
           if (datepicker != null) {
+            console.log(datepicker.getFullYear(), "datepicker.getFullYear() ////////////");
             if (
               datepicker.getDate() === doc.data().time.toDate().getDate() &&
               datepicker.getMonth() + 1 ===
-                doc.data().time.toDate().getMonth() + 1
+                doc.data().time.toDate().getMonth() + 1 && datepicker.getFullYear() === doc.data().time.toDate().getFullYear()
             ) {
               getUserBookedHours.push(doc.data().time.toDate().getHours());
             }
@@ -187,7 +189,7 @@ export default function RestrictTimeAlert({
             RESTRICT TIME
           </Typography>
         </DialogTitle>
-        <DialogContent style={{ minWidth: "350px" }}>
+        <DialogContent style= {{ minWidth: "350px" }}>
           <DialogContentText>
             <Grid spacing={3}>
               <Grid item xs={12} style={{ marginBottom: "20px" }}>
@@ -271,6 +273,7 @@ export default function RestrictTimeAlert({
                     </Button>
                   )
               )}
+              
               {/* {datepicker.getDate()} */}
               <Grid item xs={12} style={{ marginTop: "10px" }}>
                 <Typography variant="caption">
