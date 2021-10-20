@@ -89,9 +89,9 @@ export default function MainCardDesign({ data }) {
          (
           <Grid item>
           <Card className={classes.root}>
-         {/* {JSON.stringify(new Date().getHours()) } {" "}
-         {JSON.stringify(data.time.toDate().getHours()) } {" "}
-         {JSON.stringify(data.time.toDate().getDate())} */}
+         {/* {/* {JSON.stringify(new Date().getHours()) } {" "} */}
+         {/* {JSON.stringify(data.time.toDate().getHours()) } {" "} */}
+         {/* {JSON.stringify(data.time.toDate().getDate())}  */}
             <Link to={`zoom/${data.id}`} style={{ textDecoration: "none" }} >
               <CardHeader
                 style={{ color: "black" }}
@@ -154,11 +154,11 @@ export default function MainCardDesign({ data }) {
             </Link>
             <CardActions>
               <a
-                href={data.adminZoomLink}
+                href={data.adminZoomLink === "" || data.time.toDate().getHours() !== new Date().getHours() ? "#" : data.adminZoomLink}
                 style={{ textDecoration: "none", width: "100%" }}
               >
                 <Button
-                  disabled = {data.adminZoomLink === "" || data.time.toDate().getHours() !== new Date().getHours() }
+                  disabled = {data.adminZoomLink === "" || data.time.toDate().getHours() !== new Date().getHours()}
                   variant="outlined"
                   color="secondary"
                   style={{ width: "100%" }}

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useReducer } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import firebase from "../firebaseConfig/fbConfig";
 import { Link } from "react-router-dom";
+// import Box from '@mui/material/Box';
+// import LinearProgress from '@mui/material/LinearProgress';
 import {
   Button,
   Dialog,
@@ -225,7 +227,8 @@ export default function Article() {
       articleName: updateData.name,
       articleImage: updateData.image,
       content: updateData.description,
-      link: updateData.link,
+      createdAt : Date(),
+      postId : updateData.postId,
     });
 
     setCurrentID();
@@ -348,6 +351,9 @@ export default function Article() {
       >
         <DialogTitle>Add Article</DialogTitle>
         <DialogContent>
+      
+         {/* <CircularProgress /> */}
+      
           <DialogContentText>
             <div className={classes.root}>
               <Grid container spacing={3}>
@@ -415,7 +421,7 @@ export default function Article() {
         </DialogContent>
         <DialogActions>
           <Button
-            disabled = { article.image === "" && article.name === "" && article.description === "" && article.postId === "" }
+            disabled = { article.image === "" || article.name === "" || article.description === "" || article.postId === "" }
             onClick={addArticle}
             variant="contained"
             color= "primary"
