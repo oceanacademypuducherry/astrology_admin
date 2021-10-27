@@ -11,7 +11,7 @@ export default function Login() {
     username: "",
     password: "",
   });
-  const [recaptcha, setRecaptcha] = React.useState(null);
+  const [recaptcha, setRecaptcha] = React.useState(null );
   const gettingValue = JSON.parse(localStorage.getItem("MJADM"));
   useEffect(() => {
     console.log(gettingValue);
@@ -55,7 +55,7 @@ export default function Login() {
   ) : (
     <div className="login-div">
       <div className="fields">
-      <h2 style={{color: "black"}}>Makarajothi Admin</h2>
+      <h2 style={{color: "#00035abf", fontFamily: "sans-serif", letterSpacing: "2px"}}>Makarajothi Admin</h2>
         <TextField
           label="Username"
           name="username"
