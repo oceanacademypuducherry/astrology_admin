@@ -18,6 +18,7 @@ export default function AddProduct() {
     productName: "",
     productPrice: null,
     productRating: rating * 0.5,
+    discount: 0,
   });
 
   // function imagePicker(e) {
@@ -69,8 +70,8 @@ export default function AddProduct() {
   }
   function inputFiledHandler(e) {
     const { name, value } = e.target;
-    if (name === "productPrice") {
-      setProductDetails({ ...productDetails, productPrice: parseInt(value) });
+    if (name === "productPrice" || name === "discount") {
+      setProductDetails({ ...productDetails, [name]: parseInt(value) });
     } else {
       setProductDetails({ ...productDetails, [name]: value });
     }
@@ -88,6 +89,7 @@ export default function AddProduct() {
         productName: "",
         productPrice: 0,
         productRating: rating * 0.5,
+        discount: 0,
       });
       document.getElementById("filePicker").value = null;
       setRating(5);
@@ -109,6 +111,7 @@ export default function AddProduct() {
   return (
     <div className="add-product">
       <div className="product-field">
+        <label className="pl">Choose Product Image</label>
         <div className="p-text-inp">
           <input
             type="file"
@@ -119,6 +122,8 @@ export default function AddProduct() {
             onChange={uploadImage}
           />
         </div>
+        <hr />
+        <label className="pl">Product Name</label>
         <div className="p-text-inp">
           <input
             type="text"
@@ -128,6 +133,8 @@ export default function AddProduct() {
             onChange={inputFiledHandler}
           />
         </div>
+        <hr />
+        <label className="pl">Product Description</label>
         <div className="p-text-inp">
           <textarea
             type="text"
@@ -137,8 +144,11 @@ export default function AddProduct() {
             onChange={inputFiledHandler}
           />
         </div>
+        <hr />
+        <label className="pl">Product Price</label>
         <div className="p-text-inp">
           <input
+            min="0"
             type="number"
             name="productPrice"
             placeholder="Price"
@@ -146,7 +156,20 @@ export default function AddProduct() {
             onChange={inputFiledHandler}
           />
         </div>
-
+        <hr />
+        <label className="pl">Discount</label>
+        <div className="p-text-inp">
+          <input
+            min="0"
+            type="number"
+            name="discount"
+            placeholder="discount"
+            value={productDetails.discount}
+            onChange={inputFiledHandler}
+          />
+        </div>
+        <hr />
+        <label className="pl">Product Rating</label>
         <div className="p-text-inp">
           <span>Set Rating</span>
           <input
@@ -193,7 +216,31 @@ export default function AddProduct() {
               starRatedColor="#f76342"
             />
           </span>
-          <span className="price">₹ {productDetails.productPrice}</span>
+
+          <span>
+            <div className="price">
+              ₹
+              {(
+                productDetails.productPrice -
+                (productDetails.discount * productDetails.productPrice) / 100
+              ).toFixed(2)}
+            </div>
+            {productDetails.discount > 0 && (
+              <div>
+                <span className="price total">
+                  {" "}
+                  ₹{productDetails.productPrice}{" "}
+                </span>
+                <span
+                  className="price total"
+                  style={{ textDecoration: "none" }}
+                >
+                  {" "}
+                  {`(${productDetails.discount}%  off)`}
+                </span>
+              </div>
+            )}
+          </span>
         </div>
         <div className="p-d">{productDetails.productDescription}</div>
 

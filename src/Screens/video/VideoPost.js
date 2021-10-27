@@ -292,36 +292,40 @@ export default function TransitionsModal() {
                 />
               </div>
             </RadioGroup>
+            <hr />
             {addVideo.type === "paid" ? (
-              <div className="upload-file">
-                <input
-                  className={dialogCss.textFieldStyle}
-                  type="file"
-                  name="video"
-                  onChange={handleVideoChange}
-                  placeholder="select video"
-                />
-                {localAssetsVideo.videoStatus === 0 ? (
-                  <button
-                    className="uploadBtn"
-                    disabled={videoUpload}
-                    onClick={handleVideoUpload}
-                  >
-                    <CloudUploadIcon
-                      style={{ color: videoUpload ? "gray" : "green" }}
-                    />{" "}
-                    <span
-                      className={`file-size ${videoUpload && "disabled"}`}
-                    >{`${videoSize}`}</span>
-                  </button>
-                ) : localAssetsVideo.videoStatus === 100 ? (
-                  <CheckCircleIcon className={dialogCss.completedIcon} />
-                ) : (
-                  <CircularProgressWithLabel
-                    value={localAssetsVideo.videoStatus}
+              <>
+                <p style={{ margin: 0 }}>Choose video</p>
+                <div className="upload-file">
+                  <input
+                    className={dialogCss.textFieldStyle}
+                    type="file"
+                    name="video"
+                    onChange={handleVideoChange}
+                    placeholder="select video"
                   />
-                )}
-              </div>
+                  {localAssetsVideo.videoStatus === 0 ? (
+                    <button
+                      className="uploadBtn"
+                      disabled={videoUpload}
+                      onClick={handleVideoUpload}
+                    >
+                      <CloudUploadIcon
+                        style={{ color: videoUpload ? "gray" : "green" }}
+                      />{" "}
+                      <span
+                        className={`file-size ${videoUpload && "disabled"}`}
+                      >{`${videoSize}`}</span>
+                    </button>
+                  ) : localAssetsVideo.videoStatus === 100 ? (
+                    <CheckCircleIcon className={dialogCss.completedIcon} />
+                  ) : (
+                    <CircularProgressWithLabel
+                      value={localAssetsVideo.videoStatus}
+                    />
+                  )}
+                </div>
+              </>
             ) : (
               <TextField
                 className={dialogCss.textFieldStyle}
@@ -333,36 +337,41 @@ export default function TransitionsModal() {
                 onChange={onChangeHandler}
               />
             )}
-            <div className="upload-file">
-              <input
-                id="imageUpload"
-                name="image"
-                className={dialogCss.textFieldStyle}
-                type="file"
-                onChange={handleImageChange}
-              />
-
-              {localAssetsImage.imageStatus === 0 ? (
-                <button
-                  className="uploadBtn"
-                  disabled={imageUpload}
-                  onClick={handleImageUpload}
-                >
-                  <CloudUploadIcon
-                    style={{ color: imageUpload ? "gray" : "green" }}
-                  />{" "}
-                  <span
-                    className={`file-size ${imageUpload && "disabled"}`}
-                  >{`${imageSize}`}</span>
-                </button>
-              ) : localAssetsImage.imageStatus === 100 ? (
-                <CheckCircleIcon className={dialogCss.completedIcon} />
-              ) : (
-                <CircularProgressWithLabel
-                  value={localAssetsImage.imageStatus}
+            <>
+              <hr />
+              <p style={{ margin: 0 }}>Choose Image</p>
+              <div className="upload-file">
+                <input
+                  id="imageUpload"
+                  name="image"
+                  className={dialogCss.textFieldStyle}
+                  type="file"
+                  onChange={handleImageChange}
                 />
-              )}
-            </div>
+
+                {localAssetsImage.imageStatus === 0 ? (
+                  <button
+                    className="uploadBtn"
+                    disabled={imageUpload}
+                    onClick={handleImageUpload}
+                  >
+                    <CloudUploadIcon
+                      style={{ color: imageUpload ? "gray" : "green" }}
+                    />{" "}
+                    <span
+                      className={`file-size ${imageUpload && "disabled"}`}
+                    >{`${imageSize}`}</span>
+                  </button>
+                ) : localAssetsImage.imageStatus === 100 ? (
+                  <CheckCircleIcon className={dialogCss.completedIcon} />
+                ) : (
+                  <CircularProgressWithLabel
+                    value={localAssetsImage.imageStatus}
+                  />
+                )}
+              </div>
+            </>
+            <hr />
             <p>
               Note: Video Thumbnail size <b>400 x 240</b>
             </p>

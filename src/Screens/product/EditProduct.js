@@ -20,6 +20,7 @@ export default function EditProduct() {
     productName: "",
     productPrice: null,
     productRating: 5,
+    discount: 0,
   });
   function getItemData() {
     const productData = firestore.collection("Products").doc(docId).get();
@@ -27,11 +28,13 @@ export default function EditProduct() {
       .then((response) => {
         let responseData = response.data();
         setProduct({
+          ...product,
           productDescription: responseData.productDescription,
           productDisplayImage: responseData.productDisplayImage,
           productName: responseData.productName,
           productPrice: responseData.productPrice,
           productRating: responseData.productRating,
+          discount: responseData.discount,
         });
       })
       .catch((error) => {
@@ -82,8 +85,8 @@ export default function EditProduct() {
   }
   function inputFiledHandler(e) {
     const { name, value } = e.target;
-    if (name === "productPrice") {
-      setProduct({ ...product, productPrice: parseInt(value) });
+    if (name === "productPrice" || name === "discount") {
+      setProduct({ ...product, [name]: parseInt(value) });
     } else {
       setProduct({ ...product, [name]: value });
     }
@@ -114,7 +117,10 @@ export default function EditProduct() {
   return (
     <div className="editProduct">
       <div className="edit-inputs">
+        <label className="pl">Choose Product Image</label>
         <input type="file" id="editFile" onChange={uploadImage} />
+        <hr />
+        <label className="pl">Product Name</label>
         <div className="p-text-inp">
           <input
             type="text"
@@ -124,6 +130,8 @@ export default function EditProduct() {
             onChange={inputFiledHandler}
           />
         </div>
+        <hr />
+        <label className="pl">Product Description</label>
         <div className="p-text-inp">
           <textarea
             type="text"
@@ -134,6 +142,8 @@ export default function EditProduct() {
             onChange={inputFiledHandler}
           />
         </div>
+        <hr />
+        <label className="pl">Product Price</label>
         <div className="p-text-inp">
           <input
             type="number"
@@ -143,7 +153,20 @@ export default function EditProduct() {
             onChange={inputFiledHandler}
           />
         </div>
-
+        <hr />
+        <label className="pl">Discount</label>
+        <div className="p-text-inp">
+          <input
+            min="0"
+            type="number"
+            name="discount"
+            placeholder="discount"
+            value={product.discount}
+            onChange={inputFiledHandler}
+          />
+        </div>
+        <hr />
+        <label className="pl">Product Rating</label>
         <div className="p-text-inp">
           <span>Set Rating</span>
           <input
@@ -182,7 +205,27 @@ export default function EditProduct() {
               starRatedColor="#f76342"
             />
           </span>
-          <span className="price">₹ {product.productPrice}</span>
+          <span>
+            <div className="price">
+              ₹
+              {(
+                product.productPrice -
+                (product.discount * product.productPrice) / 100
+              ).toFixed(2)}
+            </div>
+            {product.discount > 0 && (
+              <div>
+                <span className="price total"> ₹{product.productPrice} </span>
+                <span
+                  className="price total"
+                  style={{ textDecoration: "none" }}
+                >
+                  {" "}
+                  {`(${product.discount}%  off)`}
+                </span>
+              </div>
+            )}
+          </span>
         </div>
         <button className="add-to-cart" onClick={submitFunction}>
           <ShoppingCartIcon fontSize="large" style={{ marginRight: 10 }} />

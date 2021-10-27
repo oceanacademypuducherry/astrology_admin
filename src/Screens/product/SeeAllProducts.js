@@ -40,15 +40,7 @@ export default function SeeAllProducts() {
       </Link>
       <div className="all-products">
         {products.map((item) => (
-          <ProductCard
-            productName={item.productName}
-            productDescription={item.productDescription}
-            productDisplayImage={item.productDisplayImage}
-            productPrice={item.productPrice}
-            productRating={item.productRating}
-            docId={item.docId}
-            product={item}
-          />
+          <ProductCard product={item} />
         ))}
       </div>
     </div>

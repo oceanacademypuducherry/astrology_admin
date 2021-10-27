@@ -179,13 +179,15 @@ export default function EditVideo({ videoInfo, docId, videoType }) {
         <Fade in={open}>
           <div className={classes.paper}>
             <div className="video-player">
-              <input
-                className="video-url"
-                name="videoUrl"
-                type="text"
-                onChange={onChangeInputs}
-                value={editVideo.videoUrl}
-              />
+              {videoInfo.type == "free" && (
+                <input
+                  className="video-url"
+                  name="videoUrl"
+                  type="text"
+                  onChange={onChangeInputs}
+                  value={editVideo.videoUrl}
+                />
+              )}
 
               <div className="this-video">
                 <input
@@ -202,15 +204,18 @@ export default function EditVideo({ videoInfo, docId, videoType }) {
                   width={"100%"}
                   className="in"
                 />
-                <div
-                  className="in in-icon"
-                  onClick={() => {
-                    const videoFilePick = document.getElementById("videoFile");
-                    videoFilePick.click();
-                  }}
-                >
-                  <CloudUploadIcon fontSize="large" />
-                </div>
+                {videoInfo.type == "paid" && (
+                  <div
+                    className="in in-icon"
+                    onClick={() => {
+                      const videoFilePick =
+                        document.getElementById("videoFile");
+                      videoFilePick.click();
+                    }}
+                  >
+                    <CloudUploadIcon fontSize="large" />
+                  </div>
+                )}
               </div>
 
               <div className="this-visible">

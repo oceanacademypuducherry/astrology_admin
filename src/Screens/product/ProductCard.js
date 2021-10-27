@@ -24,11 +24,39 @@ export default function ProductCard({ product }) {
         <div className="p-r-p">
           <StarRatings
             rating={product.productRating}
-            starDimension="20px"
-            starSpacing="5px"
+            starDimension="15px"
+            starSpacing="3px"
             starRatedColor="#f76342"
           />
-          <h4>₹ {product.productPrice}</h4>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "start",
+              margin: "10px 0",
+            }}
+          >
+            <h4 style={{ margin: 0 }}>
+              ₹
+              {(
+                product.productPrice -
+                (product.productPrice * product.discount) / 100
+              ).toFixed(2)}
+            </h4>
+            {product.discount > 0 ? (
+              <p style={{ margin: 0, color: "rgb(243, 54, 54)", fontSize: 12 }}>
+                <span style={{ textDecoration: "line-through" }}>
+                  ₹ {product.productPrice}
+                </span>
+                <span>{`(${product.discount}% off)`}</span>
+              </p>
+            ) : (
+              <p style={{ margin: 0, color: "rgb(243, 54, 54)", fontSize: 12 }}>
+                No offer
+              </p>
+            )}
+          </div>
         </div>
         <div className="p-buttons">
           <Link

@@ -5,7 +5,7 @@
 }
 .p-text-inp {
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
 }
 
@@ -14,7 +14,7 @@ textarea {
   border: none;
   outline: none;
   padding: 10px;
-  margin: 10px;
+  margin: 10px 0;
   width: 30vw;
   height: 60px;
   background-color: rgb(243, 243, 243);
@@ -39,7 +39,7 @@ textarea {
   background-color: rgb(221, 221, 221);
   border-radius: 10px;
 }
-.p-img img {
+.p-img .img img {
   object-fit: cover;
 }
 .p-img span {
@@ -54,6 +54,7 @@ textarea {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-top: 20px;
 }
 .p-d {
@@ -61,7 +62,7 @@ textarea {
   text-align: justify;
 }
 .price {
-  font-size: 1.5vw;
+  font-size: 25px;
 }
 .add-to-cart {
   outline: none;
@@ -79,4 +80,10 @@ textarea {
 }
 .add-to-cart.remove {
   background-color: rgb(255, 0, 55);
+}
+.total {
+  text-decoration: line-through;
+  font-size: 18px;
+  color: rgb(34, 138, 8);
+  color: rgb(167, 167, 167);
 }
