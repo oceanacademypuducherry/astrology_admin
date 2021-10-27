@@ -21,12 +21,13 @@ import {
   Avatar,
   Snackbar,
 } from "@material-ui/core";
+import { NoEncryption } from "@material-ui/icons";
 // import { CloudDownloadTwoTone, Delete, Edit } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   card: {
     width: 300,
-    height: 420,
+    height: 350,
   },
   media: {
     height: 240,
@@ -55,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: "center",
+    // textAlign: "center",
     color: theme.palette.text.secondary,
   },
   inputRoot: {
@@ -384,6 +385,19 @@ export default function Query() {
           <DialogContentText>
             <div className={classes.root}>
               <Grid container spacing={3}>
+
+              <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                  <img style={{textAlign: "start", backgroundColor: "lightgrey", border : "1px solid black", marginRight : "20px", boxShadow: "inherit"}} height={120} width={120} src={query.queryImage} />
+                    {/* <img hi alt="No Image" src={query.queryImage} /> */}
+                    <input
+                      type="file"
+                      id="imageInput"
+                      onChange={addUploadClick}
+                    />
+                  </Paper>
+                </Grid>
+
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
@@ -397,25 +411,13 @@ export default function Query() {
                     />
                   </Paper>
                 </Grid>
-                <Grid item xs={12}>
-                  <Paper className={classes.paper}>
-                    <TextField
-                      name="postId"
-                      id="outlined-basic"
-                      label="post id"
-                      variant="outlined"
-                      style={{ width: "100%" }}
-                      value={query.postId}
-                      onChange={onChangePostid}
-                    />
-                  </Paper>
-                </Grid>
+
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
                       name="answer"
                       id="outlined-basic"
-                      label="answer"
+                      label="Answer"
                       variant="outlined"
                       style={{ width: "100%" }}
                       value={query.answer}
@@ -423,27 +425,25 @@ export default function Query() {
                     />
                   </Paper>
                 </Grid>
-                <Grid item xs={12}>
-                  <Paper className={classes.paper}>
-                    <Avatar alt="Remy Sharp" src={query.queryImage} />
-                    <input
-                      type="file"
-                      id="imageInput"
-                      onChange={addUploadClick}
-                    />
-                    <p>
-                      Note: Query Image size <b>200 x 200</b>
-                    </p>
-                  </Paper>
-                </Grid>
+
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
-                      type="file"
-                      id="imageInput"
-                      onChange={addpdfClick}
+                      name="postId"
+                      id="outlined-basic"
+                      label="Post Id"
+                      variant="outlined"
+                      style={{ width: "100%" }}
+                      value={query.postId}
+                      onChange={onChangePostid}
                     />
                   </Paper>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <p>
+                      Note: Query Image size <b>200 x 200</b>
+                    </p>
                 </Grid>
               </Grid>
             </div>
@@ -477,6 +477,18 @@ export default function Query() {
           <DialogContentText>
             <div className={classes.root}>
               <Grid container spacing={3}>
+              <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <Avatar alt="Remy Sharp" src={updateData.queryImage} />
+                    <input
+                      name="queryImage"
+                      type="file"
+                      id="imageInput"
+                      onChange={updateUploadClick}
+                    />
+                  </Paper>
+                </Grid>
+
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
@@ -516,21 +528,8 @@ export default function Query() {
                     />
                   </Paper>
                 </Grid>
-                <Grid item xs={12}>
-                  <Paper className={classes.paper}>
-                    <Avatar alt="Remy Sharp" src={updateData.queryImage} />
-                    <input
-                      name="queryImage"
-                      type="file"
-                      id="imageInput"
-                      onChange={updateUploadClick}
-                    />
-                    <p>
-                      Note: Query Image size <b>200 x 200</b>
-                    </p>
-                  </Paper>
-                </Grid>
-                <Grid item xs={12}>
+              
+                {/* <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
                       name="pdfLink"
@@ -539,7 +538,10 @@ export default function Query() {
                       onChange={updatepdfClick}
                     />
                   </Paper>
-                </Grid>
+                </Grid> */}
+                 <p>
+                      Note: Query Image size <b>200 x 200</b>
+                    </p>
               </Grid>
             </div>
           </DialogContentText>

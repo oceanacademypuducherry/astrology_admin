@@ -397,7 +397,7 @@ export default function TransitionsModal() {
                 color="primary"
                 onClick={handleClose}
               >
-                Calcel
+                Cancel
               </Button>
             </div>
           </div>
