@@ -21,10 +21,10 @@ import {
   CardActions,
   Paper,
   Grid,
-  Avatar,
-  Snackbar,
+  // Avatar,
+  // Snackbar,
 } from "@material-ui/core";
-import ArticleDetails from "./ArticleDetails";
+// import ArticleDetails from "./ArticleDetails";
 // import { CloudDownloadTwoTone, Delete, Edit } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -62,13 +62,11 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     display: "flex",
     alignItems : "center",
-    // padding : 5,
     padding: theme.spacing(1),
     textAlign: "center",
     color: theme.palette.text.secondary,
   },
   inputRoot: {
-    // backgroundColor: "grey",
     display: "flex",
     flexDirection: "row",
   },
@@ -112,6 +110,7 @@ export default function Article() {
     postId: "",
   });
   const [currentID, setCurrentID] = useState();
+  const [img, setImg] = useState(null);
 
   const addUploadClick = (e) => {
     console.log(e.target.files[0].name);
@@ -121,6 +120,7 @@ export default function Article() {
     upload.on(
       "state_changed",
       (snapshot) => {
+        setImg(e.target.files[0].name);
         console.log(snapshot, "///////////////////////////////snapshots");
       },
       (error) => {
@@ -179,7 +179,8 @@ export default function Article() {
           .ref("articles")
           .child(e.target.files[0].name)
           .getDownloadURL()
-          .then((url) => setUpdateData({ ...updateData, image: url }));
+          .then((url) => setUpdateData({ ...updateData, image: url 
+          }));
       }
     );
   };
@@ -226,7 +227,7 @@ export default function Article() {
     db.collection("articles").doc(currentID).update({
       articleName: updateData.name,
       articleImage: updateData.image,
-      content: updateData.description,
+      // content: updateData.description,
       createdAt : Date(),
       postId : updateData.postId,
     });
@@ -265,7 +266,7 @@ export default function Article() {
     firebase.firestore().collection("articles").add({
       articleName: article.name,
       articleImage: article.image,
-      content: article.description,
+      // content: article.description,
       postId: article.postId,
       createdAt: Date(),
     });
@@ -279,7 +280,8 @@ export default function Article() {
 
   const onClose = () => {
     setAddAlertOpen(false); 
-    setArticle({...article, articleName : "", description : "", postId : ""})  ;
+    setArticle({name : "", description : "", postId : "", image : ""});
+    setImg(null);
   }
 
   return (
@@ -363,6 +365,7 @@ export default function Article() {
                     <input
                       type="file"
                       id="imageInput"
+                      // value={img}
                       onChange={addUploadClick}
                     />
                   </Paper>
@@ -382,7 +385,7 @@ export default function Article() {
                   </Paper>
                 </Grid>
 
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
                       name="description"
@@ -394,7 +397,7 @@ export default function Article() {
                       onChange={onChangeArticle}
                     />
                   </Paper>
-                </Grid>
+                </Grid> */}
 
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
@@ -475,7 +478,7 @@ export default function Article() {
                   </Paper>
                 </Grid>
               
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
                       id="outlined-basic"
@@ -488,7 +491,7 @@ export default function Article() {
                       onChange={alertUpdate}
                     />
                   </Paper>
-                </Grid>
+                </Grid> */}
 
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
@@ -533,8 +536,8 @@ export default function Article() {
       {/* article Design start */}
       <Grid container direction="row" justifyContent="flex-start" spacing={10}>
         {/* {JSON.stringify(data)} */}
-        {data.map((item) => (
-          <Grid item>
+        {data.map((item, index) => (
+          <Grid item key={index}>
             <Card className={classes.card}>
               <Link
                 to={`article/${item.id}`}
