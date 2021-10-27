@@ -1,6 +1,6 @@
 {
   "hosting": [
-    {
+    { 
       "target" : "admin",
       "public": "build",
       "ignore": [
