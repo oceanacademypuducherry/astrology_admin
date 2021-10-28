@@ -2,16 +2,23 @@ import React from "react";
 import { Link } from "react-router-dom";
 import StarRatings from "react-star-ratings";
 import firebase from "../../firebaseConfig/fbConfig";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 export default function ProductCard({ product }) {
   const firestore = firebase.firestore();
   function deleteProduct() {
     firestore.collection("Products").doc(product.docId).delete();
   }
+  function souldOut() {
+    firestore.collection("Products").doc(product.docId).update({ stocks: 0 });
+  }
 
   return (
     <div className="product-scale">
-      <div className="product-card">
+      <div
+        className="product-card"
+        style={{ opacity: product.stocks < 1 ? 0.5 : 1 }}
+      >
         <div className="pc-image">
           <img src={product.productDisplayImage} alt="" />
         </div>
@@ -65,12 +72,13 @@ export default function ProductCard({ product }) {
           >
             <div className="edit-product ">Edit</div>
           </Link>
-          <button
-            className="delete-product product-button"
-            onClick={deleteProduct}
-          >
-            Sold Out
+          <button className="delete-product product-button" onClick={souldOut}>
+            Sold Out ({product.stocks})
           </button>
+        </div>
+        <div onClick={deleteProduct} className="trash">
+          <DeleteIcon style={{ color: "white" }} />{" "}
+          <p style={{ color: "white", fontSize: 16 }}>Delete Item</p>
         </div>
       </div>
     </div>

@@ -11,7 +11,7 @@ export default function Login() {
     username: "",
     password: "",
   });
-  const [recaptcha, setRecaptcha] = React.useState(null );
+  const [recaptcha, setRecaptcha] = React.useState(null);
   const gettingValue = JSON.parse(localStorage.getItem("MJADM"));
   useEffect(() => {
     console.log(gettingValue);
@@ -30,24 +30,23 @@ export default function Login() {
 
   const submiting = () => {
     if (admin.username === user && admin.password === pass) {
-      if (recaptcha !== null && recaptcha !== "click" ) {
-        setRecaptcha(null);
-        localStorage.setItem("MJADM", JSON.stringify(admin));
-        setLogin(true);  
-      } else {
-        setRecaptcha("click");
-      }
+      // if (recaptcha !== null && recaptcha !== "click") {
+      //   setRecaptcha(null);
+      localStorage.setItem("MJADM", JSON.stringify(admin));
+      setLogin(true);
+      // } else {
+      //   setRecaptcha("click");
+      // }
     } else {
       alert("INVALID CREDENTIALS");
       setRecaptcha(null);
     }
   };
 
-
   function onChange(value) {
     console.log("Captcha value:", value);
-    setRecaptcha(value);1
-  
+    setRecaptcha(value);
+    1;
   }
 
   return login ? (
@@ -55,7 +54,15 @@ export default function Login() {
   ) : (
     <div className="login-div">
       <div className="fields">
-      <h2 style={{color: "#00035abf", fontFamily: "sans-serif", letterSpacing: "2px"}}>Makarajothi Admin</h2>
+        <h2
+          style={{
+            color: "#00035abf",
+            fontFamily: "sans-serif",
+            letterSpacing: "2px",
+          }}
+        >
+          Makarajothi Admin
+        </h2>
         <TextField
           label="Username"
           name="username"
@@ -69,7 +76,7 @@ export default function Login() {
           onChange={handleChange}
           style={{ width: "70%" }}
         />
-     
+
         <Button
           variant="contained"
           color="primary"
@@ -79,12 +86,10 @@ export default function Login() {
           Submit
         </Button>
 
-           <ReCAPTCHA
+        {/* <ReCAPTCHA
             className = {recaptcha === "click" ? "recaptcha" : ""}
             sitekey="6LfcGuUcAAAAAEJOjIYpNgsPNIKnIfyw7fng5rYV"
-            onChange={onChange} /> 
-
-
+            onChange={onChange} />  */}
       </div>
     </div>
   );

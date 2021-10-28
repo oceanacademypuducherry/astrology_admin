@@ -19,6 +19,7 @@ export default function AddProduct() {
     productPrice: null,
     productRating: rating * 0.5,
     discount: 0,
+    stocks: 0,
   });
 
   // function imagePicker(e) {
@@ -70,7 +71,7 @@ export default function AddProduct() {
   }
   function inputFiledHandler(e) {
     const { name, value } = e.target;
-    if (name === "productPrice" || name === "discount") {
+    if (name === "productPrice" || name === "discount" || name === "stocks") {
       setProductDetails({ ...productDetails, [name]: parseInt(value) });
     } else {
       setProductDetails({ ...productDetails, [name]: value });
@@ -90,6 +91,7 @@ export default function AddProduct() {
         productPrice: 0,
         productRating: rating * 0.5,
         discount: 0,
+        stocks: 0,
       });
       document.getElementById("filePicker").value = null;
       setRating(5);
@@ -165,6 +167,18 @@ export default function AddProduct() {
             name="discount"
             placeholder="discount"
             value={productDetails.discount}
+            onChange={inputFiledHandler}
+          />
+        </div>
+        <hr />
+        <label className="pl">Stock Count</label>
+        <div className="p-text-inp">
+          <input
+            min="0"
+            type="number"
+            name="stocks"
+            placeholder="stocks"
+            value={productDetails.stocks}
             onChange={inputFiledHandler}
           />
         </div>
@@ -246,7 +260,7 @@ export default function AddProduct() {
 
         <button className="add-to-cart" onClick={submitFunction}>
           <ShoppingCartIcon fontSize="large" style={{ marginRight: 10 }} />
-          Add to Cart
+          {productDetails.stocks > 0 ? "Add to Cart" : "Out of Stock"}
         </button>
         <button
           className="add-to-cart remove"

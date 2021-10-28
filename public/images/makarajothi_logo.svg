@@ -50,6 +50,11 @@
 			<ellipse class="st5" cx="58.1" cy="102.4" rx="0.7" ry="1.2"/>
 		</g>
 	</g>
-	<text transform="matrix(1.2023 0 0 1 37.8693 125.2766)" class="st6 st7 st8">Makarajothi</text>
+	<text transform="matrix(1.2023 0 0 1 37.8691 125.2764)" class="st6 st7 st8">Makarajothi</text>
+</g>
+<g>
+	<path d="M71.1,7.2V1.6H69V0.8h5.1v0.8H72v5.7H71.1z"/>
+	<path d="M74.9,7.2V0.8h1.3l1.5,4.5C77.9,5.8,78,6.1,78,6.3c0.1-0.2,0.2-0.6,0.3-1l1.5-4.5H81v6.4h-0.8V1.9l-1.9,5.4h-0.8l-1.9-5.5
+		v5.5H74.9z"/>
 </g>
 </svg>
