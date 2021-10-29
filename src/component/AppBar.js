@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${drawerWidth}px)`,
       marginLeft: drawerWidth,
-      background: "#ffffff",
+      background: "#d6efff",
       color: "black",
       boxShadow: "none",
     },
@@ -52,9 +52,21 @@ function Appbar({ handleDrawerToggle }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h5" noWrap>
-            Astro Admin
-          </Typography>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              margin: "10px 0",
+            }}
+          >
+            <img src="images/makarajothi_logo.svg" alt="" height="50" />{" "}
+            <p style={{ fontSize: 25, margin: "0 10px", color: "black" }}>
+              {" "}
+              Marakajothi Admin
+            </p>
+          </div>
           <Box>
             <Button
               style={{

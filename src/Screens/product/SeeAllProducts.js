@@ -8,21 +8,24 @@ export default function SeeAllProducts() {
   const firestore = firebase.firestore();
   const [products, setProducts] = useState([]);
 
-  function getProductsData() {
-    const dbData = firestore.collection("Products");
-    let productDatas = [];
-    dbData.onSnapshot((querySnapshot) => {
-      querySnapshot.docs.map((item) => {
-        let fieldData = item.data();
-        fieldData["docId"] = item.id;
-        productDatas.push(fieldData);
-      });
-      setProducts(productDatas);
-    });
+  function souldOut(docId) {
+    firestore.collection("Products").doc(docId).update({ stocks: 0 });
   }
 
+  // function getProductsData() {
+  //   const dbData = firestore.collection("Products");
+  //   let productDatas = [];
+  //   dbData.onSnapshot((querySnapshot) => {
+  //     querySnapshot.docs.map((item) => {
+  //       let fieldData = item.data();
+  //       fieldData["docId"] = item.id;
+  //       productDatas.push(fieldData);
+  //     });
+  //     setProducts(productDatas);
+  //   });
+  // }
+  const dbData = firestore.collection("Products");
   useEffect(() => {
-    const dbData = firestore.collection("Products");
     let productDatas = [];
     dbData.onSnapshot((querySnapshot) => {
       querySnapshot.docs.map((item) => {
@@ -32,7 +35,7 @@ export default function SeeAllProducts() {
       });
       setProducts(productDatas);
     });
-  }, [products]);
+  });
   return (
     <div className="product">
       <Link to="/add/product" className="to-link">

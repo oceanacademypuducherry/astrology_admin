@@ -21,6 +21,7 @@ export default function EditProduct() {
     productPrice: null,
     productRating: 5,
     discount: 0,
+    stocks: 0,
   });
   function getItemData() {
     const productData = firestore.collection("Products").doc(docId).get();
@@ -35,6 +36,7 @@ export default function EditProduct() {
           productPrice: responseData.productPrice,
           productRating: responseData.productRating,
           discount: responseData.discount,
+          stocks: responseData.stocks,
         });
       })
       .catch((error) => {
@@ -85,7 +87,7 @@ export default function EditProduct() {
   }
   function inputFiledHandler(e) {
     const { name, value } = e.target;
-    if (name === "productPrice" || name === "discount") {
+    if (name === "productPrice" || name === "discount" || name === "stocks") {
       setProduct({ ...product, [name]: parseInt(value) });
     } else {
       setProduct({ ...product, [name]: value });
@@ -166,6 +168,18 @@ export default function EditProduct() {
           />
         </div>
         <hr />
+        <label className="pl">Stock Count</label>
+        <div className="p-text-inp">
+          <input
+            min="0"
+            type="number"
+            name="stocks"
+            placeholder="stocks"
+            value={product.stocks}
+            onChange={inputFiledHandler}
+          />
+        </div>
+        <hr />
         <label className="pl">Product Rating</label>
         <div className="p-text-inp">
           <span>Set Rating</span>
@@ -230,6 +244,9 @@ export default function EditProduct() {
         <button className="add-to-cart" onClick={submitFunction}>
           <ShoppingCartIcon fontSize="large" style={{ marginRight: 10 }} />
           Update
+          <span style={{ fontSize: 16, marginLeft: 10 }}>
+            {product.stocks < 1 && "(Out of Stock)"}
+          </span>
         </button>
         <button
           className="add-to-cart remove"
