@@ -11,13 +11,25 @@ import {
   IconButton,
 } from "@material-ui/core";
 import React, { useState, useEffect } from "react";
-import moment from 'moment'
+// import moment from 'moment'
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { useStyles } from "./MUI/MainCardDesignMUI";
 import firebase from "../../firebaseConfig/fbConfig";
 import { Link } from "react-router-dom";
 import RestrictTimeAlert from "./RestrictTimeAlert";
+import Box from '@mui/material/Box';
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+// import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
+// import SaveIcon from '@mui/icons-material/Save';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+// import PrintIcon from '@mui/icons-material/Print';
+// import ShareIcon from '@mui/icons-material/Share';
+import EditIcon from '@mui/icons-material/Edit';
+
 
 export default function MainCardDesign({ data }) {
   //declaring MUI style
@@ -25,6 +37,16 @@ export default function MainCardDesign({ data }) {
   //useState
   const [isOpen, setIsOpen] = useState(false);
   const [restrictTime, setrestrictTime] = useState([]);
+  const [time, setTime] = React.useState(new Date());
+  // const [unRestrictTime, setUnrestrictTime] = useState([]);
+  var sec =  Date.now()/ 1000
+
+  React.useEffect(() => {
+    setInterval(() => {
+     setTime(new Date());
+    }, 1000);
+  }, []);
+
   let monthNames = [
     "January",
     "February",
@@ -40,18 +62,11 @@ export default function MainCardDesign({ data }) {
     "December",
   ];
 
-
-  // useEffect(() => {
-  //  firebase.firestore.collection()
-  // }, [])
-
   const onClickrestrictTime = () => {
     const db = firebase.firestore();
     return db.collection("availableTime").onSnapshot((snapshot) => {
       const getData = [];
-      // console.log(Date.now());
       snapshot.forEach((doc) =>
-        // console.log(doc.data().time, "////////time"),
         getData.push({ ...doc.data() })
       );
       setrestrictTime(getData);
@@ -59,10 +74,53 @@ export default function MainCardDesign({ data }) {
     });
   };
 
-  const onClickUnrestrictTime = () => {}
+  const onClickUnrestrictTime = () => {
+    // console.log("fgjh");
+    //  const db = firebase.firestore();
+    //  return db.collection("booking").onSnapshot((snapshot) => {
+    //   const getRestrictTime = [];
+    //   snapshot.forEach((doc) => {
+    //     var seconds = new Date().getTime() / 1000;
+    //     seconds = Math.ceil(seconds)
+    //       if (doc.data().userName === "Restricted Time" && doc.data().time.seconds >= seconds) {
+    //         console.log(doc.id);
+    //         getRestrictTime.push({...doc.data(), id : doc.id})
+    //       }     
+    //   });
+    //   setUnrestrictTime(...unRestrictTime, getRestrictTime)
+    //   console.log(getRestrictTime, "getRestrictTime");
+    //  })
+  }
+
+  const actions = [
+    { icon: <Link to="unrestrict"><LockOpenIcon /></Link>, name: 'Release Time'},
+    { icon: <Link to="see all meeting"><VisibilityIcon /></Link>, name: 'Upcoming Meeting'},
+    // { icon: <PrintIcon />, name: 'Print', },
+    // { icon: <ShareIcon />, name: 'Share', },
+  ];
+
+  
 
   return (
     <>
+ <Box sx={{ height: "100%" }}>
+      <SpeedDial
+        ariaLabel="SpeedDial openIcon example"
+        sx={{ position: 'fixed', bottom: 16, right: 16 }}
+        icon={<SpeedDialIcon openIcon={<EditIcon />} />}
+      >
+        {actions.map((action) => (
+          <SpeedDialAction
+            key={action.name}
+            icon={action.icon}
+            tooltipTitle={action.name}
+            onClick={action.action}
+          />
+          
+        ))}
+      </SpeedDial>
+    </Box>
+
       {/* ScheduleAlert */}
       <RestrictTimeAlert
         retrictTime={restrictTime}
@@ -73,7 +131,7 @@ export default function MainCardDesign({ data }) {
       {/* ScheduleAlert */}
 
 
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "35px"}}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "35px" }}>
         {/* RestrictButton */}
         <Button
           variant="outlined"
@@ -83,33 +141,34 @@ export default function MainCardDesign({ data }) {
         </Button>
         {/* RestrictButton */}
 
-         {/* UnrestrictButton */}
-         <div style={{marginLeft: "10px"}}>
-        <Button
-          variant="contained"
-           color="primary"
-          onClick={onClickUnrestrictTime}>
-          Unrestrict Time
-        </Button>
-        </div>
+        {/* UnrestrictButton */}
+        {/* <div style={{ marginLeft: "10px" }}>
+          <Link to="/unrestrict" style={{ textDecorationLine: "none" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              >
+              Unrestrict Time
+            </Button>
+          </Link>
+        </div> */}
         {/* UnrestrictButton */}
       </div>
 
 
-
-
       <Grid container spacing={8} direction="row" justifyContent="flex-start" >
-
-
+      {/* { JSON.stringify( Math.ceil(sec)) } */}
+     
         {data.map((data, index) => (
           new Date().getDate() === data.time.toDate().getDate() &&
+          // data.time.seconds >= Math.ceil(sec) &&
           (
             <Grid item key={index}>
               <Card className={classes.root}>
                 {/* {/* {JSON.stringify(new Date().getHours()) } {" "} */}
                 {/* {JSON.stringify(data.time.toDate().getHours()) } {" "} */}
-                {/* {JSON.stringify(data.time.toDate().getDate())}  */}
-                <Link to={`zoom/${data.id}`} style={{ textDecoration: "none" }} >
+                {/* {JSON.stringify(time.getHours())}  */}
+                <Link to={`zoom/${data.id}`} style={{ textDecoration: "none" }}>
                   <CardHeader
                     style={{ color: "black" }}
                     avatar={
@@ -174,10 +233,9 @@ export default function MainCardDesign({ data }) {
                     style={{ textDecoration: "none", width: "100%" }}
                   >
                     <Button
-                      disabled={data.adminZoomLink === "" || data.time.toDate().getHours() !== new Date().getHours()}
+                      disabled={data.adminZoomLink === "" || data.time.toDate().getHours() !== time.getHours()} 
                       variant="outlined"
-                      color="secondary"
-                      style={{ width: "100%" }}
+                      style=  {data.adminZoomLink === "" || data.time.toDate().getHours() !== new Date().getHours() ?  { width: "100%"} : { width: "100%", backgroundColor: "#008000", color:"white" } }     
                     >
                       Launch Zoom
                     </Button>
@@ -187,6 +245,7 @@ export default function MainCardDesign({ data }) {
             </Grid>
           )
         ))}
+
       </Grid>
     </>
   );

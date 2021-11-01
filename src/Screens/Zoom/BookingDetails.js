@@ -30,7 +30,7 @@ function BookingDetails() {
     birthMinute: "",
     birthDay: "",
   });
-  
+
   let monthNames = [
     "January",
     "February",
@@ -141,7 +141,7 @@ function BookingDetails() {
             <Paper variant="outlined" className={classes.paper}>
               <h3>PURPOSE FOR</h3>
               {purposeFor.map((data) => (
-                <Paper1
+                <Paper
                   style={{
                     display: "inline-grid",
                     marginRight: "10px",
@@ -151,7 +151,7 @@ function BookingDetails() {
                   }}
                 >
                   <p>{data}</p>
-                </Paper1>
+                </Paper>
               ))}
             </Paper>
             <Paper variant="outlined" className={classes.paper}>

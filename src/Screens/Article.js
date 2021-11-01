@@ -539,10 +539,7 @@ export default function Article() {
         {data.map((item, index) => (
           <Grid item key={index}>
             <Card className={classes.card}>
-              <Link
-                to={`article/${item.id}`}
-                style={{ textDecoration: "none", color: "#6996FF" }}
-              >
+              
                 <CardActionArea>
                   <CardMedia
                     className={classes.media}
@@ -567,7 +564,7 @@ export default function Article() {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-              </Link>
+           
               <CardActions>
                 <Button
                   size="small"

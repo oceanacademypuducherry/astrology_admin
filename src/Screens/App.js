@@ -5,6 +5,7 @@ import { Container, CssBaseline } from "@material-ui/core";
 import Article from "../Screens/Article";
 import Query from "../Screens/Query";
 // import Book from "../Screens/Book";
+import SeeAllMeeting from "./Zoom/SeeAllMeeting"
 import AddBook from "../Screens/BookNew/AddBook";
 import AddVideos from "../Screens/video/AddVideos";
 import Appbar from "../component/AppBar";
@@ -14,6 +15,7 @@ import TransitionsModal from "./video/VideoPost";
 import ArticleDetails from "./ArticleDetails";
 import BookView from "./BookView";
 import Zoom from "./Zoom/Zoom";
+import UnrestrictTime from "./Zoom/UnrestrictTime"
 import Login from "./Login";
 import BookingDetails from "../Screens/Zoom/BookingDetails";
 import Product from "./product/Product";
@@ -124,11 +126,24 @@ function App() {
                 <BookView />
               </Container>
             </Route>
+            <Route exact path="/unrestrict">
+                <Container>
+                <UnrestrictTime />
+                </Container>
+            </Route>
+            
+            <Route exact path="/See all meeting">
+                <Container>
+                <SeeAllMeeting />
+                </Container>
+            </Route>
+
             <Route exact path="/zoom/:id">
               <Container>
                 <BookingDetails />
               </Container>
             </Route>
+           
             <Route exact path="/login">
               <Container className={classes.content}>
                 <div className={classes.toolbar} />
