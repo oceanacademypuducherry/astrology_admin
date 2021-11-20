@@ -1,10 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import StarRatings from "react-star-ratings";
+
 import firebase from "../../firebaseConfig/fbConfig";
+
 import DeleteIcon from "@material-ui/icons/Delete";
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, makesould }) {
   const firestore = firebase.firestore();
   function deleteProduct() {
     firestore.collection("Products").doc(product.docId).delete();
@@ -72,7 +74,10 @@ export default function ProductCard({ product }) {
           >
             <div className="edit-product ">Edit</div>
           </Link>
-          <button className="delete-product product-button" onClick={souldOut}>
+          <button
+            className="delete-product product-button"
+            onClick={() => makesould()}
+          >
             Stock ({product.stocks})
           </button>
         </div>
