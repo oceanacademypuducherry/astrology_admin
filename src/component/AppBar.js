@@ -64,7 +64,7 @@ function Appbar({ handleDrawerToggle }) {
             <img src="images/makarajothi_logo.svg" alt="" height="50" />{" "}
             <p style={{ fontSize: 25, margin: "0 10px", color: "black" }}>
               {" "}
-              Marakajothi Admin
+              Makarajothi Admin
             </p>
           </div>
           <Box>
