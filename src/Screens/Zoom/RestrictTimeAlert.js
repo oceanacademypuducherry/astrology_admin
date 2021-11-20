@@ -47,18 +47,22 @@ export default function RestrictTimeAlert({
   };
 
   const onSubmit = () => {
-    let dd = datepicker.getDate();
-    let mm = datepicker.getMonth();
-    let yy = datepicker.getFullYear();
-    let hh = parseInt(time.hour);
+    const date = datepicker.split("-")
+    let dd = date[2]
+    let mm = date[1]
+    let yy = date[0]
+    let hh = parseInt(time.hour)
+    let m = 0
+    let s = 0
 
     console.log(yy, "yy");
     console.log(mm, "mm");
     console.log(dd, "dd");
     console.log(hh, "hh");
 
-    let date = new Date(yy, mm, dd, hh);
-    console.log(date, "///////////////////♣♣♣");
+    ///mm-1 is because of month going after current month
+    let bookingDate = new Date(yy, mm - 1, dd, hh, m, s);
+    console.log(bookingDate, "///////////////////♣♣♣");
 
     firebase
       .firestore()
@@ -67,7 +71,7 @@ export default function RestrictTimeAlert({
         userZoomLink: "",
         adminZoomLink: "",
         birthPlace: "Restricted Time",
-        birthTime: date,
+        birthTime: bookingDate,
         bookingFor: "Restricted Time",
         email: "Makarajothi",
         jadhagam:
@@ -77,18 +81,18 @@ export default function RestrictTimeAlert({
         profile:
           "https://cdn.dribbble.com/users/3061865/screenshots/16008162/media/a61b7872f487d82ff51bab5e53f41e9a.png?compress=1&resize=1200x900",
         purposeFor: ["Admin Restricted"],
-        time: date,
+        time: bookingDate,
         userName: "Restricted Time",
       }).then(() => {
         handleClose();
       });
   
-    //clear
-    // setData([]);
-    // setDatePicker(null);
-    // setTime({ ...time, hourWithDay: "" });
-    // setTimes({ ...times, morning: [], afternoon: [], evening: [] });
-    // handleCloseDialog(false);
+    // clear
+    setData([]);
+    setDatePicker(null);
+    setTime({ ...time, hourWithDay: "" });
+    setTimes({ ...times, morning: [], afternoon: [], evening: [] });
+    handleCloseDialog(false);
   };
 
   const selectedDate = (h) => {
@@ -100,23 +104,26 @@ export default function RestrictTimeAlert({
   };
 
   const datePickerOnChange = (event) => {
-    setDatePicker(event.target.value);
+    setDatePicker(event.target.value)
     //clear
-    setTime({ ...time, hour: "" });
+    setTime({ ...time, hour: "" })
   };
 
   function getBookedTime() {
-    
      //clear//
-    setData([]);
-    setTime({ ...time, hourWithDay: "" });
+    setData([])
+    setTime({ ...time, hourWithDay: "" })
     //clear//
 
-    var getUserBookedHours = [];
-    var getAllHours = [];
-    var morning = [];
-    var afternoon = [];
-    var evening = [];
+    var getUserBookedHours = []
+    var getAllHours = []
+    var morning = []
+    var afternoon = []
+    var evening = []
+    const date = datepicker.split("-")
+    console.log(date[2], "date")
+    console.log(date[1], "month")
+    console.log(date[0], "year")
 
     firebase
       .firestore()
@@ -124,18 +131,18 @@ export default function RestrictTimeAlert({
       .onSnapshot((snapshot) => {
         snapshot.forEach((doc) => {
           if (datepicker != null) {
-            console.log(datepicker.getFullYear(), "datepicker.getFullYear() ////////////");
+            //Condition for get selected all userbooked time
             if (
-              datepicker.getDate() === doc.data().time.toDate().getDate() &&
-              datepicker.getMonth() + 1 ===
-                doc.data().time.toDate().getMonth() + 1 && datepicker.getFullYear() === doc.data().time.toDate().getFullYear()
+              date[2] == doc.data().time.toDate().getDate() &&
+              date[1] == doc.data().time.toDate().getMonth() + 1 && 
+              date[0] == doc.data().time.toDate().getFullYear()
             ) {
               getUserBookedHours.push(doc.data().time.toDate().getHours());
             }
           }
         });
 
-        console.log(getUserBookedHours);
+        console.log(getUserBookedHours, "getUserBookedHours");
 
         getAllHours = staticDates;
 
@@ -192,21 +199,28 @@ export default function RestrictTimeAlert({
         <DialogContent style= {{ minWidth: "350px" }}>
           <DialogContentText>
             <Grid spacing={3}>
-              <Grid item xs={12} style={{ marginBottom: "20px" }}>
-                <DatePickerComponent
+              <Grid item xs={12} style={{ marginBottom: "20px", textAlign: "center" }}>
+              <input style={{width: "90%", height: "30px", textAlign: "center"}} type="date" id="myDate" name="bday" 
+              min= {`${JSON.stringify(new Date().getFullYear())}-${JSON.stringify(new Date().getMonth()+1)}-${JSON.stringify(new Date().getDate())}`}
+              value={datepicker}
+              onChange={datePickerOnChange}
+              />
+                {/* <DatePickerComponent
                   // firstDayOfWeek= {1}
                   // disabled
-                  min={Date()}
-                  // max={Date(Date.getDate() + 1 )}
+                  min={ new Date().getDate() }
+                  max={new Date().getDate() }
                   value={datepicker}
                   onChange={datePickerOnChange}
-                ></DatePickerComponent>
+                ></DatePickerComponent> */}
               </Grid>
 
                {/* {JSON.stringify(times.morning.length)} <br />
                {JSON.stringify(times.afternoon.length)} <br /> 
                {JSON.stringify(times.evening.length)} <br />  */}
-
+                    {/* {JSON.stringify(new Date().getDate())}
+                    {JSON.stringify(new Date().getMonth()+1)}
+                    {JSON.stringify(new Date().getFullYear())} */}
               
               {time.hourWithDay === "" ? (
                 <h4>No Selected Time</h4>
