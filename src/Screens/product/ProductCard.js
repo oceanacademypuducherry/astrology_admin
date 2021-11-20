@@ -73,7 +73,7 @@ export default function ProductCard({ product }) {
             <div className="edit-product ">Edit</div>
           </Link>
           <button className="delete-product product-button" onClick={souldOut}>
-            Sold Out ({product.stocks})
+            Stock ({product.stocks})
           </button>
         </div>
         <div onClick={deleteProduct} className="trash">
