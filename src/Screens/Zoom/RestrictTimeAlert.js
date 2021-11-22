@@ -38,22 +38,22 @@ export default function RestrictTimeAlert({
     hourWithDay: "",
   });
 
-  const handleClose = () => { 
+  const handleClose = () => {
     handleCloseDialog(false);
     setTimes({ ...times, morning: [], afternoon: [], evening: [] });
     setDatePicker(null);
-    setTime({ ...time, hourWithDay: "", hour: "", minute : "" });
+    setTime({ ...time, hourWithDay: "", hour: "", minute: "" });
     setData([]);
   };
 
   const onSubmit = () => {
-    const date = datepicker.split("-")
-    let dd = date[2]
-    let mm = date[1]
-    let yy = date[0]
-    let hh = parseInt(time.hour)
-    let m = 0
-    let s = 0
+    const date = datepicker.split("-");
+    let dd = date[2];
+    let mm = date[1];
+    let yy = date[0];
+    let hh = parseInt(time.hour);
+    let m = 0;
+    let s = 0;
 
     console.log(yy, "yy");
     console.log(mm, "mm");
@@ -83,10 +83,11 @@ export default function RestrictTimeAlert({
         purposeFor: ["Admin Restricted"],
         time: bookingDate,
         userName: "Restricted Time",
-      }).then(() => {
+      })
+      .then(() => {
         handleClose();
       });
-  
+
     // clear
     setData([]);
     setDatePicker(null);
@@ -104,26 +105,26 @@ export default function RestrictTimeAlert({
   };
 
   const datePickerOnChange = (event) => {
-    setDatePicker(event.target.value)
+    setDatePicker(event.target.value);
     //clear
-    setTime({ ...time, hour: "" })
+    setTime({ ...time, hour: "" });
   };
 
   function getBookedTime() {
-     //clear//
-    setData([])
-    setTime({ ...time, hourWithDay: "" })
+    //clear//
+    setData([]);
+    setTime({ ...time, hourWithDay: "" });
     //clear//
 
-    var getUserBookedHours = []
-    var getAllHours = []
-    var morning = []
-    var afternoon = []
-    var evening = []
-    const date = datepicker.split("-")
-    console.log(date[2], "date")
-    console.log(date[1], "month")
-    console.log(date[0], "year")
+    var getUserBookedHours = [];
+    var getAllHours = [];
+    var morning = [];
+    var afternoon = [];
+    var evening = [];
+    const date = datepicker.split("-");
+    console.log(date[2], "date");
+    console.log(date[1], "month");
+    console.log(date[0], "year");
 
     firebase
       .firestore()
@@ -134,7 +135,7 @@ export default function RestrictTimeAlert({
             //Condition for get selected all userbooked time
             if (
               date[2] == doc.data().time.toDate().getDate() &&
-              date[1] == doc.data().time.toDate().getMonth() + 1 && 
+              date[1] == doc.data().time.toDate().getMonth() + 1 &&
               date[0] == doc.data().time.toDate().getFullYear()
             ) {
               getUserBookedHours.push(doc.data().time.toDate().getHours());
@@ -196,15 +197,27 @@ export default function RestrictTimeAlert({
             RESTRICT TIME
           </Typography>
         </DialogTitle>
-        <DialogContent style= {{ minWidth: "350px" }}>
+        <DialogContent style={{ minWidth: "350px" }}>
           <DialogContentText>
             <Grid spacing={3}>
-              <Grid item xs={12} style={{ marginBottom: "20px", textAlign: "center" }}>
-              <input style={{width: "90%", height: "30px", textAlign: "center"}} type="date" id="myDate" name="bday" 
-              min= {`${JSON.stringify(new Date().getFullYear())}-${JSON.stringify(new Date().getMonth()+1)}-${JSON.stringify(new Date().getDate())}`}
-              value={datepicker}
-              onChange={datePickerOnChange}
-              />
+              <Grid
+                item
+                xs={12}
+                style={{ marginBottom: "20px", textAlign: "center" }}
+              >
+                <input
+                  style={{ width: "90%", height: "30px", textAlign: "center" }}
+                  type="date"
+                  id="myDate"
+                  name="bday"
+                  min={`${JSON.stringify(
+                    new Date().getFullYear()
+                  )}-${JSON.stringify(
+                    new Date().getMonth() + 1
+                  )}-${JSON.stringify(new Date().getDate())}`}
+                  value={datepicker}
+                  onChange={datePickerOnChange}
+                />
                 {/* <DatePickerComponent
                   // firstDayOfWeek= {1}
                   // disabled
@@ -215,13 +228,13 @@ export default function RestrictTimeAlert({
                 ></DatePickerComponent> */}
               </Grid>
 
-               {/* {JSON.stringify(times.morning.length)} <br />
+              {/* {JSON.stringify(times.morning.length)} <br />
                {JSON.stringify(times.afternoon.length)} <br /> 
                {JSON.stringify(times.evening.length)} <br />  */}
-                    {/* {JSON.stringify(new Date().getDate())}
+              {/* {JSON.stringify(new Date().getDate())}
                     {JSON.stringify(new Date().getMonth()+1)}
                     {JSON.stringify(new Date().getFullYear())} */}
-              
+
               {time.hourWithDay === "" ? (
                 <h4>No Selected Time</h4>
               ) : (
@@ -240,7 +253,7 @@ export default function RestrictTimeAlert({
                       variant="outlined"
                       id={data}
                       disabled={datepicker == null}
-                      style={{ display: "inline" }}
+                      style={{ display: "inline", margin: 5 }}
                       onClick={selectedDate.bind(this, data)}
                     >
                       {data}:00 AM
@@ -259,7 +272,7 @@ export default function RestrictTimeAlert({
                       variant="outlined"
                       id={data}
                       disabled={datepicker == null}
-                      style={{ display: "inline" }}
+                      style={{ display: "inline", margin: 5 }}
                       onClick={selectedDate.bind(this, data)}
                     >
                       {data == 12 && `${data}:00 PM`}{" "}
@@ -267,7 +280,6 @@ export default function RestrictTimeAlert({
                     </Button>
                   )
               )}
-
 
               {times.evening.length > 0 && <h5>Evening</h5>}
 
@@ -280,14 +292,14 @@ export default function RestrictTimeAlert({
                       variant="outlined"
                       id={data}
                       disabled={datepicker == null}
-                      style={{ display: "inline" }}
+                      style={{ display: "inline", margin: 5 }}
                       onClick={selectedDate.bind(this, data)}
                     >
                       {data > 12 && `${data - 12}:00 PM`}
                     </Button>
                   )
               )}
-              
+
               {/* {datepicker.getDate()} */}
               <Grid item xs={12} style={{ marginTop: "10px" }}>
                 <Typography variant="caption">
