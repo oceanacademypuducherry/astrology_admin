@@ -30,7 +30,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   card: {
     width: 300,
-    height: 420,
+    height: 350,
   },
   media: {
     height: 240,
@@ -40,10 +40,11 @@ const useStyles = makeStyles((theme) => ({
   },
 
   cardTitle: {
-    fontSize: "18px",
+    fontSize: "15px",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    height: "30px",
+    whiteSpace: "nowrap",
+    height: 20,
     color: "grey",
     fontWeight: "500",
   },
@@ -424,7 +425,7 @@ export default function Article() {
         </DialogContent>
         <DialogActions>
           <Button
-            disabled = { article.image === "" || article.name === "" || article.description === "" || article.postId === "" }
+            disabled = { article.image === "" || article.name === "" || article.postId === "" }
             onClick={addArticle}
             variant="contained"
             color= "primary"
@@ -553,14 +554,6 @@ export default function Article() {
                       className={classes.cardTitle}
                     >
                       {item.articleName}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="textSecondary"
-                      component="p"
-                      className={classes.cardDescription}
-                    >
-                      {item.content}
                     </Typography>
                   </CardContent>
                 </CardActionArea>
