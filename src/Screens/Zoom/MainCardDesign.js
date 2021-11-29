@@ -170,17 +170,21 @@ export default function MainCardDesign({ data }) {
       </div>
 
       <Grid container spacing={8} direction="row" justifyContent="flex-start">
-        {/* { JSON.stringify( Math.ceil(sec)) } */}
+       
 
         {data.map(
           (data, index) =>
-            new Date().getDate() === data.time.toDate().getDate() && (
+            new Date().getDate() === data.time.toDate().getDate() && 
+            new Date().getMonth() === data.time.toDate().getMonth() &&
+            new Date().getFullYear() === data.time.toDate().getFullYear() && (
               // data.time.seconds >= Math.ceil(sec) &&
+              
               <Grid item key={index}>
                 <Card className={classes.root}>
-                  {/* {/* {JSON.stringify(new Date().getHours()) } {" "} */}
-                  {/* {JSON.stringify(data.time.toDate().getHours()) } {" "} */}
-                  {/* {JSON.stringify(time.getHours())}  */}
+                {/* { JSON.stringify( new Date().getMonth() + 1)} */}
+                 {/* {JSON.stringify(new Date().getFullYear()) }  */}
+                  {/* {JSON.stringify(data.time.toDate().getFullYear()) }  */}
+                 {/* {JSON.stringify(time.getHours())}   */}
                   <Link
                     to={`zoom/${data.id}`}
                     style={{ textDecoration: "none" }}
