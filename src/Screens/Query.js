@@ -27,7 +27,7 @@ import { NoEncryption } from "@material-ui/icons";
 const useStyles = makeStyles((theme) => ({
   card: {
     width: 300,
-    height: 350,
+    height: 290,
   },
   media: {
     height: 240,
@@ -56,11 +56,9 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    // textAlign: "center",
     color: theme.palette.text.secondary,
   },
   inputRoot: {
-    // backgroundColor: "grey",
     display: "flex",
     flexDirection: "row",
   },
@@ -92,9 +90,9 @@ export default function Query() {
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [query, setQuery] = useState({
     question: "",
-    pdfLink: "",
     queryImage: "",
     postId: "",
+    userId : "",
     answer: "",
   });
   const [data, setData] = useState([]);
@@ -103,6 +101,7 @@ export default function Query() {
     queryImage: "",
     pdfLink: "",
     postId: "",
+    userId : "",
     answer: "",
   });
   const [currentID, setCurrentID] = useState();
@@ -129,28 +128,6 @@ export default function Query() {
       }
     );
   };
-  const addpdfClick = (e) => {
-    console.log(e.target.files[0].name);
-    var upload = storage
-      .ref(`querys/${e.target.files[0].name}`)
-      .put(e.target.files[0]);
-    upload.on(
-      "state_changed",
-      (snapshot) => {
-        console.log(snapshot, "///////////////////////////////snapshots");
-      },
-      (error) => {
-        console.log(error);
-      },
-      () => {
-        storage
-          .ref("querys")
-          .child(e.target.files[0].name)
-          .getDownloadURL()
-          .then((url) => setQuery({ ...query, pdfLink: url }));
-      }
-    );
-  };
 
   const updateUploadClick = (e) => {
     var upload = storage
@@ -170,28 +147,6 @@ export default function Query() {
           .child(e.target.files[0].name)
           .getDownloadURL()
           .then((url) => setUpdateData({ ...updateData, queryImage: url }));
-      }
-    );
-  };
-
-  const updatepdfClick = (e) => {
-    var upload = storage
-      .ref(`querys/${e.target.files[0].name}`)
-      .put(e.target.files[0]);
-    upload.on(
-      "state_changed",
-      (snapshot) => {
-        console.log(snapshot, "///////////////////////////////snapshots");
-      },
-      (error) => {
-        console.log(error);
-      },
-      () => {
-        storage
-          .ref("querys")
-          .child(e.target.files[0].name)
-          .getDownloadURL()
-          .then((url) => setUpdateData({ ...updateData, pdfLink: url }));
       }
     );
   };
@@ -222,6 +177,7 @@ export default function Query() {
           pdfLink: snapshot.data().pdfLink,
           queryImage: snapshot.data().queryImage,
           postId: snapshot.data().postId,
+          userId: snapshot.data().userId,
           answer: snapshot.data().answer,
         });
         console.log(snapshot.data());
@@ -265,6 +221,7 @@ export default function Query() {
     console.log(e.target.value, "//////////////////////// event value");
     setUpdateData({ ...updateData, [e.target.name]: e.target.value });
   };
+
   const alertUpdatePostid = (e) => {
     console.log(e.target.name, "//////////////////////// event name");
     console.log(e.target.value, "//////////////////////// event value");
@@ -278,15 +235,12 @@ export default function Query() {
   };
 
   const onChangeQuery = (e) => {
-    console.log(e.target.value);
     setQuery({ ...query, [e.target.name]: e.target.value });
   };
   const onChangePostid = (e) => {
-    console.log(e.target.value);
     setQuery({ ...query, [e.target.name]: e.target.value });
   };
   const onChangeAnswer = (e) => {
-    console.log(e.target.value);
     setQuery({ ...query, [e.target.name]: e.target.value });
   };
 
@@ -295,24 +249,18 @@ export default function Query() {
     firebase.firestore().collection("queries").add({
       question: query.question,
       queryImage: query.queryImage,
-      pdfLink: query.pdfLink,
-      postId: query.postId,
+      postId: parseInt(query.postId),
+      userId : parseInt(query.userId),
       answer: query.answer,
       createdAt: Date(),
     });
     setAddAlertOpen(false);
-    console.log(Date());
   };
 
-  const alertOpen = (image) => {
-    setAlert(true);
-    getQueryData(image);
-    console.log(image);
-  };
-
-  const alertClose = () => {
-    setAlert(false);
-  };
+  const onCloseUpdateArticle = () => {
+    setUpdateData({answer: "", pdfLink: "", postId: "", queryImage: "",question: "", userId: ""})
+    setUpdateAlert(false)
+  }
 
   return (
     <>
@@ -426,9 +374,35 @@ export default function Query() {
                   </Paper>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   <Paper className={classes.paper}>
                     <TextField
+                     type= "number"
+                     InputProps={{
+                       inputProps: { 
+                            min: 0 
+                       }
+                   }}
+                      name="userId"
+                      id="outlined-basic"
+                      label="User Id"
+                      variant="outlined"
+                      style={{ width: "100%" }}
+                      value={query.userId}
+                      onChange={onChangePostid}
+                    />
+                  </Paper>
+                </Grid>
+
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                     type= "number"
+                     InputProps={{
+                       inputProps: { 
+                            min: 0 
+                       }
+                   }}
                       name="postId"
                       id="outlined-basic"
                       label="Post Id"
@@ -468,7 +442,7 @@ export default function Query() {
       {/* Update article */}
       <Dialog
         open={updateAlert}
-        onClose={() => setUpdateAlert(false)}
+        onClose={onCloseUpdateArticle}
         TransitionComponent={Transition}
         keepMounted
       >
@@ -502,9 +476,36 @@ export default function Query() {
                     />
                   </Paper>
                 </Grid>
-                <Grid item xs={12}>
+
+                <Grid item xs={6}>
                   <Paper className={classes.paper}>
                     <TextField
+                     type= "number"
+                     InputProps={{
+                       inputProps: { 
+                            min: 0 
+                       }
+                   }}
+                      name="userId"
+                      id="outlined-basic"
+                      label="User Id"
+                      variant="outlined"
+                      style={{ width: "100%" }}
+                      value={updateData.userId}
+                      onChange={alertUpdatePostid}
+                    />
+                  </Paper>
+                </Grid>
+
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                     type= "number"
+                     InputProps={{
+                       inputProps: { 
+                            min: 0 
+                       }
+                   }}
                       name="postId"
                       id="outlined-basic"
                       label="postid"
@@ -515,6 +516,7 @@ export default function Query() {
                     />
                   </Paper>
                 </Grid>
+
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
@@ -528,17 +530,6 @@ export default function Query() {
                     />
                   </Paper>
                 </Grid>
-              
-                {/* <Grid item xs={12}>
-                  <Paper className={classes.paper}>
-                    <TextField
-                      name="pdfLink"
-                      type="file"
-                      id="imageInput"
-                      onChange={updatepdfClick}
-                    />
-                  </Paper>
-                </Grid> */}
                  <p>
                       Note: Query Image size <b>200 x 200</b>
                     </p>
@@ -571,24 +562,6 @@ export default function Query() {
             <Card className={classes.card}>
               <CardActionArea>
                 <CardMedia className={classes.media} image={item.queryImage} />
-                <CardContent>
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="h2"
-                    className={classes.cardTitle}
-                  >
-                    {item.name}
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                    component="p"
-                    className={classes.cardpdf}
-                  >
-                    {item.pdfLink}
-                  </Typography>
-                </CardContent>
               </CardActionArea>
               <CardActions>
                 <Button

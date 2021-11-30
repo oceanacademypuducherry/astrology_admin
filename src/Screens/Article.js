@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import firebase from "../firebaseConfig/fbConfig";
-import { Link } from "react-router-dom";
-// import Box from '@mui/material/Box';
-// import LinearProgress from '@mui/material/LinearProgress';
 import {
   Button,
   Dialog,
@@ -21,11 +18,7 @@ import {
   CardActions,
   Paper,
   Grid,
-  // Avatar,
-  // Snackbar,
 } from "@material-ui/core";
-// import ArticleDetails from "./ArticleDetails";
-// import { CloudDownloadTwoTone, Delete, Edit } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -94,24 +87,26 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function Article() {
   const storage = firebase.storage();
   const classes = useStyles();
+  const [data, setData] = useState([]);
   const [addAlert, setAddAlertOpen] = useState(false);
   const [updateAlert, setUpdateAlert] = useState(false);
   const [deleteAlert, setDeleteAlert] = useState(false);
-  const [article, setArticle] = useState({
-    name: "",
-    description: "",
-    postId: "",
-    image: "",
-  });
-  const [data, setData] = useState([]);
-  const [updateData, setUpdateData] = useState({
-    name: "",
-    image: "",
-    description: "",
-    postId: "",
-  });
   const [currentID, setCurrentID] = useState();
   const [img, setImg] = useState(null);
+  const [article, setArticle] = useState({
+    name: "",
+    postId: "",
+    userId: "",
+    image: "",
+  });
+
+  const [updateData, setUpdateData] = useState({
+    name: "",
+    postId: "",
+    userId: "",
+    image: "",
+  });
+
 
   const addUploadClick = (e) => {
     console.log(e.target.files[0].name);
@@ -137,31 +132,6 @@ export default function Article() {
       }
     );
   };
-
-  // const addPdfUploadClick = (e) => {
-  //   console.log(e.target.files[0].name);
-  //   var upload = storage
-  //     .ref(`articles/${e.target.files[0].name}`)
-  //     .put(e.target.files[0]);
-  //   upload.on(
-  //     "state_changed",
-  //     (snapshot) => {
-  //       console.log(snapshot, "///////////////////////////////snapshots");
-  //     },
-  //     (error) => {
-  //       console.log(error);
-  //     },
-
-  //     () => {
-  //       storage
-  //         .ref("articles")
-  //         .child(e.target.files[0].name)
-  //         .getDownloadURL()
-  //         .then((url) => setArticle({ ...article, link: url }));
-  //       // console.log(url);
-  //     }
-  //   );
-  // };
 
   const updateUploadClick = (e) => {
     var upload = storage
@@ -209,11 +179,10 @@ export default function Article() {
       .then((snapshot) => {
         setUpdateData({
           name: snapshot.data().articleName,
-          description: snapshot.data().content,
           image: snapshot.data().articleImage,
           postId: snapshot.data().postId,
+          userId: snapshot.data().userId,
         });
-        console.log(snapshot.data());
       })
       .catch((e) => console.log(e));
     console.log("/////////////////update", id);
@@ -223,14 +192,13 @@ export default function Article() {
   };
 
   const articleUpdate = () => {
-    ///update
     const db = firebase.firestore();
     db.collection("articles").doc(currentID).update({
       articleName: updateData.name,
       articleImage: updateData.image,
-      // content: updateData.description,
       createdAt : Date(),
-      postId : updateData.postId,
+      postId : parseInt(updateData.postId),
+      userId : parseInt(updateData.userId),
     });
 
     setCurrentID();
@@ -252,8 +220,6 @@ export default function Article() {
   };
 
   const alertUpdate = (e) => {
-    console.log(e.target.name, "//////////////////////// event name");
-    console.log(e.target.value, "//////////////////////// event value");
     setUpdateData({ ...updateData, [e.target.name]: e.target.value });
   };
 
@@ -267,22 +233,27 @@ export default function Article() {
     firebase.firestore().collection("articles").add({
       articleName: article.name,
       articleImage: article.image,
-      // content: article.description,
-      postId: article.postId,
+      postId: parseInt(article.postId),
+      userId: parseInt(article.userId),
       createdAt: Date(),
     });
 
-    setArticle({ name: "", description: "", image: "" });
+    ///clearing precious data in state
+    setArticle({ name: "", description: "", image: "", postId: "", userId : "" });
     ///add alert close
     setAddAlertOpen(false);
-    console.log(Date());
-    ///clearing precious data in state
+    
   };
 
   const onClose = () => {
     setAddAlertOpen(false); 
-    setArticle({name : "", description : "", postId : "", image : ""});
+    setArticle({name : "", description : "", postId : "", image : "", userId : ""});
     setImg(null);
+  }
+
+  const updateAlertClose = () => {
+    setUpdateData({image: "", name: "", postId: "", userId: ""})
+    setUpdateAlert(false)
   }
 
   return (
@@ -360,6 +331,7 @@ export default function Article() {
           <DialogContentText>
             <div className={classes.root}>
               <Grid container spacing={3}>
+
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                   <img style={{backgroundColor: "lightgrey", border : "1px solid black", marginRight : "20px", boxShadow: "inherit"}} height={120} width={120} src={article.image} />
@@ -386,23 +358,35 @@ export default function Article() {
                   </Paper>
                 </Grid>
 
-                {/* <Grid item xs={12}>
+                <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
-                      name="description"
+                     type= "number"
+                     InputProps={{
+                       inputProps: { 
+                            min: 0 
+                       }
+                   }}
+                      name="userId"
                       id="outlined-basic"
-                      label="Description"
+                      label="User Id"
                       variant="outlined"
                       style={{ width: "100%" }}
-                      value={article.description}
+                      value={article.userId}
                       onChange={onChangeArticle}
                     />
                   </Paper>
-                </Grid> */}
+                </Grid>
 
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
+                      type= "number"
+                      InputProps={{
+                        inputProps: { 
+                             min: 0 
+                        }
+                    }}
                       name="postId"
                       id="outlined-basic"
                       label="Post Id"
@@ -425,7 +409,7 @@ export default function Article() {
         </DialogContent>
         <DialogActions>
           <Button
-            disabled = { article.image === "" || article.name === "" || article.postId === "" }
+            disabled = { article.image === "" || article.name === "" || article.postId === "" || article.userId === "" }
             onClick={addArticle}
             variant="contained"
             color= "primary"
@@ -442,7 +426,7 @@ export default function Article() {
       {/* Update article */}
       <Dialog
         open={updateAlert}
-        onClose={() => setUpdateAlert(false)}
+        onClose={updateAlertClose}
         TransitionComponent={Transition}
         keepMounted
       >
@@ -479,28 +463,39 @@ export default function Article() {
                   </Paper>
                 </Grid>
               
-                {/* <Grid item xs={12}>
+                <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
+                     type= "number"
+                     InputProps={{
+                       inputProps: { 
+                            min: 0 
+                       }
+                   }}
+                      name="userId"
                       id="outlined-basic"
-                      label="Description"
+                      label="User Id"
                       variant="outlined"
-                      name="description"
-                      value={updateData.description}
                       style={{ width: "100%" }}
-                      // maxLength={12}
+                      value={updateData.userId}
                       onChange={alertUpdate}
                     />
                   </Paper>
-                </Grid> */}
+                </Grid>
 
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
                     <TextField
+                     type= "number"
+                     InputProps={{
+                       inputProps: { 
+                            min: 0 
+                       }
+                   }}
+                     name="postId"
                       id="outlined-basic"
                       label="Post Id"
                       variant="outlined"
-                      name="postId"
                       value={updateData.postId}
                       style={{ width: "100%" }}
                       // maxLength={12}
@@ -521,12 +516,12 @@ export default function Article() {
         <DialogActions>
           <Button
             onClick={articleUpdate}
+            disabled = { updateData.image === "" || updateData.name === "" || updateData.postId === "" || updateData.userId === "" }
             variant="contained"
+            color= "primary"
             style={{
-              background: "#1F6DE2",
               width: "100%",
               height: "55px",
-              color: "white",
             }}
           >
             Submit
@@ -540,7 +535,6 @@ export default function Article() {
         {data.map((item, index) => (
           <Grid item key={index}>
             <Card className={classes.card}>
-              
                 <CardActionArea>
                   <CardMedia
                     className={classes.media}

@@ -71,23 +71,6 @@ export default function MainCardDesign({ data }) {
     });
   };
 
-  const onClickUnrestrictTime = () => {
-    // console.log("fgjh");
-    //  const db = firebase.firestore();
-    //  return db.collection("booking").onSnapshot((snapshot) => {
-    //   const getRestrictTime = [];
-    //   snapshot.forEach((doc) => {
-    //     var seconds = new Date().getTime() / 1000;
-    //     seconds = Math.ceil(seconds)
-    //       if (doc.data().userName === "Restricted Time" && doc.data().time.seconds >= seconds) {
-    //         console.log(doc.id);
-    //         getRestrictTime.push({...doc.data(), id : doc.id})
-    //       }
-    //   });
-    //   setUnrestrictTime(...unRestrictTime, getRestrictTime)
-    //   console.log(getRestrictTime, "getRestrictTime");
-    //  })
-  };
 
   const actions = [
     {
